@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YakaTicket", "YakaTicket\YakaTicket.csproj", "{A8E09F79-E0C3-4626-8EE4-3807C0F5F6CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YakaTicket", "YakaTicket\YakaTicket.csproj", "{0CB48C4B-63CF-4284-A5EF-3F1E33836778}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A8E09F79-E0C3-4626-8EE4-3807C0F5F6CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8E09F79-E0C3-4626-8EE4-3807C0F5F6CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8E09F79-E0C3-4626-8EE4-3807C0F5F6CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8E09F79-E0C3-4626-8EE4-3807C0F5F6CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CB48C4B-63CF-4284-A5EF-3F1E33836778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CB48C4B-63CF-4284-A5EF-3F1E33836778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CB48C4B-63CF-4284-A5EF-3F1E33836778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CB48C4B-63CF-4284-A5EF-3F1E33836778}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {B9BB6786-EAE7-4C46-8AA9-926E36AE7069}
+		SolutionGuid = {3A6B59E7-EB7E-440C-8899-AB05AB12DA62}
 	EndGlobalSection
 EndGlobal
