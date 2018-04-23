@@ -2,3 +2,11 @@
     background-color: #00435f;
     border-color: #080808;
 }
+
+    .navbar-inverse .navbar-brand {
+        color: #41b2e6; /*need to use generics colors*/
+    }
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #41b2e6; /*need to use generics colors*/
+}
