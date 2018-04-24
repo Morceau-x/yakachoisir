@@ -1,12 +1,45 @@
-﻿.navbar-inverse {
-    background-color: #00435f;
+﻿:root {
+    --epita-color1: #00435f;
+    --epita-color2: #41b2e6;
+    --epita-color3: #4fc1e5;
+    --epita-color4: #fab810;
+    --epita-color5: #ec6865;
+    --epita-color6: #9dc8ec;
+    --epita-color7: #0d2436;
+    --epita-color8: #cd1619;
+    --epita-color9: #37abba;
+    /*From up to down, left to right on the first page of the chart*/
+    --navbar-bg-color: var(--epita-color1);
+    --navbar-text-color: white;
+}
+
+.navbar-inverse {
+    background-color: var(--navbar-bg-color);
     border-color: #080808;
 }
 
-    .navbar-inverse .navbar-brand {
-        color: #41b2e6; /*need to use generics colors*/
-    }
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus {
+    color: var(--epita-color2);
+}
+.navbar-inverse .navbar-brand {
+    color: var(--navbar-text-color);
+}
 
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+    color: var(--epita-color2);
+}
 .navbar-inverse .navbar-nav > li > a {
-    color: #41b2e6; /*need to use generics colors*/
+    color: var(--navbar-text-color);
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+    background-color: var(--epita-color6);
+}
+.navbar-inverse .navbar-toggle {
+    border-color: var(--epita-color2);
+}
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+    background-color: #999999;
 }
