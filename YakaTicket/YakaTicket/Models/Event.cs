@@ -10,7 +10,8 @@ namespace YakaTicket.Models
         public int Id { get; set; }
         public String Name { get; set; }
         public String DateBegin { get; set; }
-        public String Hour { get; set; }
-        public int Duration { get; set; }
+        public String HourBegin { get; set; }
+        public String DateEnd { get; set; }
+        public String HourEnd { get; set; }
     }
 }

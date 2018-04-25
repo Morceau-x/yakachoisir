@@ -8,11 +8,20 @@ namespace YakaTicket.Controllers
 {
     public class EventsController : Controller
     {
+
+        Models.DalEvent dalevent = new Models.DalEvent();
+
+        public ActionResult Index()
+        {
+            if (dalevent == null || dalevent.GetAllEvents() == null)
+                return View("CreateEvent");
+            return View();
+        }
+
         public ActionResult ModifyEvent(int? id)
         {
             if (id.HasValue)
             {
-                Models.DalEvent dalevent = new Models.DalEvent();
                 Models.Event e = dalevent.GetAllEvents().FirstOrDefault(r => r.Id == id.Value);
                 if (e == null)
                     return View("NoEvent");
@@ -23,16 +32,38 @@ namespace YakaTicket.Controllers
         }
 
         [HttpPost]
-        public ActionResult ModifyEvent(int? id, string name, string datebegin, string hour, int duration)
+        public ActionResult ModifyEvent(int? id, string name, string datebegin, string hourbegin, string dateend, string hourend)
         {
             if (id.HasValue)
             {
                 Models.DalEvent dalevent = new Models.DalEvent();
-                dalevent.ModifyEvent(id.Value, name, datebegin, hour, duration);
+                dalevent.ModifyEvent(id.Value, name, datebegin, hourbegin, dateend, hourend);
                 return RedirectToAction("Home/Index");
             }
             else
                 return View("NoEvent");
+        }
+
+        public ActionResult CreateEvent()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult CreateEvent(Models.Event e)
+        {
+
+            if (ModelState.IsValid) 
+            {
+                dalevent.CreateEvent(e.Name, e.DateBegin, e.HourBegin, e.DateEnd, e.HourBegin);
+                return RedirectToAction("Home/Index");
+            }
+            else
+            {
+                return View(e);
+            }
+
         }
     }
 }

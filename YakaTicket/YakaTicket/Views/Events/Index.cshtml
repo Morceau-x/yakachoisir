@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<body>
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Nom</th>
+            <th>Date Début</th>
+            <th>Heure</th>
+            <th>Durée</th>
+        </tr>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.Name</td>
+                <td>@e.DateBegin</td>
+                <td>@e.HourBegin</td>
+                <td>@e.DateEnd</td>
+                <td>@e.HourEnd</td>
+                <td><a href="/Events/ModifyEvents/" + @e.Id>Modifier @e.Name</a></td>
+            </tr>
+        }
+    </table>
+</body>

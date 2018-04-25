@@ -1,0 +1,42 @@
+﻿@model YakaTicket.Models.Event
+
+@{
+    ViewBag.Title = "CreateEvent";
+}
+
+<h2>CreateEvent</h2>
+
+@using (Html.BeginForm())
+
+{
+
+<fieldset>
+    <legend>Créer un évènement</legend>
+    <div>
+        Nom
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Name)
+    </div>
+    <div>
+        Date de début : <i>jj/mm/aaaa</i>
+        @Html.TextBoxFor(model => model.DateBegin, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DateBegin)
+    </div>
+    <div>
+        Heure de début : <i>hh:mm</i>
+        @Html.TextBoxFor(model => model.HourBegin, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.HourBegin)
+    </div>
+    <div>
+        Date de fin : <i>jj/mm/aaaa</i>
+        @Html.TextBoxFor(model => model.DateEnd, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DateEnd)
+    </div>
+    <div>
+        Heure de fin : <i>hh:mm</i>
+        @Html.TextBoxFor(model => model.HourEnd, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.HourEnd)
+    </div>
+    <input type="submit" value="Créer l'évènement" class="form-control"/>
+</fieldset>
+}

@@ -24,17 +24,24 @@ namespace YakaTicket.Models
             bdd.Dispose();
         }
 
-        public void ModifyEvent(int id, String name, String dateBegin, String hour, int duration)
+        public void ModifyEvent(int id, String name, String dateBegin, String hourBegin, String dateEnd, String hourEnd)
         {
             Event e = GetAllEvents().FirstOrDefault(r => r.Id == id);
             if (e != null)
             {
                 e.Name = name;
-                e.Duration = duration;
                 e.DateBegin = dateBegin;
-                e.Hour = hour;
+                e.HourBegin = hourBegin;
+                e.DateEnd = dateEnd;
+                e.HourEnd = hourEnd;
                 bdd.SaveChanges();
             }
+        }
+
+        public void CreateEvent(String name, String dateBegin, String hourBegin, String dateEnd, String hourEnd)
+        {
+            bdd.Events.Add(new Event { Name = name, DateBegin = dateBegin, HourBegin = hourBegin, DateEnd = dateEnd, HourEnd = hourEnd});
+            bdd.SaveChanges();
         }
     }
 }

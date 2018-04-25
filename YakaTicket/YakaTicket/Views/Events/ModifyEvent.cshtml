@@ -1,34 +1,33 @@
-﻿
+﻿@model YakaTicket.Models.Event
+
 @{
     ViewBag.Title = "ModifyEvent";
 }
 
+@using (Html.BeginForm())
+{
 <fieldset>
-
     <legend>Modifier un évènement</legend>
     <div>
         @Html.LabelFor(model => model.Name)
-        @Html.TextBoxFor(model => model.Name)
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
     </div>
-
     <div>
         @Html.LabelFor(model => model.DateBegin)
-        @Html.TextBoxFor(model => model.DateBegin)
+        @Html.TextBoxFor(model => model.DateBegin, new { @class = "form-control" })
     </div>
-
     <div>
-        @Html.LabelFor(model => model.Hour)
-        @Html.TextBoxFor(model => model.Hour)
+        @Html.LabelFor(model => model.HourBegin)
+        @Html.TextBoxFor(model => model.HourBegin, new { @class = "form-control" })
     </div>
-
     <div>
-        @Html.LabelFor(model => model.Duration)
-        @Html.TextBoxFor(model => model.Duration)
+        @Html.LabelFor(model => model.DateEnd)
+        @Html.TextBoxFor(model => model.DateEnd, new { @class = "form-control" })
     </div>
-
-    <br />
-
-    <input type="submit" value="Modifier" />
-
+    <div>
+        @Html.LabelFor(model => model.HourEnd)
+        @Html.TextBoxFor(model => model.HourEnd, new { @class = "form-control" })
+    </div>
+    <input type="submit" value="Modifier l'évènement" class="form-control"/>
 </fieldset>
-
+}
