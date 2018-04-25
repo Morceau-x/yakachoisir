@@ -10,8 +10,28 @@
     --epita-color9: #37abba;
 }
 
+body {
+    background-color: #e5e5e5; /*Stolen from epita.net*/
+}
+
 .btn-primary {
     color: white;
-    background-color: white;/*var(--epita-color2);*/
+    background-color: var(--epita-color1);
     border-color: var(--epita-color1);
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open .dropdown-toggle.btn-primary {
+    color: var(--epita-color7);
+    background-color: var(--epita-color6);
+    border-color: var(--epita-color2);
+}
+
+.btn-default {
+    color: var(--epita-color7);
+    background-color: transparent;
+    border-color: var(--epita-color3);
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+    color: var(--epita-color7);
+    background-color: var(--epita-color6);
+    border-color: var(--epita-color2);
 }
