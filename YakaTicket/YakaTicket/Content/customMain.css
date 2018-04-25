@@ -1,0 +1,17 @@
+﻿:root {
+    --epita-color1: #00435f;
+    --epita-color2: #41b2e6;
+    --epita-color3: #4fc1e5;
+    --epita-color4: #fab810;
+    --epita-color5: #ec6865;
+    --epita-color6: #9dc8ec;
+    --epita-color7: #0d2436;
+    --epita-color8: #cd1619;
+    --epita-color9: #37abba;
+}
+
+.btn-primary {
+    color: white;
+    background-color: white;/*var(--epita-color2);*/
+    border-color: var(--epita-color1);
+}
