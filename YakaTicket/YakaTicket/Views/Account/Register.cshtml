@@ -4,7 +4,9 @@
 }
 
 <h2>@ViewBag.Title.</h2>
-
+<head>
+    <link rel="stylesheet" type="text/css" href="~/Content/customMain.css"> <!--Link to our layer of css-->
+</head>
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
