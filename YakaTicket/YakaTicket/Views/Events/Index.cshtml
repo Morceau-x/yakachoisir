@@ -14,14 +14,15 @@
         </tr>
         @foreach (var e in Model)
         {
-            <tr>
-                <td>@e.Name</td>
-                <td>@e.DateBegin</td>
-                <td>@e.HourBegin</td>
-                <td>@e.DateEnd</td>
-                <td>@e.HourEnd</td>
-                <td><a href="/Events/ModifyEvents/" + @e.Id>Modifier @e.Name</a></td>
-            </tr>
+        <tr>
+            <td>@e.Name</td>
+            <td>@e.DateBegin</td>
+            <td>@e.HourBegin</td>
+            <td>@e.DateEnd</td>
+            <td>@e.HourEnd</td>
+            <td><a href="/Events/ViewEvent/" + @e.Id>Détails de l'évènement @e.Name</a></td>
+            <td><a href="/Events/ModifyEvents/" + @e.Id>Modifier @e.Name</a></td>
+        </tr>
         }
     </table>
 </body>

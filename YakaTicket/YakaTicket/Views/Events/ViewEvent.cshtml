@@ -1,0 +1,24 @@
+﻿@model YakaTicket.Models.Event
+@{
+    ViewBag.Title = "ViewEvent";
+}
+
+<h2>ViewEvent</h2>
+<fieldset>
+    <legend>Résumé de l'évènement</legend>
+    <div>
+        Nom : model.Name
+    </div>
+    <div>
+        Date de début : model.DateBegin
+    </div>
+    <div>
+        Heure de début : model.HourBegin
+    </div>
+    <div>
+        Date de fin : model.DateEnd
+    </div>
+    <div>
+        Heure de fin : model.HourEnd
+    </div>
+</fieldset>

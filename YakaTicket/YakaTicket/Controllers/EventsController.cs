@@ -18,6 +18,19 @@ namespace YakaTicket.Controllers
             return View();
         }
 
+        public ActionResult ViewEvent(int? id)
+        {
+            if (id.HasValue)
+            {
+                Models.Event e = dalevent.GetAllEvents().FirstOrDefault(r => r.Id == id.Value);
+                if (e == null)
+                    return View("NoEvent");
+                return View(e);
+            }
+            else
+                return View("NoEvent");
+        }
+
         public ActionResult ModifyEvent(int? id)
         {
             if (id.HasValue)
