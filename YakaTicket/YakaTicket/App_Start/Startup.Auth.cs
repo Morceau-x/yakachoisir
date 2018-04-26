@@ -2,6 +2,7 @@
 using System.Net;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
@@ -22,24 +23,24 @@ namespace YakaTicket
             // Enable the application to use a cookie to store information for the signed in user
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
             // Configure the sign in cookie
-            //app.UseCookieAuthentication(new CookieAuthenticationOptions
-            //{
-            //    AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-            //    LoginPath = new PathString("/Account/Login"),
-            //    Provider = new CookieAuthenticationProvider
-            //    {
-            //        // Enables the application to validate the security stamp when the user logs in.
-            //        // This is a security feature which is used when you change a password or add an external login to your account.
-            //        OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
-            //            validateInterval: TimeSpan.FromMinutes(30),
-            //            regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
-            //    }
-            //});
-
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationType = CookieAuthenticationDefaults.AuthenticationType
+                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                LoginPath = new PathString("/Account/Login"),
+                Provider = new CookieAuthenticationProvider
+                {
+                    // Enables the application to validate the security stamp when the user logs in.
+                    // This is a security feature which is used when you change a password or add an external login to your account.
+                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
+                        validateInterval: TimeSpan.FromMinutes(30),
+                        regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
+                }
             });
+
+            //app.UseCookieAuthentication(new CookieAuthenticationOptions
+            //{
+            //    AuthenticationType = CookieAuthenticationDefaults.AuthenticationType
+            //});
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
@@ -65,12 +66,14 @@ namespace YakaTicket
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions()
             {
                 Authority = "https://intra.cri.epita.net/oidc",
-                RedirectUri = "http://localhost:8080/complete/epita/",
+                RedirectUri = "http://localhost:8000/complete/epita/",
+                CallbackPath = new PathString("/Home"),
                 ClientId = "031021",
                 ClientSecret = "97593354782061112fdeab765fd8faf9694903adfd8fa2d345a46be1",
                 Scope = "epita openid profile email",
-                //SignInAsAuthenticationType = CookieAuthenticationDefaults.AuthenticationType,
+                SignInAsAuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 ResponseType = "code",
+                AuthenticationMode = Microsoft.Owin.Security.AuthenticationMode.Active
             });
         }
     }
