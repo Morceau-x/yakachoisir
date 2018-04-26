@@ -13,10 +13,12 @@
     --navbar-text-color: white;
 }
 
-/*.navbar-brand {
-    background-image: url(logo-epita-hd.png);
-    background-size: auto 100%;
-}*/
+.navbar-brand {
+    background: url(logo-epita-hd.png);
+    background-size: 100% auto;
+    width: 147px;
+    height: 100px;
+}
 
 .navbar-inverse {
     background-color: var(--navbar-bg-color);
@@ -47,4 +49,8 @@
 .navbar-inverse .navbar-toggle:hover,
 .navbar-inverse .navbar-toggle:focus {
     background-color: #999999;
+}
+
+.navbar-collapse > ul {
+    padding: 15px;
 }
