@@ -214,7 +214,8 @@
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Database\DatabaseConnection.cs" />
+    <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\DBConvert.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
