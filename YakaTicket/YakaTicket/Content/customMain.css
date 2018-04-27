@@ -88,3 +88,5 @@ body {
 .navbar-collapse > ul {
     padding: 15px;
 }
+
+.field-validation-error {color:#f00}
