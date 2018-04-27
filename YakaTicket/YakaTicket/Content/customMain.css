@@ -1,4 +1,5 @@
-﻿:root {
+﻿
+:root {
     --epita-color1: #00435f;
     --epita-color2: #41b2e6;
     --epita-color3: #4fc1e5;
@@ -8,8 +9,12 @@
     --epita-color7: #0d2436;
     --epita-color8: #cd1619;
     --epita-color9: #37abba;
+    /*From up to down, left to right on the first page of the chart*/
+    --navbar-bg-color: var(--epita-color1);
+    --navbar-text-color: white;
 }
 
+/*MAIN*/
 body {
     background-color: #e5e5e5; /*Stolen from epita.net*/
 }
@@ -34,4 +39,52 @@ body {
     color: var(--epita-color7);
     background-color: var(--epita-color6);
     border-color: var(--epita-color2);
+}
+
+
+/*NAVBAR*/
+.navbar-brand {
+    background: url(logo-epita-hd.png);
+    background-size: 100% auto;
+    width: 147px;
+    height: 100px;
+}
+
+.navbar-inverse {
+    background-color: var(--navbar-bg-color);
+    border-color: #080808;
+}
+
+    .navbar-inverse .navbar-brand:hover,
+    .navbar-inverse .navbar-brand:focus {
+        color: var(--epita-color2);
+    }
+
+    .navbar-inverse .navbar-brand {
+        color: var(--navbar-text-color);
+    }
+
+    .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+        color: var(--epita-color2);
+    }
+
+    .navbar-inverse .navbar-nav > li > a {
+        color: var(--navbar-text-color);
+    }
+
+    .navbar-inverse .navbar-toggle .icon-bar {
+        background-color: var(--epita-color6);
+    }
+
+    .navbar-inverse .navbar-toggle {
+        border-color: var(--epita-color2);
+    }
+
+        .navbar-inverse .navbar-toggle:hover,
+        .navbar-inverse .navbar-toggle:focus {
+            background-color: #999999;
+        }
+
+.navbar-collapse > ul {
+    padding: 15px;
 }
