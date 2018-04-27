@@ -1,0 +1,10 @@
+{
+  "database":
+  {
+    "host": "127.0.0.1",
+    "port": 5432,
+    "username": "server",
+    "password": "Htla1|re3iHyUp_Gi-=lohni6dn4A3",
+    "database": "yakaticket"
+  }
+}
