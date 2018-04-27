@@ -10,7 +10,7 @@ namespace YakaTicket.Models
     {
         //Mandatory
         public int Id { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier un titre pour cet évènement")]
+        [Required(ErrorMessage = "Vous devez spécifier un titre pour cet événement")]
         public String Name { get; set; }
         [Required(ErrorMessage = "Vous devez ajouter une description")]
         public String Description { get; set; }
@@ -18,7 +18,7 @@ namespace YakaTicket.Models
         public DateTime Begin { get; set; }
         [Required(ErrorMessage = "Vous devez spécifier une date de fin")]
         public DateTime End { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier un lieu pour cet évènement")]
+        [Required(ErrorMessage = "Vous devez spécifier un lieu pour cet événement")]
         public String Location { get; set; }
         [Required(ErrorMessage = "Vous devez spécifier une date de cloture des inscriptions")]
         public DateTime Close { get; set; }
