@@ -215,7 +215,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Database\Database.cs" />
-    <Compile Include="Database\DBConvert.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -231,6 +230,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\customLayout.css" />
     <Content Include="Content\customMain.css" />
     <Content Include="Content\logo-epita-hd.png" />
     <Content Include="favicon.ico" />
