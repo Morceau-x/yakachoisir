@@ -3,22 +3,30 @@
     ViewBag.Title = "ViewEvent";
 }
 
-<h2>ViewEvent</h2>
 <fieldset>
     <legend>Résumé de l'évènement</legend>
     <div>
         Nom : model.Name
     </div>
     <div>
-        Date de début : model.DateBegin
+        Description : model.Description
     </div>
     <div>
-        Heure de début : model.HourBegin
+        Début de l'évènement : model.Begin
     </div>
     <div>
-        Date de fin : model.DateEnd
+        Fin de l'évènement : model.End
     </div>
     <div>
-        Heure de fin : model.HourEnd
+        Lieu : model.Location
+    </div>
+    <div>
+        Fermeture des inscriptions : model.Close
+    </div>
+    <div>
+        Nombre de places externes au groupe IONIS: model.ExternPlaces
+    </div>
+    <div>
+        Nombre de places internes au groupe IONIS : model.InternPlaces
     </div>
 </fieldset>

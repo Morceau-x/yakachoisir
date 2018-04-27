@@ -4,39 +4,67 @@
     ViewBag.Title = "CreateEvent";
 }
 
-<h2>CreateEvent</h2>
-
+<h3>* <i>Champs obligatoires</i></h3>
 @using (Html.BeginForm())
-
 {
-
 <fieldset>
     <legend>Créer un évènement</legend>
     <div>
-        Nom
+        Nom <i>*</i>
         @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Name)
     </div>
     <div>
-        Date de début : <i>jj/mm/aaaa</i>
-        @Html.TextBoxFor(model => model.DateBegin, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.DateBegin)
+        Description <i>*</i>
+        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Description)
     </div>
     <div>
-        Heure de début : <i>hh:mm</i>
-        @Html.TextBoxFor(model => model.HourBegin, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.HourBegin)
+        Début de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
+        @Html.TextBoxFor(model => model.Begin, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Begin)
     </div>
     <div>
-        Date de fin : <i>jj/mm/aaaa</i>
-        @Html.TextBoxFor(model => model.DateEnd, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.DateEnd)
+        Fin de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
+        @Html.TextBoxFor(model => model.End, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.End)
     </div>
     <div>
-        Heure de fin : <i>hh:mm</i>
-        @Html.TextBoxFor(model => model.HourEnd, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.HourEnd)
+        Lieu <i>*</i>
+        @Html.TextBoxFor(model => model.Location, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Location)
     </div>
-    <input type="submit" value="Créer l'évènement" class="form-control"/>
+    <div>
+        Fermeture des inscriptions <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
+        @Html.TextBoxFor(model => model.Close, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Close)
+    </div>
+    <div>
+        Nombre de places pour les externes au groupe IONIS <i>*</i>
+        @Html.TextBoxFor(model => model.ExternPlaces, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ExternPlaces)
+    </div>
+    <div>
+        Nombre de places pour les internes au groupe IONIS <i>*</i>
+        @Html.TextBoxFor(model => model.InternPlaces, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.InternPlaces)
+    </div>
+    <div>
+        Prix places pour les externes au groupe IONIS <i>*</i>
+        @Html.TextBoxFor(model => model.InternPrice, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.InternPrice)
+    </div>
+    <div>
+        Prix places pour les internes au groupe IONIS <i>*</i>
+        @Html.TextBoxFor(model => model.InternPrice, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.InternPrice)
+    </div>
+    <div>
+        Afficher le nombre de places restantes <i>*</i>
+        @Html.RadioButtonFor(model => Model.LeftPlaces, true) Oui
+        @Html.RadioButtonFor(model => Model.LeftPlaces, false) Non
+        @Html.ValidationMessageFor(model => model.LeftPlaces)
+    </div>
+    <input type="submit" value="Créer l'évènement" class="form-control" />
 </fieldset>
 }

@@ -45,12 +45,15 @@ namespace YakaTicket.Controllers
         }
 
         [HttpPost]
-        public ActionResult ModifyEvent(int? id, string name, string datebegin, string hourbegin, string dateend, string hourend)
+        public ActionResult ModifyEvent(int? id, string name, string description, DateTime begin, DateTime end, string location,
+                                        DateTime close, int externPlaces, int internPlaces, float externPrice, float internPrice,
+                                        bool uniquePrice, bool leftPlace, String promotionPic)
         {
             if (id.HasValue)
             {
                 Models.DalEvent dalevent = new Models.DalEvent();
-                dalevent.ModifyEvent(id.Value, name, datebegin, hourbegin, dateend, hourend);
+                dalevent.ModifyEvent(id.Value, name, description, begin, end, location, close, externPlaces, internPlaces, externPrice,
+                                     internPrice, uniquePrice, leftPlace, promotionPic);
                 return RedirectToAction("Home/Index");
             }
             else
@@ -69,7 +72,8 @@ namespace YakaTicket.Controllers
 
             if (ModelState.IsValid) 
             {
-                dalevent.CreateEvent(e.Name, e.DateBegin, e.HourBegin, e.DateEnd, e.HourBegin);
+                dalevent.CreateEvent(e.Name, e.Description, e.Begin, e.End, e.Location, e.Close, e.ExternPlaces, e.InternPlaces,
+                                     e.ExternPrice, e.InternPrice, e.UniquePrice, e.LeftPlaces, e.PromotionPic);
                 return RedirectToAction("Home/Index");
             }
             else
