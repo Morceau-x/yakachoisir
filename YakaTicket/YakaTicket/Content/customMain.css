@@ -20,9 +20,18 @@ body {
     padding-top: 150px;
 }
 
+.form-control {
+    border: 1px solid var(--epita-color2);
+    background-color: aliceblue;
+}
+
+.form-control.btn-primary {
+    margin: auto;
+}
+
 .btn-primary {
     color: white;
-    background-color: var(--epita-color1);
+    background-color: var(--epita-color2);
     border-color: var(--epita-color1);
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open .dropdown-toggle.btn-primary {
@@ -108,7 +117,10 @@ body {
 .field-validation-error {
     color:#f00
 }
-.form-control {
-    border: 1px solid var(--epita-color2);
-    background-color: aliceblue;
+
+
+
+.column {
+    float: left;
+    width: 50%;
 }
