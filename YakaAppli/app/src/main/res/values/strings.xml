@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">EntryEvent</string>
-    <string name="app_title">Gestionnaire d\'entré d\'évènements</string>
+    <string name="app_title">Gestionnaire d\'entrée d\'évènements</string>
+    <string name="check_title">Vérification des billets</string>
     <string name="scan_button">Scan QR code</string>
+    <string name="connect_button">Connexion</string>
 </resources>
