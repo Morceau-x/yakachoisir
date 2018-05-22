@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (clickedView != null) {
             when (clickedView.id) {
                 R.id.btn_connect -> {
-                    val explicitIntent = Intent(this@MainActivity, CheckActivity::class.java)
+                    val explicitIntent = Intent(this@MainActivity, EventsActivity::class.java)
                     val message = "Identifiant"
                     explicitIntent.putExtra("ID", message)
                     startActivity(explicitIntent)
