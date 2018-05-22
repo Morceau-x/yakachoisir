@@ -10,6 +10,7 @@ DROP FUNCTION IF EXISTS f_set_moderator(id INTEGER, target INTEGER);
 DROP FUNCTION IF EXISTS f_remove_moderator(id INTEGER, target INTEGER);
 DROP FUNCTION IF EXISTS f_is_moderator(id INTEGER);
 DROP FUNCTION IF EXISTS f_is_administrator(id INTEGER);
+DROP FUNCTION IF EXISTS f_get_user_id(login VARCHAR(256));
 
 
 /*********************
@@ -231,5 +232,22 @@ BEGIN
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+***** GET USER iD ****
+**********************/
+CREATE OR REPLACE FUNCTION f_get_user_id(login VARCHAR(256))
+RETURNS INTEGER AS
+$$
+DECLARE
+	id INTEGER;
+BEGIN
+	SELECT u.id INTO id FROM users u WHERE u.login = $1;
+	RETURN id;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN -1;
 END;
 $$ LANGUAGE plpgsql;

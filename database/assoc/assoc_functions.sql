@@ -6,12 +6,12 @@ DROP FUNCTION IF EXISTS f_delete_assoc(user_id INTEGER, name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_is_member(user_id INTEGER, name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_is_desk(user_id INTEGER, name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_is_president(user_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_superior(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
-DROP FUNCTION IF EXISTS f_is_set_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
-DROP FUNCTION IF EXISTS f_is_set_desk(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
-DROP FUNCTION IF EXISTS f_is_remove_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
-DROP FUNCTION IF EXISTS f_is_set_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
-DROP FUNCTION IF EXISTS f_is_remove_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
+DROP FUNCTION IF EXISTS f_is_superior(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_set_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_set_desk(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_remove_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_set_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_remove_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
 
 /*********************
 ***** FUNCTIONS ******
@@ -148,7 +148,7 @@ BEGIN
 		RETURN TRUE;
 	END IF;
 	
-	RETURN EXISTS (SELECT * FROM assocs a WHERE a.name = $2 AND a.president = $1)
+	RETURN EXISTS (SELECT * FROM assocs a WHERE a.name = $2 AND a.president = $1);
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -206,7 +206,7 @@ BEGIN
 	END IF;
 
 	IF (f_is_president(target_id)) THEN
-		UPDATE assocs SET president IS NULL WHERE assocs.name = $3;
+		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 		INSERT INTO members VALUES ($3, $2, FALSE);
 	ELSIF (f_is_desk(target_id)) THEN
 		UPDATE members SET desk = FALSE WHERE members.member = $2 AND members.assoc = $3;
@@ -239,7 +239,7 @@ BEGIN
 	END IF;
 	
 	IF (f_is_president(target_id)) THEN
-		UPDATE assocs SET president IS NULL WHERE assocs.name = $3;
+		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 		INSERT INTO members VALUES ($3, $2, TRUE);
 	ELSIF (f_is_member(target_id)) THEN
 		UPDATE members SET desk = TRUE WHERE members.member = $2 AND members.assoc = $3;
@@ -272,7 +272,7 @@ BEGIN
 	END IF;
 	
 	IF (f_is_president(target_id)) THEN
-		UPDATE assocs SET president IS NULL WHERE assocs.name = $3;
+		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 	ELSIF (f_is_member(target_id)) THEN
 		DELETE FROM members WHERE members.member = $2 AND members.assoc = $3;
 	END IF;
@@ -333,7 +333,7 @@ BEGIN
 	END IF;
 	
 	IF (f_is_president(target_id)) THEN
-		UPDATE assocs SET president IS NULL WHERE assocs.name = $3;
+		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 	END IF;
 	RETURN TRUE;
 EXCEPTION

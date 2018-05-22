@@ -31,12 +31,12 @@ CREATE TABLE prices
 (
 	event_id			INTEGER				NOT NULL,
 	price_name			VARCHAR(128)		NOT NULL,
-	price_value			DOUBLE				NOT NULL,
+	price_value			REAL				NOT NULL,
 	
 	assoc_only			BOOLEAN				NOT NULL		DEFAULT FALSE,
 	epita_only			BOOLEAN				NOT NULL		DEFAULT FALSE,
 
-	PRIMARY KEY (event_id, price_name)
+	PRIMARY KEY (event_id, price_name),
 	FOREIGN	KEY	(event_id)	REFERENCES	events(id)
 );
 
@@ -82,7 +82,7 @@ CREATE TABLE payment_history
 	user_id				INTEGER				NOT NULL,
 	event_id			INTEGER				NOT NULL,
 	payment_date		TIMESTAMP			NOT NULL		DEFAULT		LOCALTIMESTAMP,
-	amount				DOUBLE				NOT NULL,
+	amount				REAL				NOT NULL,
 
 	PRIMARY	KEY	(id)
 );
