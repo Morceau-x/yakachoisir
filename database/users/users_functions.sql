@@ -61,8 +61,8 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 	
-	UPDATE users SET (account_type, email, password, deleted, address, phone_number, deletion_date)
-	= (NULL, NULL, NULL, TRUE, '', '', LOCALTIMESTAMP)
+	UPDATE users SET (login, account_type, email, password, deleted, address, phone_number, deletion_date)
+	= (NULL, NULL, NULL, NULL, TRUE, '', '', LOCALTIMESTAMP)
 	WHERE users.id = $1 AND users.password = $2;
 	
 	RETURN EXISTS (SELECT u.id from users u WHERE u.id = $1 AND u.deleted = TRUE);

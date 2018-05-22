@@ -44,6 +44,12 @@ namespace YakaTicket.Controllers
                 return View("NoEvent");
         }
 
+        public ActionResult ListEvent()
+        {
+
+            return View();
+        }
+
         [HttpPost]
         public ActionResult ModifyEvent(int? id, string name, string description, DateTime begin, DateTime end, string location,
                                         DateTime close, int externPlaces, int internPlaces, float externPrice, float internPrice,

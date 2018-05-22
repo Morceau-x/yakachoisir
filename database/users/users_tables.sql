@@ -48,7 +48,7 @@ CREATE TABLE users
 	deletion_date		TIMESTAMP							DEFAULT		NULL,
 
 	PRIMARY	KEY	(id),
-	UNIQUE		(account_type, login),
+	UNIQUE		(login),
 	FOREIGN	KEY	(account_type)	REFERENCES	account_types(name),
 	CHECK		(authority IN ('user', 'moderator', 'administrator'))
 );

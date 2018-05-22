@@ -121,7 +121,7 @@ namespace YakaTicket.Database
         private string BuildString(string function, int n)
         {
             var sb = new StringBuilder();
-            sb.Append("SELECT ");
+            sb.Append("SELECT * FROM ");
             sb.Append(function);
             sb.Append("(");
             for (int i = 1; i < n; i++)

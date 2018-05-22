@@ -38,5 +38,22 @@ namespace YakaTicket.Models
         //Optionnal
         public String PromotionPic { get; set; } = null;
 
+        public Event(int id, string name, string description, DateTime begin, DateTime end, string location, DateTime close, int externPlaces, int internPlaces, float externPrice, float internPrice, bool uniquePrice, bool leftPlaces, string promotionPic)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            Begin = begin;
+            End = end;
+            Location = location;
+            Close = close;
+            ExternPlaces = externPlaces;
+            InternPlaces = internPlaces;
+            ExternPrice = externPrice;
+            InternPrice = internPrice;
+            UniquePrice = uniquePrice;
+            LeftPlaces = leftPlaces;
+            PromotionPic = promotionPic;
+        }
     }
 }
