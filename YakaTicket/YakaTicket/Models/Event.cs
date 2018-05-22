@@ -38,6 +38,11 @@ namespace YakaTicket.Models
         //Optionnal
         public String PromotionPic { get; set; } = null;
 
+        public Event()
+        {
+
+        }
+
         public Event(int id, string name, string description, DateTime begin, DateTime end, string location, DateTime close, int externPlaces, int internPlaces, float externPrice, float internPrice, bool uniquePrice, bool leftPlaces, string promotionPic)
         {
             Id = id;

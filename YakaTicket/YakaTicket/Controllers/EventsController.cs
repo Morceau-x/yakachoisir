@@ -23,6 +23,7 @@ namespace YakaTicket.Controllers
             if (id.HasValue)
             {
                 Models.Event e = dalevent.GetAllEvents().FirstOrDefault(r => r.Id == id.Value);
+  
                 if (e == null)
                     return View("NoEvent");
                 return View(e);
@@ -80,9 +81,9 @@ namespace YakaTicket.Controllers
             {
                 /*dalevent.CreateEvent(e.Name, e.Description, e.Begin, e.End, e.Location, e.Close, e.ExternPlaces, e.InternPlaces,
                                      e.ExternPrice, e.InternPrice, e.UniquePrice, e.LeftPlaces, e.PromotionPic);*/
-                Database.Database.database.RequestVoid("INSERT INTO events",
-                                                       new List<Object> { e.Name, e.Description, false, e.Begin, e.End, "test", false,
-                                                       false, false, DateTime.Now, null});
+                Database.Database.database.RequestVoid("f_create_event",
+                                                       new List<Object> { 0 /* FIXME user_id*/, e.Name, e.Description, e.Begin,
+                                                       e.End, "test"});
                 return RedirectToAction("Home/Index");
             }
             else

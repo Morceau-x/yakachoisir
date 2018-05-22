@@ -52,11 +52,12 @@ namespace YakaTicket.Models
                                 int externPlaces, int internPlaces, float externPrice, float internPrice, bool uniquePrice,
                                 bool leftPlaces, String promotionPic)
         {
-            bdd.Events.Add(new Event { Name = name, Description = description, Begin = begin, End = end, Location = location,
+            /*
+            bdd.Events.Add(new Event { Id = 0, Name = name, Description = description, Begin = begin, End = end, Location = location,
                                        Close = close, ExternPlaces = externPlaces, InternPlaces = internPlaces, ExternPrice = externPrice,
                                        InternPrice = internPrice, UniquePrice = uniquePrice, LeftPlaces = leftPlaces,
                                        PromotionPic = promotionPic });
-            bdd.SaveChanges();
+            bdd.SaveChanges();*/
         }
     }
 }
