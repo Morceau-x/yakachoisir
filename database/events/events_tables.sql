@@ -64,7 +64,7 @@ CREATE TABLE participants
 	FOREIGN	KEY	(user_id)	REFERENCES	users(id)
 );
 
-CREATE TABLE modification_history
+CREATE TABLE event_modification_history
 (
 	id					SERIAL 				NOT NULL,
 

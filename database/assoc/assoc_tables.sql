@@ -14,8 +14,6 @@ CREATE TABLE schools
 
 CREATE TABLE assocs
 (
-	id					SERIAL				NOT NULL,
-
 	name				VARCHAR(1024),
 	summary				VARCHAR(8192)		NOT	NULL		DEFAULT	'',
 	school				VARCHAR(128)		NOT	NULL,
@@ -27,21 +25,19 @@ CREATE TABLE assocs
 	
 	president			INTEGER,
 
-	
-	PRIMARY	KEY	(id),
-	UNIQUE(name),
+	PRIMARY	KEY	(name),
 	FOREIGN	KEY	(president)	REFERENCES	users(id),
 	FOREIGN KEY	(school)	REFERENCES	schools(shortname)
 );
 
 CREATE TABLE members
 (
-	assoc				INTEGER				NOT NULL,
+	assoc				VARCHAR(1024)		NOT NULL,
 	member				INTEGER				NOT NULL,
 	desk				BOOLEAN				NOT NULL		DEFAULT FALSE,
 
 	PRIMARY	KEY	(assoc, member),
-	FOREIGN	KEY	(assoc)		REFERENCES	assocs(id),
+	FOREIGN	KEY	(assoc)		REFERENCES	assocs(name),
 	FOREIGN	KEY	(member)	REFERENCES	users(id)
 );
 

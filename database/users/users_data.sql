@@ -11,4 +11,4 @@ SELECT * FROM f_create_user('lee_o', 'ssap', 'email');
 SELECT * FROM f_create_user('pamart_a', 'decu', 'email');
 SELECT * FROM f_create_user('boulay_v', 'password', 'email');
 
-SELECT * FROM f_set_moderator(f_get_user_id('imtheboss'), f_get_user_id('lhermi_m'));
+SELECT * FROM f_set_moderator(f_id('imtheboss'), f_id('lhermi_m'));

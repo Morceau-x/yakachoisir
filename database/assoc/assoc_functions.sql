@@ -7,11 +7,11 @@ DROP FUNCTION IF EXISTS f_is_member(user_id INTEGER, name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_is_desk(user_id INTEGER, name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_is_president(user_id INTEGER, name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_is_superior(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_set_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_set_desk(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_remove_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_set_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_remove_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_set_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_set_desk(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_remove_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_set_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_remove_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
 
 /*********************
 ***** FUNCTIONS ******
@@ -42,7 +42,7 @@ BEGIN
 	END IF;
 
 	INSERT INTO assocs VALUES
-	(DEFAULT, name, summary, school, DEFAULT, DEFAULT, DEFAULT, NULL);
+	(name, summary, school, DEFAULT, DEFAULT, DEFAULT, NULL);
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
@@ -95,7 +95,7 @@ BEGIN
 	IF (EXISTS (SELECT * FROM assocs a WHERE a.name = $2 AND a.president = $1)) THEN
 		RETURN TRUE;
 	END IF;
-	RETURN EXISTS(SELECT * FROM members m JOIN assocs a ON m.assoc = a.id
+	RETURN EXISTS(SELECT * FROM members m JOIN assocs a ON m.assoc = a.name
 		WHERE m.member = $1 AND a.name = $2);
 EXCEPTION
 	WHEN OTHERS THEN
@@ -123,7 +123,7 @@ BEGIN
 	IF (EXISTS (SELECT * FROM assocs a WHERE a.name = $2 AND a.president = $1)) THEN
 		RETURN TRUE;
 	END IF;
-	RETURN EXISTS(SELECT * FROM members m JOIN assocs a ON m.assoc = a.id
+	RETURN EXISTS(SELECT * FROM members m JOIN assocs a ON m.assoc = a.name
 		WHERE m.member = $1 AND a.name = $2 AND m.desk = TRUE);
 EXCEPTION
 	WHEN OTHERS THEN
@@ -174,10 +174,10 @@ BEGIN
 	IF (f_is_moderator(user_id)) THEN
 		RETURN TRUE;
 	END IF;
-	IF (f_is_president(user_id)) THEN
+	IF (f_is_president(user_id, name)) THEN
 		RETURN TRUE;
 	END IF;
-	IF (f_is_desk(user_id) AND NOT f_is_desk(target_id)) THEN
+	IF (f_is_desk(user_id, name) AND NOT f_is_desk(target_id, name)) THEN
 		RETURN TRUE;
 	END IF;
 	RETURN FALSE;
@@ -205,12 +205,12 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 
-	IF (f_is_president(target_id)) THEN
+	IF (f_is_president(target_id, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 		INSERT INTO members VALUES ($3, $2, FALSE);
-	ELSIF (f_is_desk(target_id)) THEN
+	ELSIF (f_is_desk(target_id, name)) THEN
 		UPDATE members SET desk = FALSE WHERE members.member = $2 AND members.assoc = $3;
-	ELSIF (NOT f_is_member(target_id)) THEN
+	ELSIF (NOT f_is_member(target_id, name)) THEN
 		INSERT INTO members VALUES ($3, $2, FALSE);
 	END IF;
 	RETURN TRUE;
@@ -234,16 +234,16 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 	
-	IF (NOT f_is_superior(user_id, target_id, name) OR NOT f_is_president(user_id)) THEN
+	IF (NOT f_is_superior(user_id, target_id, name) OR NOT f_is_president(user_id, name)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_president(target_id)) THEN
+	IF (f_is_president(target_id, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 		INSERT INTO members VALUES ($3, $2, TRUE);
-	ELSIF (f_is_member(target_id)) THEN
+	ELSIF (f_is_member(target_id, name)) THEN
 		UPDATE members SET desk = TRUE WHERE members.member = $2 AND members.assoc = $3;
-	ELSIF (NOT f_is_desk(target_id)) THEN
+	ELSIF (NOT f_is_desk(target_id, name)) THEN
 		INSERT INTO members VALUES ($3, $2, TRUE);		
 	END IF;
 	RETURN TRUE;
@@ -271,9 +271,9 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_president(target_id)) THEN
+	IF (f_is_president(target_id, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
-	ELSIF (f_is_member(target_id)) THEN
+	ELSIF (f_is_member(target_id, name)) THEN
 		DELETE FROM members WHERE members.member = $2 AND members.assoc = $3;
 	END IF;
 	RETURN TRUE;
@@ -301,10 +301,10 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_member(target_id)) THEN
+	IF (f_is_member(target_id, name)) THEN
 		DELETE FROM members WHERE members.member = $2 AND members.assoc = $3;
 		UPDATE assocs SET president = $2 WHERE assocs.name = $3;
-	ELSEIF (NOT f_is_president(target_id)) THEN
+	ELSEIF (NOT f_is_president(target_id, name)) THEN
 		UPDATE assocs SET president = $2 WHERE assocs.name = $3;
 	END IF;
 	RETURN TRUE;
@@ -332,7 +332,7 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_president(target_id)) THEN
+	IF (f_is_president(target_id, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 	END IF;
 	RETURN TRUE;
