@@ -72,8 +72,11 @@ namespace YakaTicket.Controllers
 
             if (ModelState.IsValid) 
             {
-                dalevent.CreateEvent(e.Name, e.Description, e.Begin, e.End, e.Location, e.Close, e.ExternPlaces, e.InternPlaces,
-                                     e.ExternPrice, e.InternPrice, e.UniquePrice, e.LeftPlaces, e.PromotionPic);
+                /*dalevent.CreateEvent(e.Name, e.Description, e.Begin, e.End, e.Location, e.Close, e.ExternPlaces, e.InternPlaces,
+                                     e.ExternPrice, e.InternPrice, e.UniquePrice, e.LeftPlaces, e.PromotionPic);*/
+                Database.Database.database.RequestVoid("INSERT INTO events",
+                                                       new List<Object> { e.Name, e.Description, false, e.Begin, e.End, "test", false,
+                                                       false, false, DateTime.Now, null});
                 return RedirectToAction("Home/Index");
             }
             else
