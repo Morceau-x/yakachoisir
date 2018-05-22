@@ -10,6 +10,8 @@ namespace YakaTicket.Database
 {
     public class Database
     {
+        public static Database database = new Database();
+
         NpgsqlConnection connection;
 
         public Database()
@@ -29,6 +31,13 @@ namespace YakaTicket.Database
         {
             var command = BuildCommand(function, args);
             bool resp = (bool)command.ExecuteScalar();
+            return resp;
+        }
+
+        public int RequestInteger(string function, params object[] args)
+        {
+            var command = BuildCommand(function, args);
+            int resp = (int)command.ExecuteScalar();
             return resp;
         }
 
