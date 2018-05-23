@@ -1,8 +1,9 @@
 package fr.epita.yakaappli
 
+import java.io.Serializable
 import java.util.jar.Attributes
 
-class Event{
+class Event : Serializable {
     public var name = "NoEvent"
     public var id = 0
 

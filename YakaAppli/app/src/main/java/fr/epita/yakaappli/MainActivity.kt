@@ -8,9 +8,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
+    var le = EventList(ArrayList())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        test()
 
         btn_connect.setOnClickListener(this@MainActivity)
     }
@@ -20,14 +24,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             when (clickedView.id) {
                 R.id.btn_connect -> {
                     val explicitIntent = Intent(this@MainActivity, EventsActivity::class.java)
-                    val message = "Identifiant"
-                    explicitIntent.putExtra("ID", message)
+                    explicitIntent.putExtra("List", le)
                     startActivity(explicitIntent)
                 }
                 else -> {
                 }
             }
         }
+    }
+
+    fun test() {
+        le.add_event(Event("Test1",2))
+        le.add_event(Event("Test42",1))
+        le.add_event(Event("Test51",3))
+        le.add_event(Event("Test20",2))
+        le.add_event(Event("Test21",1))
+        le.add_event(Event("Test22",3))
+        le.add_event(Event("Test23",2))
+        le.add_event(Event("Test24",1))
+        le.add_event(Event("Test25",3))
     }
 
 }

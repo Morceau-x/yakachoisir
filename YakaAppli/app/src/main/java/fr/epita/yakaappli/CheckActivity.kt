@@ -16,7 +16,8 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
 
         btn_scan.setOnClickListener(this@CheckActivity)
         val originIntent = intent
-        val id = originIntent.getStringExtra("ID")
+        val e  = originIntent.getSerializableExtra("Event") as Event
+        event_name.setText(e.name)
     }
 
     var scanIntegrator = IntentIntegrator(this)

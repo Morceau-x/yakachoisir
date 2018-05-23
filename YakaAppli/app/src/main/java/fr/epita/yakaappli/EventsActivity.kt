@@ -27,9 +27,9 @@ class EventsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_events)
 
         val originIntent = intent
-        originIntent.getStringExtra("ID")
+        val le = originIntent.getSerializableExtra("List") as EventList
+        events = le.event_list
 
-        test()
 
         for (e in events) {
             val linearLayout : LinearLayout = findViewById(R.id.rootContainer);
@@ -40,8 +40,7 @@ class EventsActivity : AppCompatActivity() {
             btnShow.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v : View) {
                     val explicitIntent = Intent(this@EventsActivity, CheckActivity::class.java)
-                    val message = e.name
-                    explicitIntent.putExtra("ID", message)
+                    explicitIntent.putExtra("Event", e)
                     startActivity(explicitIntent)
                 }
             })
@@ -51,15 +50,4 @@ class EventsActivity : AppCompatActivity() {
         }
     }
 
-    fun test() {
-        events.add(Event("Test1",2))
-        events.add(Event("Test42",1))
-        events.add(Event("Test51",3))
-        events.add(Event("Test20",2))
-        events.add(Event("Test21",1))
-        events.add(Event("Test22",3))
-        events.add(Event("Test23",2))
-        events.add(Event("Test24",1))
-        events.add(Event("Test25",3))
-    }
 }
