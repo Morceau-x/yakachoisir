@@ -11,7 +11,7 @@ namespace YakaTicket.Tools
 {
     public class PDFCreator
     {
-        public static void createPDF()
+        public static void exportAsPDF()
         {
             Document doc = new Document(iTextSharp.text.PageSize.A4, 10, 10, 42, 42);
             PdfWriter pdf = PdfWriter.GetInstance(doc, new FileStream("Test.pdf", FileMode.Create));
