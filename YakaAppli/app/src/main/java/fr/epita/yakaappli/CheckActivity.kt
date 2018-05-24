@@ -23,15 +23,15 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
     var scanIntegrator = IntentIntegrator(this)
 
     override fun onClick(clickedView: View?) {
-        if (clickedView != null) {
-            when (clickedView.id) {
-                R.id.btn_scan -> {
-                    scanIntegrator.setOrientationLocked(false)
-                    scanIntegrator.initiateScan()
-                }
-                else -> {
-                }
-            }
+                if (clickedView != null) {
+                    when (clickedView.id) {
+                        R.id.btn_scan -> {
+                            scanIntegrator.setOrientationLocked(false)
+                            scanIntegrator.initiateScan()
+                        }
+                        else -> {
+                        }
+                    }
         }
     }
 

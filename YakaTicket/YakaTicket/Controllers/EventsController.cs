@@ -36,7 +36,11 @@ namespace YakaTicket.Controllers
         {
             if (id.HasValue)
             {
-                Models.Event e = dalevent.GetAllEvents().FirstOrDefault(r => r.Id == id.Value);
+                Database.DataEvent de = (Database.DataEvent)Database.Database.database.RequestObject("f_get_event",
+                                                                                  new List<Object> { 0 /* FIXME user_id*/, id });
+                /* FIXME replace "test" by real value */
+                Models.Event e = new Models.Event(de.Id, de.name, de.summary, de.begin_date, de.end_date, "test", de.end_date /*FIXME*/,
+                                                  0, 0, 0, 0, false, false, "test");
                 if (e == null)
                     return View("NoEvent");
                 return View(e);
@@ -58,9 +62,7 @@ namespace YakaTicket.Controllers
         {
             if (id.HasValue)
             {
-                Models.DalEvent dalevent = new Models.DalEvent();
-                dalevent.ModifyEvent(id.Value, name, description, begin, end, location, close, externPlaces, internPlaces, externPrice,
-                                     internPrice, uniquePrice, leftPlace, promotionPic);
+                /* FIXME Edit event */
                 return RedirectToAction("Home/Index");
             }
             else
