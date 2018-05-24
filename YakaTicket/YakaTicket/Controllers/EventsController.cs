@@ -22,8 +22,13 @@ namespace YakaTicket.Controllers
         {
             if (id.HasValue)
             {
-                Models.Event e = dalevent.GetAllEvents().FirstOrDefault(r => r.Id == id.Value);
-  
+                //Models.Event e = dalevent.GetAllEvents().FirstOrDefault(r => r.Id == id.Value);
+                Models.Event e = null
+                if(id == 0)
+                {
+                    e = new Models.Event(0, "test", "event test", DateTime.Now, DateTime.Now, "Villejuif", DateTime.Now, 200, 250, 2.0f, 0.0f,
+                        false, true, "no");
+                        }
                 if (e == null)
                     return View("NoEvent");
                 return View(e);
@@ -51,7 +56,6 @@ namespace YakaTicket.Controllers
 
         public ActionResult ListEvent()
         {
-
             return View();
         }
 
