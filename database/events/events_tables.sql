@@ -15,16 +15,19 @@ CREATE TABLE events
 
 	/* Association */
 	assoc				VARCHAR(128)		NOT NULL,
-
+	creator				VARCHAR(256)		NOT NULL,
+	
 	/* Administration */
 	moderator_approved		BOOLEAN			NOT NULL		DEFAULT FALSE,
 	president_approved		BOOLEAN			NOT NULL		DEFAULT FALSE,
 	deleted					BOOLEAN			NOT NULL		DEFAULT FALSE,
-	creation_date			TIMESTAMP		NOT NULL,
-	deletion_date			TIMESTAMP,
+	creation_date			TIMESTAMP		NOT NULL		DEFAULT	LOCALTIMESTAMP,
+	deletion_date			TIMESTAMP						DEFAULT	NULL,
 
 	PRIMARY	KEY	(id),
-	FOREIGN	KEY	(assoc)	REFERENCES	assocs(name)
+	UNIQUE (name),
+	FOREIGN	KEY	(assoc)	REFERENCES	assocs(name),
+	FOREIGN KEY (creator) REFERENCES users(login)
 );
 
 CREATE TABLE prices

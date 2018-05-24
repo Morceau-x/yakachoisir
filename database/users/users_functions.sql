@@ -32,33 +32,29 @@ DROP FUNCTION IF EXISTS f_id(login VARCHAR(256));
 *** CREATE ACCOUNT ***
 *********************/
 CREATE OR REPLACE FUNCTION f_create_user(login VARCHAR(256), password VARCHAR(256), email VARCHAR(256))
-RETURNS INTEGER AS
+RETURNS BOOLEAN AS
 $$
-DECLARE
-	id INTEGER;
 BEGIN
 	IF (login IS NULL OR password IS NULL OR email IS NULL) THEN
-		RETURN NULL;
+		RETURN FALSE;
 	END IF;
 	INSERT INTO users VALUES
 	(DEFAULT, DEFAULT, login, email, DEFAULT, password, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
-	SELECT u.id INTO id FROM users u
-	WHERE u.login = $1 AND u.account_type = 'regular';
-	RETURN id;
+	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
-		RETURN NULL;
+		RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 
 /*********************
 *** DELETE ACCOUNT ***
 *********************/
-CREATE OR REPLACE FUNCTION f_delete_user(id INTEGER, password VARCHAR(256))
+CREATE OR REPLACE FUNCTION f_delete_user(login VARCHAR(256), password VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (id IS NULL OR password IS NULL) THEN
+	IF (login IS NULL OR password IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	
@@ -79,17 +75,11 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION f_regular_connect(login VARCHAR(256), password VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
-DECLARE
-	id INTEGER;
 BEGIN
 	IF (login IS NULL OR password IS NULL) THEN
 		RETURN FALSE;
 	END IF;
-	
-	SELECT u.id INTO id FROM users u
-	WHERE $1 = u.login AND $2 = u.password AND u.account_type = 'regular';
-	
-	RETURN TRUE;
+	RETURN 	EXISTS (SELECT * FROM users u WHERE $1 = u.login AND $2 = u.password AND u.account_type = 'regular');
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -109,16 +99,12 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 	
-	SELECT u.id INTO id FROM users u
-	WHERE $1 = u.login AND u.account_type = 'epita';
-	
-	IF (id IS NOT NULL) THEN
+	IF (EXISTS (SELECT * FROM users u WHERE $1 = u.login AND u.account_type = 'epita')) THEN
 		RETURN TRUE;
 	END IF;
 	
 	INSERT INTO users (account_type, login) VALUES ('epita', login);
-	SELECT u.id INTO id FROM users u
-	WHERE u.login = $1 AND u.account_type = 'epita';
+
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
@@ -129,18 +115,18 @@ $$ LANGUAGE plpgsql;
 /*********************
 ***** CHANGE PASS ****
 **********************/
-CREATE OR REPLACE FUNCTION f_change_password(id INTEGER, old_pass VARCHAR(256), new_pass VARCHAR(256))
+CREATE OR REPLACE FUNCTION f_change_password(login VARCHAR(256), old_pass VARCHAR(256), new_pass VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (id IS NULL OR old_pass IS NULL OR new_pass IS NULL OR old_pass = new_pass) THEN
+	IF (login IS NULL OR old_pass IS NULL OR new_pass IS NULL OR old_pass = new_pass) THEN
 		RETURN FALSE;
 	END IF;
 
 	UPDATE users SET password = $3	
-	WHERE users.id = $1 AND users.password = $2 AND users.account_type = 'regular';
+	WHERE users.login = $1 AND users.password = $2 AND users.account_type = 'regular';
 
-	RETURN EXISTS(SELECT * FROM users u WHERE u.id = $1 AND u.password = $3);
+	RETURN EXISTS(SELECT * FROM users u WHERE u.login = $1 AND u.password = $3);
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -150,18 +136,18 @@ $$ LANGUAGE plpgsql;
 /*********************
 **** CHANGE EMAIL ****
 **********************/
-CREATE OR REPLACE FUNCTION f_change_email(id INTEGER, old_email VARCHAR(256), new_email VARCHAR(256))
+CREATE OR REPLACE FUNCTION f_change_email(login VARCHAR(256), old_email VARCHAR(256), new_email VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (id IS NULL OR old_email IS NULL OR new_email IS NULL OR old_email = new_email) THEN
+	IF (login IS NULL OR old_email IS NULL OR new_email IS NULL OR old_email = new_email) THEN
 		RETURN FALSE;
 	END IF;
 
-	UPDATE users SET email = $3
-	WHERE users.id = $1 AND users.email = $2 AND users.account_type = 'regular';
+	UPDATE users SET (email, email_verified) = ($3, FALSE)
+	WHERE users.login = $1 AND users.email = $2 AND users.account_type = 'regular';
 
-	RETURN EXISTS(SELECT * FROM users u WHERE u.id = $1 AND u.email = $3);
+	RETURN EXISTS(SELECT * FROM users u WHERE u.login = $1 AND u.email = $3);
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -171,12 +157,12 @@ $$ LANGUAGE plpgsql;
 /*********************
 **** IS MODERATOR ****
 **********************/
-CREATE OR REPLACE FUNCTION f_is_moderator(id INTEGER)
+CREATE OR REPLACE FUNCTION f_is_moderator(login VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
 BEGIN
 	RETURN EXISTS(	SELECT * FROM users u
-					WHERE u.id = $1 AND (u.authority = 'moderator' OR u.authority = 'administrator'));
+					WHERE u.login = $1 AND (u.authority = 'moderator' OR u.authority = 'administrator'));
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -186,11 +172,11 @@ $$ LANGUAGE plpgsql;
 /*********************
 ** IS ADMINISTRATOR **
 **********************/
-CREATE OR REPLACE FUNCTION f_is_administrator(id INTEGER)
+CREATE OR REPLACE FUNCTION f_is_administrator(login VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	RETURN EXISTS(SELECT * FROM users u WHERE u.id = $1 AND u.authority = 'administrator');
+	RETURN EXISTS(SELECT * FROM users u WHERE u.login = $1 AND u.authority = 'administrator');
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -200,15 +186,15 @@ $$ LANGUAGE plpgsql;
 /*********************
 **** SET MODERATOR ***
 **********************/
-CREATE OR REPLACE FUNCTION f_set_moderator(id INTEGER, target INTEGER)
+CREATE OR REPLACE FUNCTION f_set_moderator(login VARCHAR(256), target VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (NOT EXISTS(SELECT * FROM users u WHERE u.id = $1 AND u.authority = 'administrator')) THEN
+	IF (NOT EXISTS(SELECT * FROM users u WHERE u.login = $1 AND u.authority = 'administrator')) THEN
 		RETURN FALSE;
 	END IF;
 	
-	UPDATE users SET authority = 'moderator' WHERE users.id = target;
+	UPDATE users SET authority = 'moderator' WHERE users.login = target;
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
@@ -219,15 +205,15 @@ $$ LANGUAGE plpgsql;
 /*********************
 **** RM MODERATOR ****
 **********************/
-CREATE OR REPLACE FUNCTION f_remove_moderator(id INTEGER, target INTEGER)
+CREATE OR REPLACE FUNCTION f_remove_moderator(login VARCHAR(256), target VARCHAR(256))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (NOT EXISTS(SELECT * FROM users u WHERE u.id = $1 AND u.authority = 'administrator')) THEN
+	IF (NOT EXISTS(SELECT * FROM users u WHERE u.login = $1 AND u.authority = 'administrator')) THEN
 		RETURN FALSE;
 	END IF;
 	
-	UPDATE users SET authority = 'user' WHERE users.id = target;
+	UPDATE users SET authority = 'user' WHERE users.login = target;
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
