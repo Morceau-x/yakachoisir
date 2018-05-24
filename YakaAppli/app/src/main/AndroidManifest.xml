@@ -19,8 +19,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CheckActivity" />
-        <activity android:name=".EventsActivity"></activity>
+        <activity android:name=".CheckActivity"
+            android:label="@string/app_title"
+            android:fontFamily="@font/raleway_extrabold"
+            android:textColor="@color/colorBlank">
+        </activity>
+        <activity android:name=".EventsActivity"
+            android:label="@string/app_title"
+            android:fontFamily="@font/raleway_extrabold"
+            android:textColor="@color/colorBlank">
+        </activity>
     </application>
 
 </manifest>
