@@ -12,16 +12,20 @@ namespace YakaTicket.Tools
     public class XLSCreator
     {
 
-        public static void exportAsXLS()
+        public static void exportAsXLS(string path, string filename)
         {
+            object miss = Type.Missing;
             XLS app = new Excel.Application();
-            Workbook wb = app.Workbooks.Add(Type.Missing);
-            Worksheet ws = null;
-            ws = wb.Sheets[0];
-            ws = wb.Sheets["Sheet1"];
+            app.DisplayAlerts = false;
+            app.Visible = false;
+            Workbook wb = app.Workbooks.Add(miss);
+            Worksheet ws = (Worksheet)wb.Sheets[1];
+            //ws = wb.Sheets[0];
+            //ws = wb.Sheets["Sheet1"];
             ws = wb.ActiveSheet;
             ws.Name = "Detail";
 
+            /*
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -29,8 +33,10 @@ namespace YakaTicket.Tools
                     ws.Cells[i, j] = "i = " + i.ToString() + "j = " + j.ToString();
                 }
             }
-
-            wb.SaveAs("Test", "xls", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive);
+            */
+            wb.SaveAs(path + filename);
+            wb.Close();
+            //wb.SaveAs(path + filename, "xls", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive);
             app.Quit();
         }
 

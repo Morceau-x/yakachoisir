@@ -19,7 +19,7 @@ namespace YakaTicket.Tools
         public int Priority { get; set; } = 0;
 
 
-        public void exportAsICS()
+        public string exportAsICS()
         {
             //create a new stringbuilder instance
             StringBuilder sb = new StringBuilder();
@@ -63,7 +63,7 @@ namespace YakaTicket.Tools
 
             //create a string from the stringbuilder
             string CalendarItem = sb.ToString();
-
+            return CalendarItem;
             //send the calendar item to the browser
             /*
             Response.ClearHeaders();

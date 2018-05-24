@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Drawing;
 using ZXing;
 
 namespace YakaTicket.Tools
 {
     public class QRCode
     {
-        BarcodeWriter _barcode = null;
-
-        QRCode()
+        public static Bitmap getImage()
         {
-            _barcode = new BarcodeWriter();
-        }
-
-        public void Write()
-        {
-            _barcode.Format = BarcodeFormat.QR_CODE;
-            _barcode.Write("test").Save("test.bmp");
+            BarcodeWriter barcode = null;
+            barcode = new BarcodeWriter();
+            barcode.Format = BarcodeFormat.QR_CODE;
+            return barcode.Write("test");
         }
     }
 }
