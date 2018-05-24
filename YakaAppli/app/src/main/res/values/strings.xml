@@ -11,4 +11,5 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="ticketId">Id du billet</string>
+    <string name="validation">Validation</string>
 </resources>
