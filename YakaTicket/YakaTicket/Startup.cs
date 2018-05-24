@@ -9,6 +9,7 @@ namespace YakaTicket
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            Database.Database.database = new Database.Database();
         }
     }
 }

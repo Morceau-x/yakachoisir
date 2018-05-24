@@ -49,6 +49,7 @@ CREATE TABLE users
 
 	PRIMARY	KEY	(id),
 	UNIQUE		(login),
+	UNIQUE		(email),
 	FOREIGN	KEY	(account_type)	REFERENCES	account_types(name),
 	CHECK		(authority IN ('user', 'moderator', 'administrator'))
 );

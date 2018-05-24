@@ -4,20 +4,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace YakaTicket.Database
 {
     public class Database
     {
-        public static Database database = new Database();
+        public static Database database;
 
         NpgsqlConnection connection;
 
         public Database()
         {
-            string jsonFile = File.ReadAllText("config.json");
-            dynamic json = JsonConvert.DeserializeObject(jsonFile);
+            string file;
+
+            try
+            {
+                Assembly _assembly = Assembly.GetExecutingAssembly();
+                StreamReader jsonFile = new StreamReader(_assembly.GetManifestResourceStream("YakaTicket.config.json"));
+                file = jsonFile.ReadToEnd();
+            } catch (Exception e)
+            {
+                file = String.Empty;
+            }
+
+            dynamic json = JsonConvert.DeserializeObject(file);
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("Host={0}; ", json.database.host);
             sb.AppendFormat("Port={0}; ", json.database.port);
@@ -25,6 +37,7 @@ namespace YakaTicket.Database
             sb.AppendFormat("Username={0}; ", json.database.username);
             sb.AppendFormat("Password={0}", json.database.password);
             this.connection = new NpgsqlConnection(sb.ToString());
+            this.connection.Open();
         }
 
         public bool RequestBoolean(string function, params object[] args)
@@ -107,35 +120,41 @@ namespace YakaTicket.Database
 
         private NpgsqlCommand BuildCommand(string function, params object[] args)
         {
-            string cmd = BuildString(function, args.Length);
+            string cmd = BuildString(function, args);
             NpgsqlCommand command = new NpgsqlCommand(cmd, connection);
 
-            for (int i = 0; i < args.Length; i++)
-            {
-                command.Parameters.AddWithValue("@p" + (i - 1), args[i]);
-            }
-
+            string text = command.CommandText;
             return command;
         }
 
-        private string BuildString(string function, int n)
+        private string BuildString(string function, object[] args)
         {
+            int n = args.Length;
             var sb = new StringBuilder();
             sb.Append("SELECT * FROM ");
             sb.Append(function);
             sb.Append("(");
-            for (int i = 1; i < n; i++)
+            for (int i = 0; i < n - 1; i++)
             {
-                sb.Append("@p");
-                sb.Append(i);
+                sb.Append(MakeParam(args[i]));
                 sb.Append(",");
             }
             if (n > 0)
-            {
-                sb.Append("@p");
-                sb.Append(n);
-            }
+                sb.Append(MakeParam(args[n - 1]));
             sb.Append(");");
+            return sb.ToString();
+        }
+
+        private string MakeParam(object arg)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (arg is string)
+                sb.Append('\'');
+            string str = arg.ToString().Replace("'", string.Empty);
+            sb.Append(str);
+            if (arg is string)
+                sb.Append('\'');
+
             return sb.ToString();
         }
     }

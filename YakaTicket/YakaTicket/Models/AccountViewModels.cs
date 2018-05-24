@@ -49,9 +49,8 @@ namespace YakaTicket.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Adresse mail")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "Pseudonyme")]
+        public string Pseudo { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -68,6 +67,11 @@ namespace YakaTicket.Models
         [EmailAddress]
         [Display(Name = "Adresse mail")]
         public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "Pseudonyme")]
+        [EmailAddress]
+        public string Pseudo { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]

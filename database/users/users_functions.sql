@@ -89,7 +89,7 @@ BEGIN
 	SELECT u.id INTO id FROM users u
 	WHERE $1 = u.login AND $2 = u.password AND u.account_type = 'regular';
 	
-	RETURN id;
+	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -100,29 +100,29 @@ $$ LANGUAGE plpgsql;
 **** EPITA CONNECT ***
 **********************/
 CREATE OR REPLACE FUNCTION f_epita_connect(login VARCHAR(256))
-RETURNS INTEGER AS
+RETURNS BOOLEAN AS
 $$
 DECLARE
 	id INTEGER;
 BEGIN
 	IF (login IS NULL) THEN
-		RETURN NULL;
+		RETURN FALSE;
 	END IF;
 	
 	SELECT u.id INTO id FROM users u
 	WHERE $1 = u.login AND u.account_type = 'epita';
 	
 	IF (id IS NOT NULL) THEN
-		RETURN id;
+		RETURN TRUE;
 	END IF;
 	
 	INSERT INTO users (account_type, login) VALUES ('epita', login);
 	SELECT u.id INTO id FROM users u
 	WHERE u.login = $1 AND u.account_type = 'epita';
-	RETURN id;
+	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
-		RETURN NULL;
+		RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 
