@@ -31,12 +31,10 @@
                         {<li>@Html.ActionLink("Evenements", "ListEvent", "Events")</li>}
                          <li>
                              @using (Html.BeginForm("ListEvent", "Events", FormMethod.Get))
-    {
-                            <ul class="nav navbar-nav">
-                                <li>@Html.TextBox("name", ViewBag.CurrentFilter as string)</li>
-                                <li><input type="submit" value="Rechercher" /></li>
-                            </ul>
-}
+                             {
+                                 @Html.TextBox("name", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+                             <input class = "form-control btn-primary" type="submit" value="Rechercher" style="float: left"/>
+                             }
                          </li>
                 </ul>
                 @Html.Partial("_LoginPartial")
