@@ -8,6 +8,12 @@
 @using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
+    <form asp-controller="Events" asp-action="ListEvent">
+        <p>
+            Evènement: <input type="text" name="name">
+            <input type="submit" value="Filtrer"/>
+        </p>
+    </form>
     foreach (string e in ViewBag.list)
     {
 
@@ -17,5 +23,5 @@
 }
 else
 {
-        <h3> Il faut être connecté pour faire ça.</h3>
+    <h3> Il faut être connecté pour faire ça.</h3>
 }

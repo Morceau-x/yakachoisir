@@ -327,3 +327,9 @@ proguard.cfg
 
 #Android
 *.keystore
+
+
+#Misc
+*.pdf
+*.ics
+*.xls*
