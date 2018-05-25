@@ -50,6 +50,7 @@ namespace YakaTicket.Controllers
         {
             ViewBag.list = new List<string>();
             List<string> events = DalEvent.GetAllEvents();
+            List<Event> eventList = new List<Event>();
             string name = Request.QueryString["name"];
             if (name != null && name != "")
             {
@@ -66,6 +67,27 @@ namespace YakaTicket.Controllers
                 if (events != null)
                     ViewBag.list = events;
             }
+            foreach (string s in ViewBag.list)
+            {
+                Event e = new Event();
+                e.Name = s;
+                try
+                {
+                    object[] row = Database.Database.database.RequestLine("f_get_event", 6, s);
+                    if (row != null)
+                    {
+                        e.Description = (string)row[0];
+                        e.Begin = (DateTime)row[2];
+                        e.End = (DateTime)row[3];
+                        e.Assoc = (string)row[4];
+                        e.Owner = (string)row[5];
+                    }
+                }
+                catch (Exception ex)
+                { }
+                eventList.Add(e);
+            }
+            ViewBag.list = eventList;
             return View();
         }
 

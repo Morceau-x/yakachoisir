@@ -11,15 +11,29 @@
     <form asp-controller="Events" asp-action="ListEvent">
         <p>
             Evènement: <input type="text" name="name">
-            <input type="submit" value="Filtrer"/>
+            <input type="submit" value="Filtrer" />
         </p>
     </form>
-    foreach (string e in ViewBag.list)
-    {
 
-        <h3>@Html.ActionLink("Event " + n + " : " + e, "ViewEvent", "Events", new { name = e }, null) </h3>
-        n++;
-    }
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Nom</th>
+                <th>Association</th>
+                <th>Date Début</th>
+                <th>Date de fin</th>
+            </tr>
+            @foreach (YakaTicket.Models.Event e in ViewBag.list)
+            {
+            <tr>
+                <td>@e.Name</td>
+                <td>@e.Assoc</td>
+                <td>@e.Begin</td>
+                <td>@e.End</td>
+                <td>@Html.ActionLink("détails", "ViewEvent", "Events", new { name = e.Name }, null)</td>
+            </tr>
+            }
+
+        </table>
 }
 else
 {
