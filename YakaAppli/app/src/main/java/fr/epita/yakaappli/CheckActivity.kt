@@ -43,7 +43,7 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
             if(scanningResult.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this, "Scanned: " + scanningResult.getContents(), Toast.LENGTH_LONG).show()
+                ticket.setText(scanningResult.getContents())
             }
         }
         else{
