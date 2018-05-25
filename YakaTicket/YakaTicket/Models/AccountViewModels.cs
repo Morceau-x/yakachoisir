@@ -53,7 +53,7 @@ namespace YakaTicket.Models
         public string Pseudo { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
+        //[DataType(DataType.Password)]
         [Display(Name = "Mot de passe")]
         public string Password { get; set; }
 
@@ -70,16 +70,15 @@ namespace YakaTicket.Models
 
         [Required]
         [Display(Name = "Pseudonyme")]
-        [EmailAddress]
         public string Pseudo { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
+        //[StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]
+        //[DataType(DataType.Password)]
         [Display(Name = "Mot de passe")]
         public string Password { get; set; }
 
-        [DataType(DataType.Password)]
+        //[DataType(DataType.Password)]
         [Display(Name = "Confirmation mot de passe")]
         [Compare("Password", ErrorMessage = "Le mot de passe et la confirmations sont différents.")]
         public string ConfirmPassword { get; set; }
@@ -93,12 +92,12 @@ namespace YakaTicket.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
+        //[StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]
+        //[DataType(DataType.Password)]
         [Display(Name = "Mot de passe")]
         public string Password { get; set; }
 
-        [DataType(DataType.Password)]
+        //[DataType(DataType.Password)]
         [Display(Name = "Confirmation mot de passe")]
         [Compare("Password", ErrorMessage = "Le mot de passe et la confirmations sont différents.")]
         public string ConfirmPassword { get; set; }

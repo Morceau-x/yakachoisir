@@ -14,7 +14,7 @@ CREATE TABLE events
 	end_date			TIMESTAMP			NOT NULL,
 
 	/* Association */
-	assoc				VARCHAR(128)		NOT NULL,
+	assoc				VARCHAR(1024)		NOT NULL,
 	creator				VARCHAR(256)		NOT NULL,
 	
 	/* Administration */
@@ -32,46 +32,48 @@ CREATE TABLE events
 
 CREATE TABLE prices
 (
-	event_id			INTEGER				NOT NULL,
-	price_name			VARCHAR(128)		NOT NULL,
+	event				VARCHAR(1024)		NOT NULL,
+	price_name			VARCHAR(1024)		NOT NULL,
 	price_value			REAL				NOT NULL,
+	max_number			INTEGER				NOT NULL,
 	
 	assoc_only			BOOLEAN				NOT NULL		DEFAULT FALSE,
 	epita_only			BOOLEAN				NOT NULL		DEFAULT FALSE,
+	ionis_only			BOOLEAN				NOT NULL		DEFAULT FALSE,
 
-	PRIMARY KEY (event_id, price_name),
-	FOREIGN	KEY	(event_id)	REFERENCES	events(id)
+	PRIMARY KEY (event, price_name),
+	FOREIGN	KEY	(event)	REFERENCES	events(name)
 );
 
 CREATE TABLE partners
 (
-	event_id			INTEGER				NOT NULL,
-	assoc				VARCHAR(128)		NOT NULL,
+	event				VARCHAR(1024)		NOT NULL,
+	assoc				VARCHAR(1024)		NOT NULL,
 
-	PRIMARY	KEY	(event_id, assoc),
+	PRIMARY	KEY	(event, assoc),
 	FOREIGN	KEY	(assoc)	REFERENCES	assocs(name),
-	FOREIGN	KEY	(event_id)	REFERENCES	events(id)
+	FOREIGN	KEY	(event)	REFERENCES	events(name)
 );
 
 CREATE TABLE participants
 (
 	id					SERIAL				NOT NULL,
-	event_id			INTEGER				NOT NULL,
-	user_id				INTEGER				NOT NULL,
+	event				VARCHAR(1024)		NOT NULL,
+	login				VARCHAR(256)		NOT NULL,
 	staff				BOOLEAN				NOT NULL,
 	validated			BOOLEAN				NOT NULL		DEFAULT FALSE,
 
 	PRIMARY KEY (id),
-	UNIQUE	(event_id, user_id),
-	FOREIGN	KEY	(event_id)	REFERENCES	events(id),
-	FOREIGN	KEY	(user_id)	REFERENCES	users(id)
+	UNIQUE	(event, login),
+	FOREIGN	KEY	(event)	REFERENCES	events(name),
+	FOREIGN	KEY	(login)	REFERENCES	users(login)
 );
 
 CREATE TABLE event_modification_history
 (
 	id					SERIAL 				NOT NULL,
 
-	event_id			INTEGER				NOT NULL,
+	event				VARCHAR(1024)		NOT NULL,
 	modification_time	TIMESTAMP			NOT NULL		DEFAULT		LOCALTIMESTAMP,
 	modification_type	VARCHAR(1024)		NOT NULL		DEFAULT		'Event informations changed.',
 
@@ -82,8 +84,8 @@ CREATE TABLE payment_history
 (
 	id					SERIAL 				NOT NULL,
 
-	user_id				INTEGER				NOT NULL,
-	event_id			INTEGER				NOT NULL,
+	login				VARCHAR(256)		NOT NULL,
+	event				VARCHAR(1024)		NOT NULL,
 	payment_date		TIMESTAMP			NOT NULL		DEFAULT		LOCALTIMESTAMP,
 	amount				REAL				NOT NULL,
 

@@ -1,96 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using YakaTicket.Models;
 
 namespace YakaTicket.Controllers
 {
     public class EventsController : Controller
     {
 
-        Models.DalEvent dalevent = new Models.DalEvent();
-
-        public ActionResult Index()
+        public RedirectToRouteResult Index()
         {
-            if (dalevent == null || dalevent.GetAllEvents() == null)
-                return View("CreateEvent");
-            return View();
+            string name = Request.QueryString["name"];
+            if (name != null && name != "")
+                return RedirectToAction("ViewEvent", "Events", new { name });
+            else
+                return RedirectToAction("ListEvent", "Events");
         }
 
-        public ActionResult ViewEvent(int? id)
+        public ActionResult ViewEvent()
         {
-            if (id.HasValue)
+            string name = Request.QueryString["name"];
+            if (name != null && name != "")
             {
-                //Models.Event e = dalevent.GetAllEvents().FirstOrDefault(r => r.Id == id.Value);
-                Models.Event e = null
-                if(id == 0)
+                Event e = new Event();
+                e.Name = name;
+                try
                 {
-                    e = new Models.Event(0, "test", "event test", DateTime.Now, DateTime.Now, "Villejuif", DateTime.Now, 200, 250, 2.0f, 0.0f,
-                        false, true, "no");
-                        }
-                if (e == null)
-                    return View("NoEvent");
+                    object[] row = Database.Database.database.RequestLine("f_get_event", 6, name);
+                    if (row != null)
+                    {
+                        e.Description = (string)row[0];
+                        e.Begin = (DateTime)row[2];
+                        e.End = (DateTime)row[3];
+                        e.Assoc = (string)row[4];
+                        e.Owner = (string)row[5];
+                    }
+                }
+                catch (Exception ex)
+                { }
                 return View(e);
             }
-            else
-                return View("NoEvent");
-        }
-
-        public ActionResult ModifyEvent(int? id)
-        {
-            if (id.HasValue)
-            {
-                Database.DataEvent de = (Database.DataEvent)Database.Database.database.RequestObject("f_get_event",
-                                                                                  new List<Object> { 0 /* FIXME user_id*/, id });
-                /* FIXME replace "test" by real value */
-                Models.Event e = new Models.Event(de.Id, de.name, de.summary, de.begin_date, de.end_date, "test", de.end_date /*FIXME*/,
-                                                  0, 0, 0, 0, false, false, "test");
-                if (e == null)
-                    return View("NoEvent");
-                return View(e);
-            }
-            else
-                return View("NoEvent");
+            return RedirectToAction("ListEvent", "Events");
         }
 
         public ActionResult ListEvent()
         {
+            ViewBag.list = DalEvent.GetAllEvents();
+            if (ViewBag.list == null)
+                ViewBag.list = new List<string>();
             return View();
         }
 
-        [HttpPost]
-        public ActionResult ModifyEvent(int? id, string name, string description, DateTime begin, DateTime end, string location,
-                                        DateTime close, int externPlaces, int internPlaces, float externPrice, float internPrice,
-                                        bool uniquePrice, bool leftPlace, String promotionPic)
+        public ActionResult ModifyEvent()
         {
-            if (id.HasValue)
+            string name = Request.QueryString["name"];
+            if (name != null && name != "")
             {
-                /* FIXME Edit event */
-                return RedirectToAction("Home/Index");
+                Event e = new Event();
+                e.Name = name;
+                try
+                {
+                    object[] row = Database.Database.database.RequestLine("f_get_event", 6, name);
+                    if (row != null)
+                    {
+                        e.Description = (string)row[0];
+                        e.Begin = (DateTime)row[2];
+                        e.End = (DateTime)row[3];
+                        e.Assoc = (string)row[4];
+                        e.Owner = (string)row[5];
+                    }
+                }
+                catch (Exception ex)
+                { }
+                return View(e);
             }
-            else
-                return View("NoEvent");
+            return RedirectToAction("ListEvent", "Events");
+        }
+
+        [HttpPost]
+        public ActionResult ModifyEvent(string user, string name, string description, DateTime begin, DateTime end)
+        {
+            DalEvent.ModifyEvent(user, name, description, begin, end);
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult CreateEvent()
         {
+            List<string> ret = new List<string>();
+            ret.Add(null);
+            try
+            {
+                List<object[]> events = Database.Database.database.RequestTable("f_list_assocs", 1);
+
+                foreach (object[] item in events)
+                {
+                    ret.Add((string)item[0]);
+                }
+
+            }
+            catch { }
+
+            ViewBag.list = ret;
             return View();
         }
 
-
         [HttpPost]
-        public ActionResult CreateEvent(Models.Event e)
+        public ActionResult CreateEvent(Event e)
         {
-
             if (ModelState.IsValid) 
             {
-                /*dalevent.CreateEvent(e.Name, e.Description, e.Begin, e.End, e.Location, e.Close, e.ExternPlaces, e.InternPlaces,
-                                     e.ExternPrice, e.InternPrice, e.UniquePrice, e.LeftPlaces, e.PromotionPic);*/
-                Database.Database.database.RequestVoid("f_create_event",
-                                                       new List<Object> { 0 /* FIXME user_id*/, e.Name, e.Description, e.Begin,
-                                                       e.End, "test"});
-                return RedirectToAction("Home/Index");
+                DalEvent.CreateEvent(e);
+                return RedirectToAction("Index", "Home");
             }
             else
             {

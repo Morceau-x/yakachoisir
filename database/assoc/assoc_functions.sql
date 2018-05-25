@@ -2,16 +2,23 @@
 ******** DROPS *******
 *********************/
 DROP FUNCTION IF EXISTS f_create_assoc(name VARCHAR(1024), summary VARCHAR(8192), school VARCHAR(128));
-DROP FUNCTION IF EXISTS f_delete_assoc(user_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_member(user_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_desk(user_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_president(user_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_is_superior(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_set_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_set_desk(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_remove_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_set_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_remove_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_delete_assoc(login VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_member(login VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_desk(login VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_president(login VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_is_superior(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_set_member(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_set_desk(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_remove_member(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_set_president(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_remove_president(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_get_assoc(name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_list_assocs();
+DROP FUNCTION IF EXISTS f_get_members(name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_get_desk(name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_get_president(name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_has_assoc(login VARCHAR(256));
+DROP FUNCTION IF EXISTS f_assocs(login VARCHAR(256));
 
 /*********************
 ***** FUNCTIONS ******
@@ -30,14 +37,14 @@ DROP FUNCTION IF EXISTS f_remove_president(user_id INTEGER, target_id INTEGER, n
 /*********************
 *** CREATE ASSOC ***
 *********************/
-CREATE OR REPLACE FUNCTION f_create_assoc(user_id INTEGER, name VARCHAR(1024), summary VARCHAR(8192), school VARCHAR(128))
+CREATE OR REPLACE FUNCTION f_create_assoc(login VARCHAR(256), name VARCHAR(1024), summary VARCHAR(8192), school VARCHAR(128))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (name IS NULL OR school IS NULL OR summary IS NULL) THEN
+	IF (login IS NULL OR name IS NULL OR school IS NULL OR summary IS NULL) THEN
 		RETURN FALSE;
 	END IF;
-	if (NOT f_is_moderator(user_id)) THEN
+	if (NOT f_is_moderator(login)) THEN
 		RETURN FALSE;
 	END IF;
 
@@ -53,17 +60,17 @@ $$ LANGUAGE plpgsql;
 /*********************
 *** DELETE ACCOUNT ***
 *********************/
-CREATE OR REPLACE FUNCTION f_delete_assoc(user_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_delete_assoc(login VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $2)) THEN
 		RETURN FALSE;
 	END IF;
-	IF (NOT f_is_moderator(user_id)) THEN
+	IF (NOT f_is_moderator(login)) THEN
 		RETURN FALSE;
 	END IF;
 	
@@ -79,17 +86,17 @@ $$ LANGUAGE plpgsql;
 /*********************
 ****** IS MEMBER *****
 *********************/
-CREATE OR REPLACE FUNCTION f_is_member(user_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_is_member(login VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $2)) THEN
 		RETURN FALSE;
 	END IF;
-	IF (f_is_moderator(user_id)) THEN
+	IF (f_is_moderator(login)) THEN
 		RETURN TRUE;
 	END IF;
 	IF (EXISTS (SELECT * FROM assocs a WHERE a.name = $2 AND a.president = $1)) THEN
@@ -106,17 +113,17 @@ $$ LANGUAGE plpgsql;
 /*********************
 ******* IS DESK ******
 *********************/
-CREATE OR REPLACE FUNCTION f_is_desk(user_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_is_desk(login VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $2)) THEN
 		RETURN FALSE;
 	END IF;
-	IF (f_is_moderator(user_id)) THEN
+	IF (f_is_moderator(login)) THEN
 		RETURN TRUE;
 	END IF;
 
@@ -134,17 +141,17 @@ $$ LANGUAGE plpgsql;
 /************************
 ****** IS PRESIDENT *****
 *************************/
-CREATE OR REPLACE FUNCTION f_is_president(user_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_is_president(login VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $2)) THEN
 		RETURN FALSE;
 	END IF;
-	IF (f_is_moderator(user_id)) THEN
+	IF (f_is_moderator(login)) THEN
 		RETURN TRUE;
 	END IF;
 	
@@ -158,26 +165,26 @@ $$ LANGUAGE plpgsql;
 /************************
 ****** IS SUPERIOR *****
 *************************/
-CREATE OR REPLACE FUNCTION f_is_superior(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_is_superior(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR target_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR target IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $3)) THEN
 		RETURN FALSE;
 	END IF;
-	IF (f_is_moderator(target_id)) THEN
+	IF (f_is_moderator(target)) THEN
 		RETURN FALSE;
 	END IF;
-	IF (f_is_moderator(user_id)) THEN
+	IF (f_is_moderator(login)) THEN
 		RETURN TRUE;
 	END IF;
-	IF (f_is_president(user_id, name)) THEN
+	IF (f_is_president(login, name)) THEN
 		RETURN TRUE;
 	END IF;
-	IF (f_is_desk(user_id, name) AND NOT f_is_desk(target_id, name)) THEN
+	IF (f_is_desk(login, name) AND NOT f_is_desk(target, name)) THEN
 		RETURN TRUE;
 	END IF;
 	RETURN FALSE;
@@ -190,27 +197,27 @@ $$ LANGUAGE plpgsql;
 /*********************
 ***** SET MEMBER *****
 *********************/
-CREATE OR REPLACE FUNCTION f_set_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_set_member(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR target_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR target IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $3)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (NOT f_is_superior(user_id, target_id, name)) THEN
+	IF (NOT f_is_superior(login, target, name)) THEN
 		RETURN FALSE;
 	END IF;
 
-	IF (f_is_president(target_id, name)) THEN
+	IF (f_is_president(target, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 		INSERT INTO members VALUES ($3, $2, FALSE);
-	ELSIF (f_is_desk(target_id, name)) THEN
+	ELSIF (f_is_desk(target, name)) THEN
 		UPDATE members SET desk = FALSE WHERE members.member = $2 AND members.assoc = $3;
-	ELSIF (NOT f_is_member(target_id, name)) THEN
+	ELSIF (NOT f_is_member(target, name)) THEN
 		INSERT INTO members VALUES ($3, $2, FALSE);
 	END IF;
 	RETURN TRUE;
@@ -223,27 +230,27 @@ $$ LANGUAGE plpgsql;
 /*********************
 ****** SET DESK ******
 *********************/
-CREATE OR REPLACE FUNCTION f_set_desk(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_set_desk(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR target_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR target IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $3)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (NOT f_is_superior(user_id, target_id, name) OR NOT f_is_president(user_id, name)) THEN
+	IF (NOT f_is_superior(login, target, name) OR NOT f_is_president(login, name)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_president(target_id, name)) THEN
+	IF (f_is_president(target, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 		INSERT INTO members VALUES ($3, $2, TRUE);
-	ELSIF (f_is_member(target_id, name)) THEN
+	ELSIF (f_is_member(target, name)) THEN
 		UPDATE members SET desk = TRUE WHERE members.member = $2 AND members.assoc = $3;
-	ELSIF (NOT f_is_desk(target_id, name)) THEN
+	ELSIF (NOT f_is_desk(target, name)) THEN
 		INSERT INTO members VALUES ($3, $2, TRUE);		
 	END IF;
 	RETURN TRUE;
@@ -256,24 +263,24 @@ $$ LANGUAGE plpgsql;
 /**************************
 ****** REMOVE MEMBER ******
 ***************************/
-CREATE OR REPLACE FUNCTION f_remove_member(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_remove_member(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR target_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR target IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $3)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (NOT f_is_superior(user_id, target_id, name)) THEN
+	IF (NOT f_is_superior(login, target, name)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_president(target_id, name)) THEN
+	IF (f_is_president(target, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
-	ELSIF (f_is_member(target_id, name)) THEN
+	ELSIF (f_is_member(target, name)) THEN
 		DELETE FROM members WHERE members.member = $2 AND members.assoc = $3;
 	END IF;
 	RETURN TRUE;
@@ -286,25 +293,25 @@ $$ LANGUAGE plpgsql;
 /**************************
 ****** SET PRESIDENT ******
 ***************************/
-CREATE OR REPLACE FUNCTION f_set_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_set_president(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR target_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR target IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $3)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (NOT f_is_superior(user_id, target_id, name) OR NOT f_is_moderator(user_id)) THEN
+	IF (NOT f_is_superior(login, target, name) OR NOT f_is_moderator(login)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_member(target_id, name)) THEN
+	IF (f_is_member(target, name)) THEN
 		DELETE FROM members WHERE members.member = $2 AND members.assoc = $3;
 		UPDATE assocs SET president = $2 WHERE assocs.name = $3;
-	ELSEIF (NOT f_is_president(target_id, name)) THEN
+	ELSEIF (NOT f_is_president(target, name)) THEN
 		UPDATE assocs SET president = $2 WHERE assocs.name = $3;
 	END IF;
 	RETURN TRUE;
@@ -317,22 +324,22 @@ $$ LANGUAGE plpgsql;
 /*****************************
 ****** REMOVE PRESIDENT ******
 ******************************/
-CREATE OR REPLACE FUNCTION f_remove_president(user_id INTEGER, target_id INTEGER, name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_remove_president(login VARCHAR(256), target VARCHAR(256), name VARCHAR(1024))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (user_id IS NULL OR target_id IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR target IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT * FROM assocs a WHERE a.deleted = TRUE AND a.name = $3)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (NOT f_is_superior(user_id, target_id, name) OR NOT f_is_moderator(user_id)) THEN
+	IF (NOT f_is_superior(login, target, name) OR NOT f_is_moderator(login)) THEN
 		RETURN FALSE;
 	END IF;
 	
-	IF (f_is_president(target_id, name)) THEN
+	IF (f_is_president(target, name)) THEN
 		UPDATE assocs SET president = NULL WHERE assocs.name = $3;
 	END IF;
 	RETURN TRUE;
@@ -340,4 +347,93 @@ EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
 END;
-$$ LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;
+
+/*********************
+*** GET ASSOC DATA ***
+**********************/
+CREATE TYPE assoc_data AS (summary VARCHAR(8192), school VARCHAR(128), president VARCHAR(256));
+CREATE OR REPLACE FUNCTION f_get_assoc(name VARCHAR(1024))
+RETURNS assoc_data AS
+'SELECT summary, school, president FROM assocs a WHERE a.name = $1;'
+LANGUAGE SQL;
+
+/*********************
+***** LIST ASSOCS ****
+**********************/
+CREATE OR REPLACE FUNCTION f_list_assocs()
+RETURNS SETOF VARCHAR(1024) AS 'SELECT name FROM assocs;'
+LANGUAGE SQL;
+
+/*********************
+**** GET MEMBERS *****
+**********************/
+CREATE OR REPLACE FUNCTION f_get_members(name VARCHAR(1024))
+RETURNS SETOF VARCHAR(256) AS
+'SELECT m.member FROM members m WHERE m.assoc = $1 AND m.desk = FALSE;'
+LANGUAGE SQL;
+
+/*********************
+****** GET DESK ******
+**********************/
+CREATE OR REPLACE FUNCTION f_get_desk(name VARCHAR(1024))
+RETURNS SETOF VARCHAR(256) AS
+'SELECT m.member FROM members m WHERE m.assoc = $1 AND m.desk = TRUE;'
+LANGUAGE SQL;
+
+/*********************
+**** GET PRESIDENT ***
+**********************/
+CREATE OR REPLACE FUNCTION f_get_president(name VARCHAR(1024))
+RETURNS SETOF VARCHAR(256) AS
+'SELECT a.president FROM assocs a WHERE a.name = $1;'
+LANGUAGE SQL;
+
+/*********************
+** USER HAS A ASSOC **
+**********************/
+CREATE OR REPLACE FUNCTION f_has_assoc(login VARCHAR(256))
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF (login IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	IF (f_is_moderator(login)) THEN
+		RETURN TRUE;
+	END IF;
+	IF (EXISTS(SELECT * FROM assocs a WHERE a.president = $1 AND a.deleted = FALSE)) THEN
+		RETURN TRUE;
+	END IF;
+	IF (EXISTS(SELECT * FROM members m JOIN assocs a ON m.assoc = a.name
+			   WHERE m.member = $1 AND a.deleted = FALSE)) THEN
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+**** USER'S ASSOCS ***
+**********************/
+CREATE OR REPLACE FUNCTION f_assocs(login VARCHAR(256))
+RETURNS SETOF VARCHAR(1024) AS
+$$
+BEGIN
+	IF (login IS NULL) THEN
+		RETURN QUERY SELECT NULL LIMIT 0;
+	END IF;
+	IF (f_is_moderator(login)) THEN
+		RETURN QUERY SELECT a.name FROM assocs a WHERE a.deleted = false;
+	ELSE
+		RETURN QUERY SELECT DISTINCT a.name FROM members m JOIN assocs a ON a.name = m.assoc
+				WHERE a.deleted = false AND (m.member = $1 OR a.president = $1);
+	END IF;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN QUERY SELECT NULL LIMIT 0;
+END;
+$$ LANGUAGE plpgsql;

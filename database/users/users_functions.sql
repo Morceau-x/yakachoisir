@@ -2,6 +2,7 @@
 ******** DROPS *******
 *********************/
 DROP FUNCTION IF EXISTS f_create_user(login VARCHAR(256), password VARCHAR(256), email VARCHAR(256));
+DROP FUNCTION IF EXISTS f_edit_user(login VARCHAR(256), ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32));
 DROP FUNCTION IF EXISTS f_delete_user(id INTEGER, password VARCHAR(256));
 DROP FUNCTION IF EXISTS f_regular_connect(login VARCHAR(256), password VARCHAR(256));
 DROP FUNCTION IF EXISTS f_epita_connect(login VARCHAR(256));
@@ -11,7 +12,9 @@ DROP FUNCTION IF EXISTS f_remove_moderator(id INTEGER, target INTEGER);
 DROP FUNCTION IF EXISTS f_is_moderator(id INTEGER);
 DROP FUNCTION IF EXISTS f_is_administrator(id INTEGER);
 DROP FUNCTION IF EXISTS f_id(login VARCHAR(256));
-
+DROP FUNCTION IF EXISTS f_email(login VARCHAR(256));
+DROP FUNCTION IF EXISTS f_get_user(login VARCHAR(256));
+DROP FUNCTION IF EXISTS f_list_users();
 
 /*********************
 ***** FUNCTIONS ******
@@ -40,6 +43,25 @@ BEGIN
 	END IF;
 	INSERT INTO users VALUES
 	(DEFAULT, DEFAULT, login, email, DEFAULT, password, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+*** EDIT ACCOUNT ***
+*********************/
+CREATE OR REPLACE FUNCTION f_edit_user(login VARCHAR(256), ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32))
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF (login IS NULL OR ionis IS NULL OR epita IS NULL OR firstname IS NULL OR lastname IS NULL OR address IS NULL OR phone_number IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	UPDATE users SET (ionis, epita, firstname, lastname, address, phone_number) = ($2, $3, $4, $5, $6, $7)
+	WHERE users.login = $1;
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
@@ -222,7 +244,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 /*********************
-***** GET USER iD ****
+***** GET USER ID ****
 **********************/
 CREATE OR REPLACE FUNCTION f_id(login VARCHAR(256))
 RETURNS INTEGER AS
@@ -237,3 +259,36 @@ EXCEPTION
 		RETURN -1;
 END;
 $$ LANGUAGE plpgsql;
+
+/*********************
+*** GET USER EMAIL ***
+**********************/
+CREATE OR REPLACE FUNCTION f_email(login VARCHAR(256))
+RETURNS VARCHAR(256) AS
+$$
+DECLARE
+	email VARCHAR(256);
+BEGIN
+	SELECT u.email INTO email FROM users u WHERE u.login = $1;
+	RETURN email;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+**** GET USER DATA ***
+**********************/
+CREATE TYPE user_data AS (ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32));
+CREATE OR REPLACE FUNCTION f_get_user(login VARCHAR(256))
+RETURNS user_data AS
+'SELECT ionis, epita, firstname, lastname, address, phone_number FROM users u WHERE u.login = $1;'
+LANGUAGE SQL;
+
+/*********************
+***** LIST USERS *****
+**********************/
+CREATE OR REPLACE FUNCTION f_list_users()
+RETURNS SETOF VARCHAR(256) AS 'SELECT login FROM users;'
+LANGUAGE SQL;

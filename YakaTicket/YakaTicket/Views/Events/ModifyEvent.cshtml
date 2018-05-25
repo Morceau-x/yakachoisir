@@ -1,69 +1,39 @@
 ﻿@model YakaTicket.Models.Event
-
 @{
     ViewBag.Title = "ModifyEvent";
 }
-
-@using (Html.BeginForm())
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
 {
-<fieldset>
-    <legend>Modifier un évènement</legend>
-    <div>
-        Nom
-        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Name)
-    </div>
-    <div>
-        Description
-        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Description)
-    </div>
-    <div>
-        Début de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
-        @Html.TextBoxFor(model => model.Begin, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Begin)
-    </div>
-    <div>
-        Fin de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
-        @Html.TextBoxFor(model => model.End, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.End)
-    </div>
-    <div>
-        Lieu
-        @Html.TextBoxFor(model => model.Location, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Location)
-    </div>
-    <div>
-        Fermeture des inscriptions : <i>jj/mm/aaaa hh:mm:ss</i>
-        @Html.TextBoxFor(model => model.Close, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Close)
-    </div>
-    <div>
-        Nombre de places pour les externes au groupe IONIS
-        @Html.TextBoxFor(model => model.ExternPlaces, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.ExternPlaces)
-    </div>
-    <div>
-        Nombre de places pour les internes au groupe IONIS
-        @Html.TextBoxFor(model => model.InternPlaces, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.InternPlaces)
-    </div>
-    <div>
-        Prix places pour les externes au groupe IONIS
-        @Html.TextBoxFor(model => model.InternPrice, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.InternPrice)
-    </div>
-    <div>
-        Prix places pour les internes au groupe IONIS
-        @Html.TextBoxFor(model => model.InternPrice, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.InternPrice)
-    </div>
-    <div>
-        Afficher le nombre de places restantes
-        @Html.RadioButton("blah", !Model.LeftPlaces) Oui
-        @Html.RadioButton("blah", Model.LeftPlaces) Non
-        @Html.ValidationMessageFor(model => model.InternPrice)
-    </div>
-    <input type="submit" value="Modifier l'évènement" class="form-control" />
-</fieldset>
+    using (Html.BeginForm())
+    {
+        <fieldset>
+            <legend>Modifier un évènement</legend>
+            <div>
+                Nom :
+                @Html.LabelFor(model => model.Name, Model.Name, new { @readonly = true })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+            <div>
+                Description :
+                @Html.TextBoxFor(model => model.Description, Model.Description, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+            <div>
+                Début de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
+                @Html.TextBoxFor(model => model.Begin, Model.Begin.ToString("dd/MM/yyyy HH:mm:ss"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Begin)
+            </div>
+            <div>
+                Fin de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
+                @Html.TextBoxFor(model => model.End, Model.End.ToString("dd/MM/yyyy HH:mm:ss"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.End)
+            </div>
+            <input type="submit" value="Modifier l'évènement" class="form-control" />
+        </fieldset>
+    }
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
 }

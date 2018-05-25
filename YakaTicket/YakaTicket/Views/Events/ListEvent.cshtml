@@ -2,7 +2,20 @@
 @{
     ViewBag.Title = "ListEvent";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int n = 0;
 }
-
 <h2>ListEvent</h2>
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    foreach (string e in ViewBag.list)
+    {
 
+        <h3>@Html.ActionLink("Event " + n + " : " + e, "ViewEvent", "Events", new { name = e }, null) </h3>
+        n++;
+    }
+}
+else
+{
+        <h3> Il faut être connecté pour faire ça.</h3>
+}

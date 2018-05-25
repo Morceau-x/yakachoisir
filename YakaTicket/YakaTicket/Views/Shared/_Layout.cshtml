@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+@using YakaTicket.Database
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -18,12 +21,14 @@
                 </button>
                 <a href='@Url.Action("Index", "Home")' class="navbar-brand"></a>
                 <a href='@Url.Action("Index", "Home")' class="navbar-brand navbar-ico"></a>
-
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Accueil", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Créer un événement", "CreateEvent", "Events")</li>
+                    @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
+                        {<li>@Html.ActionLink("Créer un événement", "CreateEvent", "Events")</li>}
+                    @if (Request.IsAuthenticated)
+                        {<li>@Html.ActionLink("Evenements", "ListEvent", "Events")</li>}
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -36,7 +41,6 @@
             <p>&copy; @DateTime.Now.Year - EPITA Billeterie</p>
         </footer>
     </div>
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

@@ -9,56 +9,32 @@ namespace YakaTicket.Models
     public class Event
     {
         //Mandatory
-        public int Id { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier un titre pour cet événement")]
-        public String Name { get; set; }
+        [Required(ErrorMessage = "Vous devez spécifier un nom pour cet événement")]
+        public string Assoc { get; set; }
+        [Required(ErrorMessage = "Vous devez spécifier une association pour cet événement")]
+        public string Owner { get; set; }
+        [Required(ErrorMessage = "Vous devez spécifier un créateur pour cet événement")]
+        public string Name { get; set; }
         [Required(ErrorMessage = "Vous devez ajouter une description")]
-        public String Description { get; set; }
+        public string Description { get; set; }
         [Required(ErrorMessage = "Vous devez spécifier une date de début")]
         public DateTime Begin { get; set; }
         [Required(ErrorMessage = "Vous devez spécifier une date de fin")]
         public DateTime End { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier un lieu pour cet événement")]
-        public String Location { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier une date de cloture des inscriptions")]
-        public DateTime Close { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier le nombre de places externes")]
-        [Range(0, 150 , ErrorMessage = "Le nombre de places externes doit être compris entre 0 et 150")]
-        public int ExternPlaces { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier le nombre de places internes")]
-        [Range(0, 450, ErrorMessage = "Le nombre de places internes doit être compris entre 0 et 450")]
-        public int InternPlaces { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier le prix pour les externes")]
-        public float ExternPrice { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier le prix pour les internes")]
-        public float InternPrice { get; set; }
-        public bool UniquePrice { get; set; } = false;
-        public bool LeftPlaces { get; set; } = false;
 
-        //Optionnal
-        public String PromotionPic { get; set; } = null;
-
-        public Event()
+        public Event ()
         {
 
         }
 
-        public Event(int id, string name, string description, DateTime begin, DateTime end, string location, DateTime close, int externPlaces, int internPlaces, float externPrice, float internPrice, bool uniquePrice, bool leftPlaces, string promotionPic)
+        public Event(string assoc, string owner, string name, string description, DateTime begin, DateTime end)
         {
-            Id = id;
+            Assoc = assoc;
             Name = name;
             Description = description;
             Begin = begin;
             End = end;
-            Location = location;
-            Close = close;
-            ExternPlaces = externPlaces;
-            InternPlaces = internPlaces;
-            ExternPrice = externPrice;
-            InternPrice = internPrice;
-            UniquePrice = uniquePrice;
-            LeftPlaces = leftPlaces;
-            PromotionPic = promotionPic;
+            Owner = owner;
         }
     }
 }

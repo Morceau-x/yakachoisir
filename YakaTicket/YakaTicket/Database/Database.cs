@@ -24,7 +24,7 @@ namespace YakaTicket.Database
                 Assembly _assembly = Assembly.GetExecutingAssembly();
                 StreamReader jsonFile = new StreamReader(_assembly.GetManifestResourceStream("YakaTicket.config.json"));
                 file = jsonFile.ReadToEnd();
-            } catch (Exception e)
+            } catch
             {
                 file = String.Empty;
             }
@@ -69,52 +69,90 @@ namespace YakaTicket.Database
         public object[] RequestLine(string function, int length, params object[] args)
         {
             var command = BuildCommand(function, args);
-            var reader = command.ExecuteReader();
-
-            if (!reader.HasRows)
-                return null;
-
-            if (!reader.Read())
-                return null;
-
+            NpgsqlDataReader reader = null;
+            
             var resp = new object[length];
-
             try
             {
-                for (int i = 0; i < length; i++)
-                    resp[i] = reader[i];
+                reader = command.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    if (reader != null)
+                        reader.Close();
+                    if (command != null)
+                        command.Dispose();
+                    return null;
+                }
+
+                if (!reader.Read())
+                {
+                    if (reader != null)
+                        reader.Close();
+                    if (command != null)
+                        command.Dispose();
+                    return null;
+                }
+                
+                try
+                {
+                    for (int i = 0; i < length; i++)
+                        resp[i] = reader[i];
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
             catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            reader.Close();
+            { }
+
+            if (reader != null)
+                reader.Close();
+            if (command != null)
+                command.Dispose();
             return resp;
         }
 
         public List<object[]> RequestTable(string function, int length, params object[] args)
         {
             var command = BuildCommand(function, args);
-            var reader = command.ExecuteReader();
-            if (!reader.HasRows)
-                return null;
-
             var resp = new List<object[]>();
-            while (reader.Read())
+            NpgsqlDataReader reader = null;
+            try
             {
-                var tmp = new object[length];
-                try
+                reader = command.ExecuteReader();
+                if (!reader.HasRows)
                 {
-                    for (int i = 0; i < length; i++)
-                        tmp[i] = reader[i];
+                    if (reader != null)
+                        reader.Close();
+                    if (command != null)
+                        command.Dispose();
+                    return null;
                 }
-                catch (Exception e)
+
+
+                while (reader.Read())
                 {
-                    Console.WriteLine(e.Message);
+                    var tmp = new object[length];
+                    try
+                    {
+                        for (int i = 0; i < length; i++)
+                            tmp[i] = reader[i];
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    resp.Add(tmp);
                 }
-                resp.Add(tmp);
             }
-            reader.Close();
+            catch (Exception e)
+            { }
+
+            if (reader != null)
+                reader.Close();
+            if (command != null)
+                command.Dispose();
             return resp;
         }
 

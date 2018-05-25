@@ -7,57 +7,55 @@ namespace YakaTicket.Models
 {
     public class DalEvent
     {
-        private BddContext bdd;
 
         public DalEvent()
         {
-            bdd = new BddContext();
         }
 
-        public List<Event> GetAllEvents()
+        public static List<string> GetAllEvents()
         {
-            return bdd.Events.ToList();
-        }
-
-        public void Dispose()
-        {
-            bdd.Dispose();
-        }
-
-        public void ModifyEvent(int id, String name, String description, DateTime begin, DateTime end, String location, DateTime close,
-                                int externPlaces, int internPlaces, float externPrice, float internPrice, bool uniquePrice,
-                                bool leftPlaces, String promotionPic)
-        {
-            Event e = GetAllEvents().FirstOrDefault(r => r.Id == id);
-            if (e != null)
+            try
             {
-                e.Name = name;
-                e.Description = description;
-                e.Begin = begin;
-                e.End = end;
-                e.Location = location;
-                e.Close = close;
-                e.ExternPlaces = externPlaces;
-                e.InternPlaces = internPlaces;
-                e.ExternPrice = externPrice;
-                e.InternPrice = internPrice;
-                e.UniquePrice = uniquePrice;
-                e.LeftPlaces = leftPlaces;
-                e.PromotionPic = promotionPic;
-                bdd.SaveChanges();
+                List<object[]> events = Database.Database.database.RequestTable("f_list_future_events", 1);
+
+                List<string> ret = new List<string>();
+                foreach (object[] item in events)
+                {
+                    ret.Add((string)item[0]);
+                }
+                return ret;
             }
+            catch (Exception e)
+            { }
+
+            return new List<string>();
         }
 
-        public void CreateEvent(String name, String description, DateTime begin, DateTime end, String location, DateTime close,
-                                int externPlaces, int internPlaces, float externPrice, float internPrice, bool uniquePrice,
-                                bool leftPlaces, String promotionPic)
+        public static void ModifyEvent(string user, string name, string description, DateTime begin, DateTime end)
         {
-            /*
-            bdd.Events.Add(new Event { Id = 0, Name = name, Description = description, Begin = begin, End = end, Location = location,
-                                       Close = close, ExternPlaces = externPlaces, InternPlaces = internPlaces, ExternPrice = externPrice,
-                                       InternPrice = internPrice, UniquePrice = uniquePrice, LeftPlaces = leftPlaces,
-                                       PromotionPic = promotionPic });
-            bdd.SaveChanges();*/
+            try
+            {
+                Database.Database.database.RequestVoid("f_edit_event", user, name, description, begin.ToString("yyyy-MM-dd HH:mm:ss"), end.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+            catch { }
+        }
+
+        public static void CreateEvent(string user, string name, string description, DateTime begin, DateTime end, string assoc)
+        {
+            try
+            {
+                Database.Database.database.RequestVoid("f_create_event", user, name, description, begin.ToString("yyyy-MM-dd HH:mm:ss"), end.ToString("yyyy-MM-dd HH:mm:ss"), assoc);
+            }
+            catch { }
+        }
+
+        public static void CreateEvent(Event e)
+        {
+            try
+            {
+                Database.Database.database.RequestVoid("f_create_event", e.Owner, e.Name, e.Description, e.Begin.ToString("yyyy-MM-dd HH:mm:ss"), e.End.ToString("yyyy-MM-dd HH:mm:ss"), e.Assoc);
+            }
+            catch { }
         }
     }
 }
