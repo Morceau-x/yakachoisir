@@ -76,11 +76,15 @@ namespace YakaTicket.Controllers
             {
                 foreach (Event s in eventList)
                 {
-                    if (s.Name.Contains(name))
+                    if (s.Name.ToLower().Contains(name.ToLower()))
                         ViewBag.list.Add(s);
-                    else if (s.Assoc.Contains(name))
+                    else if (s.Assoc.ToLower().Contains(name.ToLower()))
                         ViewBag.list.Add(s);
                 }
+            }
+            else
+            {
+                ViewBag.list = eventList;
             }
             return View();
         }

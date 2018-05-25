@@ -5,9 +5,6 @@
     int n = 0;
 }
 <h2>ListEvent</h2>
-@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
-{
     <form asp-controller="Events" asp-action="ListEvent">
         <p>
             Evènement: <input class="form-control" type="text" name="name" placeholder="Rechercher">
@@ -34,8 +31,3 @@
             }
 
         </table>
-}
-else
-{
-    <h3> Il faut être connecté pour faire ça.</h3>
-}
