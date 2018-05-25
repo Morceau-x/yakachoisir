@@ -33,7 +33,7 @@
                              @using (Html.BeginForm("ListEvent", "Events", FormMethod.Get))
                              {
                                  @Html.TextBox("name", ViewBag.CurrentFilter as string, new { @class = "form-control" })
-                             <input class = "form-control btn-primary" type="submit" value="Rechercher" style="float: left"/>
+                             <input class="form-control btn-primary" type="submit" value="Rechercher" style="float: left"/> <!--TODO FIX INLINE STYLE-->
                              }
                          </li>
                 </ul>
