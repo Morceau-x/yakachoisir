@@ -86,10 +86,10 @@ namespace YakaTicket.Controllers
                 ApplicationUser user = UserManager.FindByName(model.Pseudo);
                 if (user == null)
                 {
-                    user = new ApplicationUser { UserName = model.Pseudo, Email = email };
-                    var unused = UserManager.CreateAsync(user, model.Pseudo);
+                    user = new ApplicationUser { UserName = model.Pseudo, Email = email};
+                    var unused = await UserManager.CreateAsync(user, model.Pseudo);
                 }
-                await SignInManager.SignInAsync(user, model.RememberMe, false);
+                await SignInManager.SignInAsync(user, false, false);
                 result = SignInStatus.Success;
             }
 
