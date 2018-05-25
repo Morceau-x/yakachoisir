@@ -48,26 +48,11 @@ namespace YakaTicket.Controllers
 
         public ActionResult ListEvent()
         {
-            ViewBag.list = new List<string>();
+            ViewBag.list = new List<Event>();
+            string name = Request.QueryString["name"];
             List<string> events = DalEvent.GetAllEvents();
             List<Event> eventList = new List<Event>();
-            string name = Request.QueryString["name"];
-            if (name != null && name != "")
-            {
-                List<string> l = new List<string>();
-                foreach (String s in events)
-                {
-                    if (s.Contains(name))
-                        l.Add(s);  
-                }
-                ViewBag.list = l;
-            }
-            else
-            {
-                if (events != null)
-                    ViewBag.list = events;
-            }
-            foreach (string s in ViewBag.list)
+            foreach (string s in events)
             {
                 Event e = new Event();
                 e.Name = s;
@@ -87,7 +72,16 @@ namespace YakaTicket.Controllers
                 { }
                 eventList.Add(e);
             }
-            ViewBag.list = eventList;
+            if (name != null && name != "")
+            {
+                foreach (Event s in eventList)
+                {
+                    if (s.Name.Contains(name))
+                        ViewBag.list.Add(s);
+                    else if (s.Assoc.Contains(name))
+                        ViewBag.list.Add(s);
+                }
+            }
             return View();
         }
 
