@@ -14,16 +14,20 @@
             <legend>Créer un évènement</legend>
             <div class="row">
                 <div class="column">
-
+                    
                     <div>
                         Créateur <i>:</i>
-                        @Html.LabelFor(model => model.Owner, User.Identity.GetUserName(),new { @readonly = "true" })
-                        @Html.ValidationMessageFor(model => model.Name)
+                        @{
+                            var name = HttpContext.Current.User.Identity.Name;
+                        }
+                        @Html.LabelFor(model => model.Owner, name, new { @readonly = "true" }) 
+                        <input name="Owner" type="text" value=@name style="visibility:hidden"/>
+                        
                     </div>
                     <div>
                         Association <i>*</i>
                         @Html.DropDownListFor(model => model.Assoc, new SelectList(ViewBag.list))
-                        @Html.ValidationMessageFor(model => model.Name)
+                        @Html.ValidationMessageFor(model => model.Assoc)
                     </div>
                     <div>
                         Nom <i>*</i>

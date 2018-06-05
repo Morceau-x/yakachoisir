@@ -10,6 +10,12 @@
         <fieldset>
             <legend>Modifier un évènement</legend>
             <div>
+                @{
+                    var name = HttpContext.Current.User.Identity.Name;
+                }
+                <input name="user" type="text" value=@name style="visibility:hidden" />
+                </div>
+            <div>
                 Nom :
                 @Html.LabelFor(model => model.Name, Model.Name, new { @readonly = true })
                 @Html.ValidationMessageFor(model => model.Name)

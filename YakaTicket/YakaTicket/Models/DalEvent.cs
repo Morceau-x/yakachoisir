@@ -31,13 +31,16 @@ namespace YakaTicket.Models
             return new List<string>();
         }
 
-        public static void ModifyEvent(string user, string name, string description, DateTime begin, DateTime end)
+        public static bool ModifyEvent(string user, string name, string description, DateTime begin, DateTime end)
         {
+            bool result = false;
             try
             {
-                Database.Database.database.RequestVoid("f_edit_event", user, name, description, begin.ToString("yyyy-MM-dd HH:mm:ss"), end.ToString("yyyy-MM-dd HH:mm:ss"));
+                result = Database.Database.database.RequestBoolean("f_edit_event", user, name, description, begin.ToString("yyyy-MM-dd HH:mm:ss"), end.ToString("yyyy-MM-dd HH:mm:ss"));
             }
             catch { }
+
+            return result;
         }
 
         public static void CreateEvent(string user, string name, string description, DateTime begin, DateTime end, string assoc)
@@ -49,13 +52,16 @@ namespace YakaTicket.Models
             catch { }
         }
 
-        public static void CreateEvent(Event e)
+        public static bool CreateEvent(Event e)
         {
+            bool result = false;
             try
             {
-                Database.Database.database.RequestVoid("f_create_event", e.Owner, e.Name, e.Description, e.Begin.ToString("yyyy-MM-dd HH:mm:ss"), e.End.ToString("yyyy-MM-dd HH:mm:ss"), e.Assoc);
+                result = Database.Database.database.RequestBoolean("f_create_event", e.Owner, e.Name, e.Description, e.Begin.ToString("yyyy-MM-dd HH:mm:ss"), e.End.ToString("yyyy-MM-dd HH:mm:ss"), e.Assoc);
             }
             catch { }
+
+            return result;
         }
     }
 }

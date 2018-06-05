@@ -118,8 +118,10 @@ namespace YakaTicket.Controllers
         [HttpPost]
         public ActionResult ModifyEvent(string user, string name, string description, DateTime begin, DateTime end)
         {
-            DalEvent.ModifyEvent(user, name, description, begin, end);
-            return RedirectToAction("Index", "Home");
+            if (!DalEvent.ModifyEvent(user, name, description, begin, end))
+                return RedirectToAction("Index", "Home");
+            else
+                return RedirectToAction("ModifyEvent", "Events", new { name });
         }
 
         public ActionResult CreateEvent()
@@ -145,15 +147,11 @@ namespace YakaTicket.Controllers
         [HttpPost]
         public ActionResult CreateEvent(Event e)
         {
-            if (ModelState.IsValid) 
-            {
-                DalEvent.CreateEvent(e);
+            if (DalEvent.CreateEvent(e)) 
                 return RedirectToAction("Index", "Home");
-            }
             else
-            {
-                return View(e);
-            }
+                return RedirectToAction("CreateEvent", "Events");
+
 
         }
     }
