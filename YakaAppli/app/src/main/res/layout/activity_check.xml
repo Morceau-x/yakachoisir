@@ -69,6 +69,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.80"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/horizontal_guide60"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.60"/>
 
 
     <EditText
@@ -102,6 +108,24 @@
         android:textColor="@color/colorBlank"
         android:padding="8dp"
         app:layout_constraintTop_toTopOf="@+id/horizontal_guide20" />
+
+    <Button
+        android:id="@+id/btn_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/switch_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/button_style"
+        android:fontFamily="@font/raleway_regular"
+        android:textColor="@color/colorBlank"
+        android:padding="8dp"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_guide60" />
 
     <Button
         android:id="@+id/btn_validate"

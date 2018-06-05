@@ -10,6 +10,8 @@ import kotlinx.android.synthetic.main.activity_check.*
 
 class CheckActivity : AppCompatActivity(), View.OnClickListener {
 
+    var enter = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
@@ -28,6 +30,13 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
                         R.id.btn_scan -> {
                             scanIntegrator.setOrientationLocked(false)
                             scanIntegrator.initiateScan()
+                        }
+                        R.id.btn_switch -> {
+                            enter = !enter
+                            if (enter)
+                                btn_switch.setText("Entrée")
+                            else
+                                btn_switch.setText("Sortie")
                         }
                         else -> {
                         }

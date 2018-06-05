@@ -12,4 +12,5 @@
     <string name="password">Password</string>
     <string name="ticketId">Id du billet</string>
     <string name="validation">Validation</string>
+    <string name="switch_btn">Entrée</string>
 </resources>
