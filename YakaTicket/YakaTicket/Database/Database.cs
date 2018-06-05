@@ -103,13 +103,11 @@ namespace YakaTicket.Database
                     Console.WriteLine(e.Message);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             { }
 
-            if (reader != null)
-                reader.Close();
-            if (command != null)
-                command.Dispose();
+            reader?.Close();
+            command?.Dispose();
             return resp;
         }
 
@@ -146,13 +144,11 @@ namespace YakaTicket.Database
                     resp.Add(tmp);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             { }
 
-            if (reader != null)
-                reader.Close();
-            if (command != null)
-                command.Dispose();
+            reader?.Close();
+            command?.Dispose();
             return resp;
         }
 

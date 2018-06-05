@@ -14,7 +14,7 @@ namespace YakaTicket.Controllers
         public RedirectToRouteResult Index()
         {
             string name = Request.QueryString["name"];
-            if (name != null && name != "")
+            if (!string.IsNullOrEmpty(name))
                 return RedirectToAction("ViewEvent", "Events", new { name });
             else
                 return RedirectToAction("ListEvent", "Events");
@@ -23,10 +23,9 @@ namespace YakaTicket.Controllers
         public ActionResult ViewEvent()
         {
             string name = Request.QueryString["name"];
-            if (name != null && name != "")
+            if (!string.IsNullOrEmpty(name))
             {
-                Event e = new Event();
-                e.Name = name;
+                Event e = new Event { Name = name };
                 try
                 {
                     object[] row = Database.Database.database.RequestLine("f_get_event", 6, name);
@@ -39,7 +38,7 @@ namespace YakaTicket.Controllers
                         e.Owner = (string)row[5];
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 { }
                 return View(e);
             }
@@ -54,8 +53,7 @@ namespace YakaTicket.Controllers
             List<Event> eventList = new List<Event>();
             foreach (string s in events)
             {
-                Event e = new Event();
-                e.Name = s;
+                Event e = new Event { Name = s };
                 try
                 {
                     object[] row = Database.Database.database.RequestLine("f_get_event", 6, s);
@@ -68,11 +66,11 @@ namespace YakaTicket.Controllers
                         e.Owner = (string)row[5];
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 { }
                 eventList.Add(e);
             }
-            if (name != null && name != "")
+            if (!string.IsNullOrEmpty(name))
             {
                 foreach (Event s in eventList)
                 {
@@ -92,10 +90,9 @@ namespace YakaTicket.Controllers
         public ActionResult ModifyEvent()
         {
             string name = Request.QueryString["name"];
-            if (name != null && name != "")
+            if (!string.IsNullOrEmpty(name))
             {
-                Event e = new Event();
-                e.Name = name;
+                Event e = new Event { Name = name };
                 try
                 {
                     object[] row = Database.Database.database.RequestLine("f_get_event", 6, name);
@@ -108,7 +105,7 @@ namespace YakaTicket.Controllers
                         e.Owner = (string)row[5];
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 { }
                 return View(e);
             }
@@ -126,8 +123,7 @@ namespace YakaTicket.Controllers
 
         public ActionResult CreateEvent()
         {
-            List<string> ret = new List<string>();
-            ret.Add("");
+            List<string> ret = new List<string> {""};
             try
             {
                 List<object[]> events = Database.Database.database.RequestTable("f_list_assocs", 1);
@@ -151,8 +147,6 @@ namespace YakaTicket.Controllers
                 return RedirectToAction("Index", "Home");
             else
                 return RedirectToAction("CreateEvent", "Events");
-
-
         }
     }
 }
