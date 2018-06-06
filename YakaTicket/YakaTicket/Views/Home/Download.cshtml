@@ -6,11 +6,25 @@
 <h2>@ViewBag.Title</h2>
 
 <body>
-    <div>
-        @foreach (var item in ViewData.Model)
-        {
-            @Html.ActionLink((string)item, "DownloadFile", new { filename = item });
-            <br />
-        }
-    </div>
+<div>
+    @foreach (var item in ViewData.Model)
+    {
+        @Html.ActionLink((string)item, "DownloadFile", new { filename = item });
+        <br />
+    }
+</div>
+
+<!--
+https://www.codeproject.com/Articles/42894/Introduction-to-PayPal-for-C-ASP-NET-developers
+-->
+<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+
+    <input type="hidden" name="cmd" value="_xclick" />
+    <input type="hidden" name="business" value="yakastarb@gmail.com" />
+
+    <input type="hidden" name="item_name" value="My painting" />
+    <input type="hidden" name="amount" value="10.00" />
+    <input type="submit" value="Paypal" />
+
+</form>
 </body>

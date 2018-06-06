@@ -25,7 +25,7 @@ namespace YakaTicket.Models
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             { }
 
             return new List<string>();
