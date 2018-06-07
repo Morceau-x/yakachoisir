@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "DashBoard";
+}
+
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+        <fieldset>
+            <legend>Dashboard d'association</legend>
+
+            <div></div>
+
+            <div>
+                <p>Nom : ViewBag.assoc.Name </p>
+            </div>
+            <div>
+                <p>Infos : ViewBag.assoc.Summary </p>
+            </div>
+            <div>
+                <p>Président : ViewBag.assoc.President</p>
+            </div>
+            <div>
+                <p>Ecole : ViewBag.assoc.School</p>
+            </div>
+
+        </fieldset>
+    }
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
+}

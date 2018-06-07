@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -63,7 +64,48 @@ namespace YakaTicket.Controllers
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
 
+            ViewBag.User = new User();
+
             var userId = User.Identity.GetUserId();
+            try
+            {
+                object[] user = Database.Database.database.RequestLine("f_get_user", 6, User.Identity.Name);
+                ViewBag.User = new User
+                {
+                    Ionis = (bool)user[0],
+                    Epita = (bool)user[1],
+                    Firstname = (string)user[2],
+                    Lastname = (string)user[3],
+                    Address = (string)user[4],
+                    PhoneNumber = (string)user[5]
+                };
+            }
+            catch (Exception) { }
+
+
+            ViewBag.History = new List<Event>();
+            try
+            {
+                List<Event> sortedEvents = new List<Event>();
+                List<object[]> history =
+                    Database.Database.database.RequestTable("f_list_participating", 7, User.Identity.Name);
+                foreach (object[] ev in history)
+                {
+                    sortedEvents.Add(new Event
+                    {
+                        Name = (string) ev[0],
+                        Description = (string) ev[1],
+                        Begin = (DateTime) ev[3],
+                        End = (DateTime) ev[4],
+                        Assoc = (string) ev[5],
+                        Owner = (string) ev[6]
+                    });
+                }
+                sortedEvents.Sort((e1, e2) => e2.End.CompareTo(e1.End));
+                ViewBag.History = sortedEvents;
+            }
+            catch (Exception) { }
+            
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),

@@ -7,9 +7,11 @@ namespace YakaTicket.Models
 {
     public class User
     {
-        public string login;
-        public string email;
-        public bool ionis;
-        public bool epita;
+        public bool Ionis { get; set; }
+        public bool Epita { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Address { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

@@ -11,11 +11,22 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>Nom:</dt>
-        <dd>FIXME</dd>
+        <dd>@ViewBag.User.Lastname</dd>
         <dt>Prénom</dt>
-        <dd>FIXME</dd>
-        <dt>Date de naissance</dt>
-        <dd>FIXME</dd>
+        <dd>@ViewBag.User.Firstname</dd>
+        <dt>Adresse</dt>
+        <dd>@ViewBag.User.Address</dd>
+        
+        @if (ViewBag.User.Ionis)
+        {
+            <dt>Membre Ionis</dt>
+            <dd></dd>
+        }
+        @if (ViewBag.User.Epita)
+        {
+            <dt>Membre EPITA</dt>
+            <dd></dd>
+        }
 
         <dt>Mot de passe:</dt>
         <dd>
@@ -103,15 +114,15 @@
             <th>Date de fin</th>
             <th>Billet</th>
         </tr>
-        @* @foreach (YakaTicket.Models.Event e in ViewBag.list)
-            {*@
+        @foreach (YakaTicket.Models.Event e in ViewBag.History)
+            {
         <tr>
-            <td>Title</td>
-            <td>Assoc</td>
-            <td>Begin</td>
-            <td>End</td>
+            <td>@e.Name</td>
+            <td>@e.Assoc</td>
+            <td>@e.Begin</td>
+            <td>@e.End</td>
             <td>Download</td>
         </tr>
-        @*}*@
+        }
     </table>
 </div>
