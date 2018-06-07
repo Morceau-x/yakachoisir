@@ -23,7 +23,21 @@ namespace YakaTicket.Controllers
         {
             protected override void OnInit(InitArgs e)
             {
-                UpdateWithMessage("Welcome!", CallBackUpdateType.Full);
+                UpdateWithMessage("Let's see your events for the week !", CallBackUpdateType.Full);
+            }
+            protected override void OnFinish()
+            {
+                if (UpdateType == CallBackUpdateType.None)
+                {
+                    return;
+                }
+
+                DataIdField = "Id";
+                DataStartField = "Start";
+                DataEndField = "End";
+                DataTextField = "Text";
+
+                //Events = from e in dc.Events where !((e.End <= VisibleStart) || (e.Start >= VisibleEnd)) select e;
             }
         }
     }
