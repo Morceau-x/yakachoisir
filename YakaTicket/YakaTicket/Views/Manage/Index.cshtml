@@ -114,14 +114,14 @@
             <th>Date de fin</th>
             <th>Billet</th>
         </tr>
-        @foreach (YakaTicket.Models.Event e in ViewBag.History)
+        @foreach (var e in ViewBag.History)
             {
         <tr>
             <td>@e.Name</td>
             <td>@e.Assoc</td>
             <td>@e.Begin</td>
             <td>@e.End</td>
-            <td>Download</td>
+            <td>@Html.ActionLink("télécharger", "DownloadPDF", new { data = e, user = ViewBag.User } )</td>
         </tr>
         }
     </table>

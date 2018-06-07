@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -77,7 +78,8 @@ namespace YakaTicket.Controllers
                     Firstname = (string)user[2],
                     Lastname = (string)user[3],
                     Address = (string)user[4],
-                    PhoneNumber = (string)user[5]
+                    PhoneNumber = (string)user[5],
+                    Id = User.Identity.Name
                 };
             }
             catch (Exception) { }
@@ -89,6 +91,7 @@ namespace YakaTicket.Controllers
                 List<Event> sortedEvents = new List<Event>();
                 List<object[]> history =
                     Database.Database.database.RequestTable("f_list_participating", 7, User.Identity.Name);
+
                 foreach (object[] ev in history)
                 {
                     sortedEvents.Add(new Event
@@ -147,6 +150,20 @@ namespace YakaTicket.Controllers
         {
             return View();
         }
+
+
+        public ActionResult DownloadPDF(Event data, User user)
+        {
+            string path = Server.MapPath("~/Download/");
+            string logo = Server.MapPath("~/Content/logo_billeterie5.png");
+            string filename = Tools.PDFCreator.exportAsPDF(path, data, user, logo);
+            string fullPath = Path.Combine(path, filename);
+
+            FilePathResult file = File(fullPath, "pdf");
+            file.FileDownloadName = filename;
+            return file;
+        }
+
 
         //
         // POST: /Manage/AddPhoneNumber

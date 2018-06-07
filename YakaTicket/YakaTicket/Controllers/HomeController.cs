@@ -30,42 +30,57 @@ namespace YakaTicket.Controllers
             return View(l);
         }
 
-        public ActionResult DownloadFile(string filename)
+        public ActionResult DownloadPDF(string filename)
         {
             string path = Server.MapPath("~/Download/");
-            if (Path.GetExtension(filename) == ".pdf")
-            {
-                string logo = Server.MapPath("~/Content/logo_billeterie5.png");
-                YakaTicket.Tools.PDFCreator.exportAsPDF(path, filename, logo);
-                string fullPath = Path.Combine(path, filename);
+            string logo = Server.MapPath("~/Content/logo_billeterie5.png");
+            YakaTicket.Tools.PDFCreator.test(path, filename);
+            string fullPath = Path.Combine(path, filename);
 
-                FilePathResult file = File(fullPath, "pdf");
-                file.FileDownloadName = filename;
-                return file;
-            }
-            else if (Path.GetExtension(filename) == ".xlsx")
-            {
-                Tools.XLSCreator.exportAsXLS(path, filename);
-                string fullPath = Path.Combine(path, filename);
+            FilePathResult file = File(fullPath, "pdf");
+            file.FileDownloadName = filename;
+            return file;
+        }
 
-                FilePathResult file = File(fullPath, "xlsx");
-                file.FileDownloadName = filename;
-                return file;
-            }
-            else if (Path.GetExtension(filename) == ".ics")
-            {
-                var ics = new Tools.ICSCreator();
-                StreamWriter sw = new StreamWriter(path + filename);
-                sw.Write(ics.exportAsICS());
-                sw.Close();
+        public ActionResult DownloadXLS(string filename)
+        {
+            string path = Server.MapPath("~/Download/");
+            Tools.XLSCreator.exportAsXLS(path, filename);
+            string fullPath = Path.Combine(path, filename);
 
-                string fullPath = Path.Combine(path, filename);
-                FilePathResult file = File(fullPath, "text");
-                file.FileDownloadName = filename;
-                return file;
-            }
-            else
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+            FilePathResult file = File(fullPath, "xlsx");
+            file.FileDownloadName = filename;
+            return file;
+        }
+
+        public ActionResult DownloadICS(string filename)
+        {
+            string path = Server.MapPath("~/Download/");
+            var ics = new Tools.ICSCreator();
+            StreamWriter sw = new StreamWriter(path + filename);
+            sw.Write(ics.exportAsICS());
+            sw.Close();
+
+            string fullPath = Path.Combine(path, filename);
+            FilePathResult file = File(fullPath, "text");
+            file.FileDownloadName = filename;
+            return file;
+        }
+
+        public ActionResult DownloadFile(string filename)
+        {
+            switch (Path.GetExtension(filename))
+            {
+                case ".pdf":
+                    return DownloadPDF(filename);
+                case ".xlsx":
+                    return DownloadXLS(filename);
+                case ".ics":
+                    return DownloadICS(filename);
+                default:
+                    return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+
+            }   
         }
     }
 }
