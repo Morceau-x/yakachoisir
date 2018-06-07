@@ -275,6 +275,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\customLayout.css" />
     <Content Include="Content\customMain.css" />
+    <Content Include="Content\jquery.calendar.css" />
+    <Content Include="Content\jquery.calendar.js" />
+    <Content Include="Content\jquery.calendar.min.css" />
+    <Content Include="Content\jquery.calendar.min.js" />
     <Content Include="Content\logo-epita-hd.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -288,6 +292,8 @@
     <EmbeddedResource Include="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Content Include="Content\df-calendar.jquery.json" />
+    <Content Include="Content\_config.yml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
