@@ -6,29 +6,32 @@
 <fieldset>
     <legend>Résumé de l'évènement</legend>
     @using Microsoft.AspNet.Identity
-    @if (Request.IsAuthenticated)
+@using YakaTicket.Database
+    <div>
+        <p>Nom :@Html.DisplayFor(model => model.Name) </p>
+    </div>
+    <div>
+        <p>Association : @Html.DisplayFor(model => model.Assoc) </p>
+    </div>
+    <div>
+        <p>Description : @Html.DisplayFor(model => model.Description)</p>
+    </div>
+    <div>
+        <p>Début de l'évènement : @Html.DisplayFor(model => model.Begin)</p>
+    </div>
+    <div>
+        <p>Fin de l'évènement : @Html.DisplayFor(model => model.End)</p>
+    </div>
+    <button type="button" class="btn-default">
+        Inscription
+    </button>
+    @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
     {
         <div>
-            <p>Nom :@Html.DisplayFor(model => model.Name) </p>
-        </div>
-        <div>
-            <p>Association : @Html.DisplayFor(model => model.Assoc) </p>
-        </div>
-        <div>
-            <p>Description : @Html.DisplayFor(model => model.Description)</p>
-        </div>
-        <div>
-            <p>Début de l'évènement : @Html.DisplayFor(model => model.Begin)</p>
-        </div>
-        <div>
-            <p>Fin de l'évènement : @Html.DisplayFor(model => model.End)</p>
-        </div>
-        <div>
-            <button type="button" class="btn btn-default">@Html.ActionLink("Edit", "ModifyEvent", "Events", new { name = @Html.ValueFor(model => model.Name) }, null)</button>
+            <button type="button" class="btn btn-default">
+                @Html.ActionLink("Edit", "ModifyEvent", "Events", new {name = @Html.ValueFor(model => model.Name)}, null)
+            </button>
         </div>
     }
-    else
-    {
-        <p>Il faut etre connecté pour voir l'événement.</p>
-    }
+
 </fieldset>
