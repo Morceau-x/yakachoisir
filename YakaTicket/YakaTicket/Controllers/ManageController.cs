@@ -17,6 +17,7 @@ namespace YakaTicket.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        
 
         public ManageController()
         {
@@ -71,7 +72,7 @@ namespace YakaTicket.Controllers
             try
             {
                 object[] user = Database.Database.database.RequestLine("f_get_user", 6, User.Identity.Name);
-                ViewBag.User = new User
+                User tmp = new User
                 {
                     Ionis = (bool)user[0],
                     Epita = (bool)user[1],
@@ -81,6 +82,7 @@ namespace YakaTicket.Controllers
                     PhoneNumber = (string)user[5],
                     Id = User.Identity.Name
                 };
+                ViewBag.User = tmp;
             }
             catch (Exception) { }
 
@@ -152,11 +154,49 @@ namespace YakaTicket.Controllers
         }
 
 
-        public ActionResult DownloadPDF(Event data, User user)
+        public ActionResult DownloadPDF(string ev)
         {
+            User user = null;
+
+            try
+            {
+                object[] u = Database.Database.database.RequestLine("f_get_user", 6, User.Identity.Name);
+                user = new User
+                {
+                    Ionis = (bool)u[0],
+                    Epita = (bool)u[1],
+                    Firstname = (string)u[2],
+                    Lastname = (string)u[3],
+                    Address = (string)u[4],
+                    PhoneNumber = (string)u[5],
+                    Id = User.Identity.Name
+                };
+            }
+            catch (Exception) { }
+
+
+            Event eevent = null;
+
+            try
+            {
+                object[] e = Database.Database.database.RequestLine("f_get_event", 6, ev);
+                eevent = new Event
+                {
+                    Name = ev,
+                    Description = (string) e[0],
+                    Begin = (DateTime) e[2],
+                    End = (DateTime) e[3],
+                    Assoc = (string) e[4],
+                    Owner = (string) e[5]
+                };
+
+            }
+            catch (Exception) { }
+
+            
             string path = Server.MapPath("~/Download/");
             string logo = Server.MapPath("~/Content/logo_billeterie5.png");
-            string filename = Tools.PDFCreator.exportAsPDF(path, data, user, logo);
+            string filename = Tools.PDFCreator.exportAsPDF(path, eevent, user, logo);
             string fullPath = Path.Combine(path, filename);
 
             FilePathResult file = File(fullPath, "pdf");

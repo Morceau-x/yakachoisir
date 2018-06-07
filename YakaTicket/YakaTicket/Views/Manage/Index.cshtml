@@ -1,4 +1,5 @@
-﻿@model YakaTicket.Models.IndexViewModel
+﻿@using YakaTicket.Models
+@model YakaTicket.Models.IndexViewModel
 @{
     ViewBag.Title = "Profil";
 }
@@ -121,7 +122,7 @@
             <td>@e.Assoc</td>
             <td>@e.Begin</td>
             <td>@e.End</td>
-            <td>@Html.ActionLink("télécharger", "DownloadPDF", new { data = e, user = ViewBag.User } )</td>
+            <td>@Html.ActionLink("télécharger", "DownloadPDF", new { ev = e.Name })</td>
         </tr>
         }
     </table>
