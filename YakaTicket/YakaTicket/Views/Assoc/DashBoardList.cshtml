@@ -3,4 +3,26 @@
     ViewBag.Title = "DashBoardList";
 }
 
-<h3> Liste des associations. </h3>
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Nom</th>
+            </tr>
+            @foreach (string e in ViewBag.list)
+            {
+                <tr>
+                    <td>@Html.ActionLink(e, "DashBoard", "Assoc", new { name = e }, null)</td>
+                </tr>
+            }
+
+        </table>
+    }
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
+}

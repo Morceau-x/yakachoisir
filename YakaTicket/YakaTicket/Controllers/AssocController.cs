@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using YakaTicket.Models;
+using Microsoft.AspNet.Identity;
+using YakaTicket.Database;
 
 namespace YakaTicket.Controllers
 {
@@ -44,6 +46,20 @@ namespace YakaTicket.Controllers
         public ActionResult DashBoardList()
         {
             // TODO get list of assoc for the user
+            List<string> ret = new List<string>();
+            try
+            {
+                string login = User.Identity.GetUserName();
+                List<object[]> assocs = Database.Database.database.RequestTable("f_assocs", 1, login);
+                foreach (object[] item in assocs)
+                {
+                    ret.Add((string)item[0]);
+                }
+            }
+            catch (Exception)
+            { }
+
+            ViewBag.list = ret;
             return View();
         }
 
