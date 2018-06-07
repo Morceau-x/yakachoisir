@@ -1,9 +1,6 @@
-﻿model YakaTicket.Models.AssocModel
-@{
+﻿@{
     ViewBag.Title = "DashBoard";
 }
-
-<h2>DashBoardView</h2>
 
 @using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
@@ -19,13 +16,13 @@
                 <p>Nom : ViewBag.assoc.Name </p>
             </div>
             <div>
-                <p>Infos : ViewBag.assoc.Name </p>
+                <p>Infos : ViewBag.assoc.Summary </p>
             </div>
             <div>
-                <p>Président : ViewBag.assoc.Name</p>
+                <p>Président : ViewBag.assoc.President</p>
             </div>
             <div>
-                <p>Ecole : ViewBag.assoc.Name</p>
+                <p>Ecole : ViewBag.assoc.School</p>
             </div>
 
         </fieldset>
