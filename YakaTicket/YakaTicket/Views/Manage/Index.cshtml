@@ -10,25 +10,25 @@
     <h4>Configuration</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>Nom:</dt>
+        <dt>Nom: </dt>
         <dd>@ViewBag.User.Lastname</dd>
-        <dt>Prénom</dt>
+        <dt>Prénom: </dt>
         <dd>@ViewBag.User.Firstname</dd>
-        <dt>Adresse</dt>
+        <dt>Adresse: </dt>
         <dd>@ViewBag.User.Address</dd>
         
         @if (ViewBag.User.Ionis)
         {
-            <dt>Membre Ionis</dt>
+            <dt>[Membre Ionis]</dt>
             <dd></dd>
         }
         @if (ViewBag.User.Epita)
         {
-            <dt>Membre EPITA</dt>
+            <dt>[Membre EPITA]</dt>
             <dd></dd>
         }
 
-        <dt>Mot de passe:</dt>
+        <dt>Mot de passe: </dt>
         <dd>
             [
             @if (Model.HasPassword)
@@ -41,7 +41,7 @@
             }
             ]
         </dd>
-        <dt>EPITA Connect:</dt>
+        <dt>EPITA Connect: </dt>
         <dd>
             @Model.Logins.Count [
             @Html.ActionLink("Configurer", "ManageLogins") ]
