@@ -284,6 +284,7 @@
     <Content Include="Content\customLayout.css" />
     <Content Include="Content\customMain.css" />
     <Content Include="Content\daypilot-all.min.js" />
+    <Content Include="Content\calendar.css" />
     <Content Include="Content\logo-epita-hd.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
