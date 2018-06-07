@@ -31,6 +31,16 @@ namespace YakaTicket.Controllers
                 
                 Update();
             }
+
+            protected override void OnBeforeEventRender(BeforeEventRenderArgs e)
+            {
+                if(e.Id == "1")
+                {
+                    e.BackgroundColor = "#990000";
+                    
+                }
+            }
+
             protected override void OnFinish()
             {
                 if (UpdateType == CallBackUpdateType.None)
@@ -42,15 +52,16 @@ namespace YakaTicket.Controllers
                 DataStartField = "Start";
                 DataEndField = "End";
                 DataTextField = "Desc";
+                
                 List<TemplEvent> levents = new List<TemplEvent>();
                 long i = 0;
                 foreach (var e in Database.Database.database.RequestTable("f_list_week_events", 7))
                 {
                     levents.Add(new TemplEvent {
-                        Id = i,
+                        Id = ((bool) e.GetValue(2) ? 1 : 0),
                         Start = (DateTime) e.GetValue(3),
                         End = (DateTime) e.GetValue(4),
-                        Desc = (string) e.GetValue(1) + ((bool) e.GetValue(2)? "\nPremium": "\nNon Premium") + "\n" + (string) e.GetValue(5)
+                        Desc = (string) e.GetValue(1)+ " / " + (string) e.GetValue(5)
                     });
                     i++;
                 }
