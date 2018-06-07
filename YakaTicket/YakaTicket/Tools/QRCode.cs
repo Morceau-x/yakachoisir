@@ -11,10 +11,13 @@ namespace YakaTicket.Tools
     {
         public static Bitmap getImage()
         {
-            BarcodeWriter barcode = null;
-            barcode = new BarcodeWriter();
-            barcode.Format = BarcodeFormat.QR_CODE;
-            return barcode.Write("test");
+            return getImage("test");
+        }
+
+        public static Bitmap getImage(string code)
+        {
+            BarcodeWriter barcode = new BarcodeWriter {Format = BarcodeFormat.QR_CODE};
+            return barcode.Write(code);
         }
     }
 }
