@@ -47,6 +47,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DayPilot.Web.Mvc">
+      <HintPath>C:\Users\Arthur\Desktop\DayPilotProMvcTrial-2018.2.5941\Binary\Mvc4\DayPilot.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="Devart.Data, Version=5.0.1926.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
       <HintPath>..\packages\dotConnect.Express.for.PostgreSQL.7.10.1134\lib\Devart.Data.dll</HintPath>
     </Reference>
@@ -275,10 +278,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\customLayout.css" />
     <Content Include="Content\customMain.css" />
-    <Content Include="Content\jquery.calendar.css" />
-    <Content Include="Content\jquery.calendar.js" />
-    <Content Include="Content\jquery.calendar.min.css" />
-    <Content Include="Content\jquery.calendar.min.js" />
+    <Content Include="Content\daypilot-all.min.js" />
     <Content Include="Content\logo-epita-hd.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -293,7 +293,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Content Include="Content\df-calendar.jquery.json" />
-    <Content Include="Content\_config.yml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
