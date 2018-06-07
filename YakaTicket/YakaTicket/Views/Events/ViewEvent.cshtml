@@ -6,9 +6,12 @@
 <fieldset>
     <legend>Résumé de l'évènement</legend>
     @using Microsoft.AspNet.Identity
-@using YakaTicket.Database
+    @using YakaTicket.Database
+
+    <div></div>
+
     <div>
-        <p>Nom :@Html.DisplayFor(model => model.Name) </p>
+        <p>Nom : @Html.DisplayFor(model => model.Name) </p>
     </div>
     <div>
         <p>Association : @Html.DisplayFor(model => model.Assoc) </p>
