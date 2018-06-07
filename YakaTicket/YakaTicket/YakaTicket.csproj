@@ -47,7 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DayPilot.Web.Mvc, Version=2018.2.5941.0, Culture=neutral, PublicKeyToken=b8d928e6588028e4, processorArchitecture=MSIL">
+    <Reference Include="DayPilot.Web.Mvc, Version=1.5.434.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Tools\Extra\DayPilot.Web.Mvc.dll</HintPath>
     </Reference>
@@ -297,7 +297,6 @@
     <EmbeddedResource Include="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="Content\df-calendar.jquery.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -309,6 +308,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Tools\Extra\DayPilot.Web.Mvc.dll" />
     <Content Include="Tools\Extra\itextsharp.dll" />
     <Content Include="Tools\Extra\itextsharp.pdfa.dll" />
     <Content Include="Tools\Extra\iTextSharp.xml" />
