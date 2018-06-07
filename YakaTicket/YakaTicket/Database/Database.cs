@@ -100,11 +100,13 @@ namespace YakaTicket.Database
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    return null;
                 }
             }
             catch (Exception)
-            { }
+            {
+                return null;
+            }
 
             reader?.Close();
             command?.Dispose();
