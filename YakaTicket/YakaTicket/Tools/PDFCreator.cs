@@ -19,14 +19,17 @@ namespace YakaTicket.Tools
             string filename = "billet_" + ev.Name + "_" + user.Firstname + "_" + user.Lastname;
 
             PDF.Document doc = new PDF.Document(PDF.PageSize.A4, 20, 20, 42, 42);
-            FileStream file = new FileStream(path + filename, FileMode.OpenOrCreate);
+            
+            FileStream file = new FileStream(path + filename + ".pdf", FileMode.OpenOrCreate);
             PdfWriter pdf = PdfWriter.GetInstance(doc, file);
+
             doc.Open();
 
             /* Réservation */
             PDF.Paragraph par = new PDF.Paragraph("Réservation");
-            PDF.Phrase ph = new PDF.Phrase("Merci de votre réservation pour l'événement " + ev.Name);
-            
+            PDF.Paragraph ph = new PDF.Paragraph("Merci de votre réservation pour l'événement " + ev.Name);
+            PDF.Paragraph ph2 = new PDF.Paragraph(user.Firstname + " " + user.Lastname);
+
             /* Logo */
             PDF.Image logoBilleterie = PDF.Image.GetInstance(logo);
             logoBilleterie.ScalePercent(20.0f);
@@ -61,10 +64,21 @@ namespace YakaTicket.Tools
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
 
-            cell31.AddElement(new PDF.Paragraph(ev.Name));
+            float price_value = -1;
+            string price_name = "";
+
+            try
+            {
+                object[] tmp = Database.Database.database.RequestLine("f_get_participant", 2, user.Id, ev.Name);
+                price_name = (string)tmp[0];
+                price_value = (float)tmp[1];
+            }
+            catch (Exception) { }
+
+            cell31.AddElement(new PDF.Paragraph(price_name));
             cell32.AddElement(new PDF.Paragraph(ev.Begin.ToShortDateString() + " " + ev.Begin.ToShortTimeString()));
             cell33.AddElement(new PDF.Paragraph(ev.End.ToShortDateString() + " " + ev.End.ToShortTimeString()));
-            cell34.AddElement(new PDF.Paragraph("FIXME THE PRICE"));
+            cell34.AddElement(new PDF.Paragraph(price_value.ToString("C")));
 
             
             table2.AddCell(cell31);
@@ -75,13 +89,15 @@ namespace YakaTicket.Tools
             /* Add */
             doc.Add(logoBilleterie);
             doc.Add(par);
+            doc.Add(ph);
+            doc.Add(ph2);
             doc.Add(qrcode);
             doc.Add(table2);
             
 
             doc.Close();
 
-            return filename;
+            return filename + ".pdf";
         }
 
         public static string test(string path, string filename)

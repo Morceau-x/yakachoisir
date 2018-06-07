@@ -23,7 +23,7 @@ namespace YakaTicket.Controllers
         {
             protected override void OnInit(InitArgs e)
             {
-                UpdateWithMessage("Let's see your events for the week !", CallBackUpdateType.Full);
+                //UpdateWithMessage("Let's see your events for the week !", CallBackUpdateType.Full);
             }
             protected override void OnFinish()
             {

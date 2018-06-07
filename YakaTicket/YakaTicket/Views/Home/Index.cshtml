@@ -14,13 +14,14 @@
 <div class="row">
     <div class="col-md-12">
         <h2>Calendrier</h2>
-
+        <link rel="stylesheet" type="text/css" href="~/Content/calendar.css">
         @using DayPilot.Web.Mvc;
         @using DayPilot.Web.Mvc.Enums.Calendar;
         @Html.DayPilotCalendar("dp", new DayPilotCalendarConfig
         {
             BackendUrl = Url.Action("Backend", "Calendar"),
-            ViewType = DayPilot.Web.Mvc.Enums.Calendar.ViewType.Week
+            ViewType = DayPilot.Web.Mvc.Enums.Calendar.ViewType.Week,
+            Theme = "epita"
         })
     </div>
 </div>
