@@ -1,0 +1,32 @@
+﻿@model YakaTicket.Controllers.AssocController.AssocAdd
+@{
+    ViewBag.Title = "AddMember";
+}
+
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+        <fieldset>
+            <legend>Ajouter un membre</legend>
+            <div class="row">
+                <div class="column">
+                    <div>
+                        @ViewBag.user
+                    </div>
+                    <div>
+                        login :
+                        @Html.TextBoxFor(model => model.login, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.login)
+                    </div>
+                </div>
+            </div>
+            <input type="submit" value="Valider" class="form-control btn-primary" />
+        </fieldset>
+    }
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
+}

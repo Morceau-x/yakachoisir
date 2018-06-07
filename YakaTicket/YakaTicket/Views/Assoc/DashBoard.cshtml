@@ -7,25 +7,30 @@
 {
     using (Html.BeginForm())
     {
-        <fieldset>
-            <legend>Dashboard d'association</legend>
+<fieldset>
+    <legend>Dashboard d'association</legend>
 
-            <div></div>
+    <div></div>
 
-            <div>
-                <p>Nom : @ViewBag.assoc.Name </p>
-            </div>
-            <div>
-                <p>Infos : @ViewBag.assoc.Summary </p>
-            </div>
-            <div>
-                <p>Président : @ViewBag.assoc.President</p>
-            </div>
-            <div>
-                <p>Ecole : @ViewBag.assoc.School</p>
-            </div>
-
-        </fieldset>
+    <div>
+        <p>Nom : @ViewBag.assoc.Name </p>
+    </div>
+    <div>
+        <p>Infos : @ViewBag.assoc.Summary </p>
+    </div>
+    <div>
+        <p>Président : @ViewBag.assoc.President</p>
+    </div>
+    <div>
+        <p>Ecole : @ViewBag.assoc.School</p>
+    </div>
+    @if (Request.IsAuthenticated)
+    {
+        <div>
+                @Html.ActionLink("Ajouter un membre", "AddMember", "Assoc", new { name = @ViewBag.assoc.Name }, null)
+        </div>
+    }
+</fieldset>
     }
 }
 else
