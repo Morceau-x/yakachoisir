@@ -25,7 +25,10 @@
     <div>
         <p>Fin de l'évènement : @Html.DisplayFor(model => model.End)</p>
     </div>
-    <button type="button" class="btn-default">
+    <div>
+        <p>Nombre de place disponible : FIXME</p>
+    </div>
+    <button type="button" class="btn btn-default">
         Inscription
     </button>
     @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
