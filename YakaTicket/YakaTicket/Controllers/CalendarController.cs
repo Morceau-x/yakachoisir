@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -14,6 +16,7 @@ namespace YakaTicket.Controllers
 {
     public class CalendarController : Controller
     {
+
         public ActionResult Backend()
         {
             return new Dpc().CallBack(this);
@@ -21,9 +24,12 @@ namespace YakaTicket.Controllers
 
         class Dpc : DayPilotCalendar
         {
+            
+
             protected override void OnInit(InitArgs e)
             {
-                //UpdateWithMessage("Let's see your events for the week !", CallBackUpdateType.Full);
+                
+                Update();
             }
             protected override void OnFinish()
             {
@@ -35,10 +41,30 @@ namespace YakaTicket.Controllers
                 DataIdField = "Id";
                 DataStartField = "Start";
                 DataEndField = "End";
-                DataTextField = "Text";
-
-                //Events = from e in dc.Events where !((e.End <= VisibleStart) || (e.Start >= VisibleEnd)) select e;
+                DataTextField = "Desc";
+                List<TemplEvent> levents = new List<TemplEvent>();
+                long i = 0;
+                foreach (var e in Database.Database.database.RequestTable("f_list_week_events", 7))
+                {
+                    levents.Add(new TemplEvent {
+                        Id = i,
+                        Start = (DateTime) e.GetValue(3),
+                        End = (DateTime) e.GetValue(4),
+                        Desc = (string) e.GetValue(1) + ((bool) e.GetValue(2)? "\nPremium": "\nNon Premium") + "\n" + (string) e.GetValue(5)
+                    });
+                    i++;
+                }
+                Events =  levents;
+                
             }
+        }
+
+        class TemplEvent
+        {
+            public long Id { get; set; }
+            public DateTime Start { get; set; }
+            public DateTime End { get; set; }
+            public string Desc { get; set; }
         }
     }
 }
