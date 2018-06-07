@@ -1,0 +1,33 @@
+﻿@using System.Threading
+
+@{
+    ViewBag.Title = "Payment";
+}
+
+<h2>Inscription</h2>
+
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Billet</th>
+            <th>Prix</th>
+            <th>Paiement</th>
+        </tr>
+        @foreach (YakaTicket.Models.EventPrice e in ViewBag.list)
+        {
+            <tr>
+                <td>@e.PriceName</td>
+                <td>@e.PriceValueS</td>
+                <td>Choisir</td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
+}

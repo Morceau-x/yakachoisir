@@ -5,5 +5,9 @@
     "username": "server",
     "password": "zZaK+r)G:u-&6BrU[6(W54>VVgQu-)AhvTJjy7##",
     "database": "ticket"
-  }
+  },
+  "paypal": {
+    "clientId": "AdsW3pB_NqbPK_7SGynxPgeDnGNmti2tn5ub3v7S08GoPdpLFQqsxowtLURDouinwB_rZtFiPrgIGNwf",
+    "clientSecret": "EAUvnd1ROyMGlO-_qYFa1AvqSJ8JaIExx00AIuhv1TTAgYklgy_0tlpqpDOSR35k8nALH6MBtvP039T9"
+  } 
 }
