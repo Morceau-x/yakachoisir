@@ -62,7 +62,8 @@ CREATE TABLE participants
 	login				VARCHAR(256)		NOT NULL,
 	staff				BOOLEAN				NOT NULL,
 	validated			BOOLEAN				NOT NULL		DEFAULT FALSE,
-
+	is_inside			BOOLEAN				NOT NULL		DEFAULT FALSE,
+	
 	PRIMARY KEY (id),
 	UNIQUE	(event, login),
 	FOREIGN	KEY	(event)	REFERENCES	events(name),

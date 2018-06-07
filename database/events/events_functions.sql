@@ -28,7 +28,7 @@ DROP FUNCTION IF EXISTS f_list_future_events(); /* approved */
 DROP FUNCTION IF EXISTS f_list_participants(event VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_list_staff(event VARCHAR(1024));
 
-
+DROP FUNCTION IF EXISTS f_list_participating(login VARCHAR(256));
 
 /*********************
 ***** FUNCTIONS ******
@@ -61,11 +61,14 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION f_edit_event(login VARCHAR(256), name VARCHAR(1024), summary VARCHAR(8192), begin_date TIMESTAMP, end_date TIMESTAMP)
 RETURNS BOOLEAN AS
 $$
+DECLARE
+	assoc VARCHAR(1024);
 BEGIN
-	IF (login IS NULL OR name IS NULL OR summary IS NULL OR begin_date IS NULL OR end_date IS NULL OR assoc IS NULL) THEN
+	IF (login IS NULL OR name IS NULL OR summary IS NULL OR begin_date IS NULL OR end_date IS NULL) THEN
 		RETURN FALSE;
 	END IF;
-	IF (NOT f_is_desk(login) AND NOT is_creator(login)) THEN
+	SELECT e.assoc INTO assoc FROM events e WHERE e.name = $2;
+	IF (NOT f_is_desk(login, assoc) AND NOT f_is_creator(login, name)) THEN
 		RETURN FALSE;
 	END IF;
 	UPDATE events SET (summary, begin_date, end_date) = ($3, $4, $5)
@@ -87,7 +90,7 @@ BEGIN
 	IF (login IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
-	INSERT INTO participants VALUES (DEFAULT, name, login, FALSE, TRUE);
+	INSERT INTO participants VALUES (DEFAULT, name, login, FALSE, TRUE, DEFAULT);
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
@@ -105,7 +108,7 @@ BEGIN
 	IF (login IS NULL OR name IS NULL) THEN
 		RETURN FALSE;
 	END IF;
-	INSERT INTO participants VALUES (DEFAULT, name, login, TRUE, TRUE);
+	INSERT INTO participants VALUES (DEFAULT, name, login, TRUE, TRUE, DEFAULT);
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
@@ -185,3 +188,63 @@ CREATE OR REPLACE FUNCTION f_list_staff(event VARCHAR(1024))
 RETURNS SETOF VARCHAR(256) AS
 'SELECT p.login FROM participants p WHERE p.event = $1 AND p.staff = TRUE;'
 LANGUAGE SQL;
+
+/*********************
+*** PARTICIPATING ****
+*********************/
+CREATE TYPE event_name_data AS (name VARCHAR(1024), summary VARCHAR(8192), premium BOOLEAN, begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024), creator VARCHAR(256));
+CREATE OR REPLACE FUNCTION f_list_participating(login VARCHAR(256))
+RETURNS SETOF event_name_data AS
+'SELECT e.name, e.summary, e.premium, e.begin_date, e.end_date, e.assoc, e.creator FROM participants p
+JOIN events e ON e.name = p.event
+WHERE p.login = $1;'
+LANGUAGE SQL;
+
+/*********************
+******* ENTER ********
+*********************/
+CREATE OR REPLACE FUNCTION f_enter(login VARCHAR(256), event VARCHAR(1024))
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF (login IS NULL OR event IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	IF (EXISTS(SELECT e.name FROM events e WHERE name = $2 AND (begin_date > LOCALTIMESTAMP OR end_date < LOCALTIMESTAMP))) THEN
+			RETURN FALSE;
+	END IF;
+	IF (EXISTS(SELECT p.login FROM participants p WHERE p.login = $1 AND p.event = $2 AND is_inside = TRUE)) THEN
+		RETURN FALSE;
+	END IF;
+	UPDATE participants p SET is_inside = TRUE WHERE p.login = $1 AND p.event = $2;
+	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+******* LEAVE ********
+*********************/
+CREATE OR REPLACE FUNCTION f_leave(login VARCHAR(256), event VARCHAR(1024))
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF (login IS NULL OR event IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	IF (EXISTS(SELECT e.name FROM events e WHERE e.name = $2 AND (begin_date > LOCALTIMESTAMP OR end_date < LOCALTIMESTAMP))) THEN
+		RETURN FALSE;
+	END IF;
+	IF (EXISTS(SELECT p.login FROM participants p WHERE p.login = $1 AND p.event = $2 AND p.is_inside = FALSE)) THEN
+		RETURN FALSE;
+	END IF;
+	UPDATE participants p SET is_inside = FALSE WHERE p.login = $1 AND p.event = $2;
+	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
