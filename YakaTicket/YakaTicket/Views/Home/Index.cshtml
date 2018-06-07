@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "Accueil";
 }
-<script type='text/javascript' src=></script>
+<script type='text/javascript' src="~/Content/daypilot-all.min.js"></script>
 
 <div class="row">
 
@@ -17,8 +17,8 @@
 
 
         @Html.DayPilotCalendar("dp", new DayPilotCalendarConfig
-{
-    BackendUrl = Url.Action("Backend", "Calendar")
-})
+        {
+            BackendUrl = Url.Action("Backend", "Calendar")
+        })
     </div>
 </div>
