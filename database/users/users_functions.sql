@@ -2,15 +2,15 @@
 ******** DROPS *******
 *********************/
 DROP FUNCTION IF EXISTS f_create_user(login VARCHAR(256), password VARCHAR(256), email VARCHAR(256));
-DROP FUNCTION IF EXISTS f_edit_user(login VARCHAR(256), ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32));
+DROP FUNCTION IF EXISTS f_edit_user(login VARCHAR(256), email VARCHAR(256), ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32));
 DROP FUNCTION IF EXISTS f_delete_user(id INTEGER, password VARCHAR(256));
 DROP FUNCTION IF EXISTS f_regular_connect(login VARCHAR(256), password VARCHAR(256));
 DROP FUNCTION IF EXISTS f_epita_connect(login VARCHAR(256));
 DROP FUNCTION IF EXISTS f_change_password(id INTEGER, old_pass VARCHAR(256), new_pass VARCHAR(256));
-DROP FUNCTION IF EXISTS f_set_moderator(id INTEGER, target INTEGER);
-DROP FUNCTION IF EXISTS f_remove_moderator(id INTEGER, target INTEGER);
-DROP FUNCTION IF EXISTS f_is_moderator(id INTEGER);
-DROP FUNCTION IF EXISTS f_is_administrator(id INTEGER);
+DROP FUNCTION IF EXISTS f_set_moderator(login VARCHAR(256), target VARCHAR(256));
+DROP FUNCTION IF EXISTS f_remove_moderator(login VARCHAR(256), target VARCHAR(256));
+DROP FUNCTION IF EXISTS f_is_moderator(login VARCHAR(256));
+DROP FUNCTION IF EXISTS f_is_administrator(login VARCHAR(256));
 DROP FUNCTION IF EXISTS f_id(login VARCHAR(256));
 DROP FUNCTION IF EXISTS f_email(login VARCHAR(256));
 DROP FUNCTION IF EXISTS f_get_user(login VARCHAR(256));
@@ -53,14 +53,14 @@ $$ LANGUAGE plpgsql;
 /*********************
 *** EDIT ACCOUNT ***
 *********************/
-CREATE OR REPLACE FUNCTION f_edit_user(login VARCHAR(256), ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32))
+CREATE OR REPLACE FUNCTION f_edit_user(login VARCHAR(256), email VARCHAR(256), ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32))
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (login IS NULL OR ionis IS NULL OR epita IS NULL OR firstname IS NULL OR lastname IS NULL OR address IS NULL OR phone_number IS NULL) THEN
+	IF (login IS NULL OR email IS NULL OR ionis IS NULL OR epita IS NULL OR firstname IS NULL OR lastname IS NULL OR address IS NULL OR phone_number IS NULL) THEN
 		RETURN FALSE;
 	END IF;
-	UPDATE users SET (ionis, epita, firstname, lastname, address, phone_number) = ($2, $3, $4, $5, $6, $7)
+	UPDATE users SET (email, email_verified, ionis, epita, firstname, lastname, address, phone_number) = ($2, FALSE, $3, $4, $5, $6, $7, $8)
 	WHERE users.login = $1;
 	RETURN TRUE;
 EXCEPTION
