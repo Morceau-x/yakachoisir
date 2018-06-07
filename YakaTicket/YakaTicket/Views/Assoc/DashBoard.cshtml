@@ -1,0 +1,37 @@
+﻿model YakaTicket.Models.AssocModel
+@{
+    ViewBag.Title = "DashBoard";
+}
+
+<h2>DashBoardView</h2>
+
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+        <fieldset>
+            <legend>Dashboard d'association</legend>
+
+            <div></div>
+
+            <div>
+                <p>Nom : ViewBag.assoc.Name </p>
+            </div>
+            <div>
+                <p>Infos : ViewBag.assoc.Name </p>
+            </div>
+            <div>
+                <p>Président : ViewBag.assoc.Name</p>
+            </div>
+            <div>
+                <p>Ecole : ViewBag.assoc.Name</p>
+            </div>
+
+        </fieldset>
+    }
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
+}
