@@ -17,12 +17,14 @@
 /*MAIN*/
 body {
     background-color: #e5e5e5; /*Stolen from epita.net*/
-    padding-top: 150px;
+    padding: 0;
 }
 
 .form-control {
     border: 1px solid var(--epita-color2);
     background-color: aliceblue;
+    display: inline;
+    width: auto;
 }
 
 .form-control.btn-primary {
@@ -91,6 +93,7 @@ body {
 
     .navbar-inverse .navbar-nav > li > a {
         color: var(--navbar-text-color);
+        padding: 3px;
     }
 
     .navbar-inverse .navbar-toggle .icon-bar {
@@ -124,8 +127,3 @@ body {
     float: left;
     width: 50%;
 }
-
-
-
-/* CALENDAR */
-
