@@ -18,5 +18,16 @@ namespace YakaTicket.Database
             catch { }
             return result;
         }
+
+        public static bool CanEditEvent(string user, string name)
+        {
+            bool result = false;
+            try
+            {
+                result = Database.database.RequestBoolean("f_can_edit_event", user, name);
+            }
+            catch { }
+            return result;
+        }
     }
 }

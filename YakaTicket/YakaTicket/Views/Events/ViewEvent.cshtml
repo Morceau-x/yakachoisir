@@ -33,7 +33,7 @@
             @Html.ActionLink("Inscription", "Payment", new {name = Html.ValueFor(model => model.Name)})
         </button>
     </div>
-    @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
+    @if (Request.IsAuthenticated && Check.CanEditEvent(User.Identity.GetUserName(), Model.Name))
     {
         <div>
             <button type="button" class="btn btn-default">
