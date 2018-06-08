@@ -313,7 +313,7 @@ RETURNS SETOF event_name_data AS
 $$
 BEGIN
 	RETURN QUERY SELECT name, summary, premium, begin_date, end_date, assoc, creator FROM events e 
-	WHERE e.begin_date <= date_trunc('week',  LOCALTIMESTAMP) + interval '7 day' AND e.begin_date >= date_trunc('week',  LOCALTIMESTAMP) AND e.moderator_approved = TRUE;
+	WHERE e.begin_date <= date_trunc('month', date_trunc('month',  LOCALTIMESTAMP) + interval '34 day') AND e.begin_date >= date_trunc('month',  LOCALTIMESTAMP) AND e.moderator_approved = TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN QUERY SELECT NULL LIMIT 0;
