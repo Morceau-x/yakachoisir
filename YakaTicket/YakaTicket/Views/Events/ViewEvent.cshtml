@@ -45,7 +45,7 @@
         </div>
     }
 
-    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_can_approve", User.Identity.GetUserName(), Model.Name))
+    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_can_approve", User.Identity.GetUserName(), ViewBag.name))
     {
         using (Html.BeginForm())
         {

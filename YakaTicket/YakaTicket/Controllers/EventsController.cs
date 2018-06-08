@@ -51,7 +51,7 @@ namespace YakaTicket.Controllers
         [HttpPost]
         public ActionResult ViewEvent(string name)
         {
-            Database.Database.database.RequestVoid("f_approve", HttpContext.User.Identity.Name, name);
+            Database.Database.database.RequestVoid("f_approve", User.Identity.Name, name);
             return RedirectToAction("ViewEvent", "Events", new { name });
         }
 
