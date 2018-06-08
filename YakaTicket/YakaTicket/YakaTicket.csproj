@@ -369,6 +369,7 @@
     <Content Include="Views\Assoc\DeleteMember.cshtml" />
     <Content Include="Views\Assoc\ViewMembers.cshtml" />
     <Content Include="Views\Admin\PresidentDashboard.cshtml" />
+    <Content Include="Views\Assoc\CreateAssoc.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

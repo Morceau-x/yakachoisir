@@ -228,5 +228,41 @@ namespace YakaTicket.Controllers
             }
             return View("NoAssoc");
         }
+
+        public ActionResult CreateAssoc()
+        {
+            List<string> ret = new List<string> { "" };
+            try
+            {
+                // TODO recup list of schools
+                List<object[]> events = Database.Database.database.RequestTable("f_assocs", 1, HttpContext.User.Identity.Name);
+
+                foreach (object[] item in events)
+                {
+                    ret.Add((string)item[0]);
+                }
+
+            }
+            catch { }
+
+            ViewBag.list = ret;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateEvent(AssocModel e)
+        {
+            bool result = false;
+            try
+            {
+                result = Database.Database.database.RequestBoolean("f_create_event", e.Name, e.Summary, e.School);
+            }
+            catch { }
+
+            if (result)
+                return RedirectToAction("Index", "Home");
+            else
+                return RedirectToAction("CreateAssoc", "Assoc");
+        }
     }
 }

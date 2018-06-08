@@ -1,0 +1,41 @@
+﻿@model YakaTicket.Models.AssocModel
+@{
+    ViewBag.Title = "CreateAssoc";
+}
+
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+        <h3>* <i>Champs obligatoires</i></h3>
+        <fieldset>
+            <legend>Créer une association</legend>
+            <div class="row">
+                <div class="column">
+
+                    <div>
+                        Ecole <i>*</i>
+                        @Html.DropDownListFor(model => model.School, new SelectList(ViewBag.list))
+                        @Html.ValidationMessageFor(model => model.School)
+                    </div>
+                    <div>
+                        Nom <i>*</i>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                    <div>
+                        Description <i>*</i>
+                        @Html.TextBoxFor(model => model.Summary, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Summary)
+                    </div>
+                </div>
+            </div>
+            <input type="submit" value="Créer l'association" class="form-control btn-primary" />
+        </fieldset>
+    }
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
+}
