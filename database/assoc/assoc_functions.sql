@@ -437,3 +437,36 @@ EXCEPTION
 		RETURN QUERY SELECT NULL LIMIT 0;
 END;
 $$ LANGUAGE plpgsql;
+
+/*************************
+****** GET PRESIDENT *****
+*************************/
+CREATE OR REPLACE FUNCTION f_get_president_assoc(login VARCHAR(256))
+RETURNS VARCHAR(1024) AS
+'SELECT a.name FROM assocs a WHERE a.president = $1;'
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION f_is_president_assoc(login VARCHAR(256))
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF (login IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	IF (f_is_moderator(login)) THEN
+		RETURN TRUE;
+	END IF;
+	IF (EXISTS(SELECT a.name FROM assocs a WHERE a.president = $1)) THEN
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION f_list_schools()
+RETURNS SETOF VARCHAR(128) AS
+'SELECT s.shortname FROM schools s;'
+LANGUAGE SQL;

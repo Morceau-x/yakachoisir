@@ -30,7 +30,8 @@ DROP FUNCTION IF EXISTS f_list_users();
 -- Is administrator [id -> bool]
 -- set moderator [id, target -> bool]
 */
-
+CREATE TYPE user_data AS (ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32));
+CREATE TYPE user_name_data AS (login VARCHAR(256), email VARCHAR(256), firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32));
 /*********************
 *** CREATE ACCOUNT ***
 *********************/
@@ -280,7 +281,6 @@ $$ LANGUAGE plpgsql;
 /*********************
 **** GET USER DATA ***
 **********************/
-CREATE TYPE user_data AS (ionis BOOLEAN, epita BOOLEAN, firstname VARCHAR(256), lastname VARCHAR(256), address VARCHAR(1024), phone_number VARCHAR(32));
 CREATE OR REPLACE FUNCTION f_get_user(login VARCHAR(256))
 RETURNS user_data AS
 'SELECT ionis, epita, firstname, lastname, address, phone_number FROM users u WHERE u.login = $1;'
@@ -291,4 +291,10 @@ LANGUAGE SQL;
 **********************/
 CREATE OR REPLACE FUNCTION f_list_users()
 RETURNS SETOF VARCHAR(256) AS 'SELECT login FROM users;'
+LANGUAGE SQL;
+
+
+CREATE OR REPLACE FUNCTION f_get_extern_user()
+RETURNS SETOF user_name_data AS
+'SELECT login, email, firstname, lastname, address, phone_number FROM users u WHERE u.ionis = FALSE AND u.epita = FALSE;'
 LANGUAGE SQL;
