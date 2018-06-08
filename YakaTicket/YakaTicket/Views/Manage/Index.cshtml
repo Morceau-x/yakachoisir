@@ -20,35 +20,39 @@
             <td>@ViewBag.User.Firstname</td>
         </tr>
         <tr>
+            <td>Email: </td>
+            <td>@ViewBag.User.Mail</td>
+        </tr>
+        <tr>
             <td>Adresse: </td>
             <td>@ViewBag.User.Address</td>
         </tr>
 
         @if (ViewBag.User.Ionis)
-        {
-            <tr>
-                <td>[Membre Ionis]</td>
-            </tr>
-        }
+    {
+        <tr>
+            <td>[Membre Ionis]</td>
+        </tr>
+}
         @if (ViewBag.User.Epita)
-        {
-            <tr>
-                <td>[Membre EPITA]</td>
-            </tr>
-        }
+    {
+        <tr>
+            <td>[Membre EPITA]</td>
+        </tr>
+}
 
         <tr>
             <td>Mot de passe: </td>
             <td>
                 [
                 @if (Model.HasPassword)
-                {
-                    @Html.ActionLink("Changer de mot de passe", "ChangePassword")
-                }
-                else
-                {
-                    @Html.ActionLink("Create", "SetPassword")
-                }
+            {
+                @Html.ActionLink("Changer de mot de passe", "ChangePassword")
+        }
+        else
+        {
+            @Html.ActionLink("Create", "SetPassword")
+    }
                 ]
             </td>
         </tr>
@@ -59,7 +63,7 @@
                 @Html.ActionLink("Configurer", "ManageLogins") ]
             </td>
         </tr>
-      </table>
+    </table>
 
             @*
             Phone Numbers can used as a second factor of verification in a two-factor authentication system.

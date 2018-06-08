@@ -71,6 +71,7 @@ namespace YakaTicket.Controllers
             var userId = User.Identity.GetUserId();
             try
             {
+                object[] mail = Database.Database.database.RequestLine("f_email", 1, User.Identity.Name);
                 object[] user = Database.Database.database.RequestLine("f_get_user", 6, User.Identity.Name);
                 User tmp = new User
                 {
@@ -80,7 +81,8 @@ namespace YakaTicket.Controllers
                     Lastname = (string)user[3],
                     Address = (string)user[4],
                     PhoneNumber = (string)user[5],
-                    Id = User.Identity.Name
+                    Id = User.Identity.Name,
+                    Mail = (string)mail[0]
                 };
                 ViewBag.User = tmp;
             }
