@@ -11,6 +11,7 @@ namespace YakaTicket.Models
     {
         public string PriceName { get; set; }
         public float PriceValue { get; set; }
+        public int Number { get; set; }
         public int MaxNumber { get; set; }
         public bool Assoc { get; set; }
         public bool Epita { get; set; }

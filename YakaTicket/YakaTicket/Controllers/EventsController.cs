@@ -167,17 +167,18 @@ namespace YakaTicket.Controllers
 
             try
             {
-                List<object[]> tmp = Database.Database.database.RequestTable("f_list_prices", 6, name);
+                List<object[]> tmp = Database.Database.database.RequestTable("f_list_prices", 7, name);
                 foreach (var p in tmp)
                 {
                     list.Add(new EventPrice
                     {
                         PriceName = (string) p[0],
                         PriceValue = (float) p[1],
-                        MaxNumber = (int) p[2],
-                        Assoc = (bool) p[3],
-                        Epita = (bool) p[4],
-                        Ionis = (bool) p[5]
+                        Number = (int) p[2],
+                        MaxNumber = (int) p[3],
+                        Assoc = (bool) p[4],
+                        Epita = (bool) p[5],
+                        Ionis = (bool) p[6]
                     });
                 }
             }
