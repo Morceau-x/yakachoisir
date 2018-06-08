@@ -3,6 +3,7 @@
 *********************/
 DROP FUNCTION IF EXISTS f_create_event(login VARCHAR(256), event VARCHAR(1024), summary VARCHAR(8192), begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_edit_event(login VARCHAR(256), event VARCHAR(1024), summary VARCHAR(8192), begin_date TIMESTAMP, end_date TIMESTAMP);
+DROP FUNCTION IF EXISTS f_can_edit_event(login VARCHAR(256), name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_delete_event(login VARCHAR(256), event VARCHAR(1024));
 
 DROP FUNCTION IF EXISTS f_is_creator(login VARCHAR(256), event VARCHAR(1024));
@@ -80,6 +81,26 @@ BEGIN
 	UPDATE events SET (summary, begin_date, end_date) = ($3, $4, $5)
 	WHERE events.name = $2;
 	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+*** CAN EDIT EVENT ***
+*********************/
+CREATE OR REPLACE FUNCTION f_can_edit_event(login VARCHAR(256), name VARCHAR(1024))
+RETURNS BOOLEAN AS
+$$
+DECLARE
+	assoc VARCHAR(1024);
+BEGIN
+	SELECT e.assoc INTO assoc FROM events e WHERE e.name = $2;
+	IF (f_is_desk(login, assoc) OR f_is_creator(login, name)) THEN
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;

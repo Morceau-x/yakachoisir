@@ -129,7 +129,8 @@ namespace YakaTicket.Controllers
             List<string> ret = new List<string> {""};
             try
             {
-                List<object[]> events = Database.Database.database.RequestTable("f_list_assocs", 1);
+                Console.WriteLine(HttpContext.User.Identity.Name);
+                List<object[]> events = Database.Database.database.RequestTable("f_assocs", 1, HttpContext.User.Identity.Name);
 
                 foreach (object[] item in events)
                 {

@@ -1,10 +1,13 @@
-CREATE OR REPLACE FUNCTION f_list_week_events()
-RETURNS SETOF VARCHAR(1024) AS
+CREATE OR REPLACE FUNCTION f_can_edit_event(login VARCHAR(256), name VARCHAR(1024))
+RETURNS BOOLEAN AS
 $$
+DECLARE
+	assoc VARCHAR(1024);
 BEGIN
-	RETURN QUERY SELECT name FROM events e WHERE e.begin_date <= date_trunc('week',  LOCALTIMESTAMP) + interval '8 day' AND e.begin_date >= date_trunc('week',  LOCALTIMESTAMP) AND e.moderator_approved = TRUE;
-EXCEPTION
-	WHEN OTHERS THEN
-		RETURN QUERY SELECT NULL LIMIT 0;
+	SELECT e.assoc INTO assoc FROM events e WHERE e.name = $2;
+	IF (f_is_desk(login, assoc) OR f_is_creator(login, name)) THEN
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
