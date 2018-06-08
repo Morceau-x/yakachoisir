@@ -14,7 +14,7 @@ namespace YakaTicket.Controllers
         // GET: Assoc
         public ActionResult Index()
         {
-            return View();
+            return View("DashBoardList");
         }
 
         public ActionResult DashBoard()
@@ -253,10 +253,12 @@ namespace YakaTicket.Controllers
         public ActionResult CreateAssoc(AssocModel e)
         {
             bool result = false;
+            bool res2 = false;
             string user = User.Identity.GetUserName();
             try
             {
                 result = Database.Database.database.RequestBoolean("f_create_assoc", user, e.Name, e.Summary, e.School);
+                res2 = Database.Database.database.RequestBoolean("f_set_president", user, e.President, e.Name);
             }
             catch { }
 

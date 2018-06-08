@@ -4,7 +4,8 @@
 }
 
 @using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
+@using YakaTicket.Database
+@if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
 {
     using (Html.BeginForm())
     {
@@ -13,7 +14,6 @@
             <legend>Créer une association</legend>
             <div class="row">
                 <div class="column">
-
                     <div>
                         Ecole <i>*</i>
                         @Html.DropDownListFor(model => model.School, new SelectList(ViewBag.list))
@@ -28,6 +28,11 @@
                         Description <i>*</i>
                         @Html.TextBoxFor(model => model.Summary, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Summary)
+                    </div>
+                    <div>
+                        Président (login)
+                        @Html.TextBoxFor(model => model.President, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.President)
                     </div>
                 </div>
             </div>

@@ -4,10 +4,19 @@
 }
 
 @using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
+@using YakaTicket.Database
+@if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
 {
     using (Html.BeginForm())
     {
+        if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
+        {
+             <div>
+                 <button type="button" class="btn btn-default">
+                     @Html.ActionLink("Ajouter une association", "CreateAssoc")
+                 </button>
+             </div>
+         }
         <table class="table table-bordered table-hover">
             <tr>
                 <th>Liste des associations</th>

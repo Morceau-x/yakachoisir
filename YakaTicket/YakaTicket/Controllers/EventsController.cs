@@ -214,5 +214,15 @@ namespace YakaTicket.Controllers
             file.FileDownloadName = filename;
             return file;
         }
+
+        public ActionResult PaymentSuccess()
+        {
+            return View();
+        }
+
+        public ActionResult PaymentFail()
+        {
+            return View();
+        }
     }
 }
