@@ -364,6 +364,7 @@
     <Content Include="Views\Assoc\NoAssoc.cshtml" />
     <Content Include="Views\Events\Payment.cshtml" />
     <Content Include="Views\Assoc\AddMember.cshtml" />
+    <Content Include="Views\Assoc\DeleteMember.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

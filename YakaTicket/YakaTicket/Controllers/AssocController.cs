@@ -73,6 +73,9 @@ namespace YakaTicket.Controllers
         {
             string name = Request.QueryString["name"];
             ViewBag.user = "";
+            string error = Request.QueryString["error"];
+            if (!string.IsNullOrEmpty(name))
+                ViewBag.user = error;
             string user = User.Identity.GetUserName();
             if (!string.IsNullOrEmpty(name))
             {
@@ -102,13 +105,62 @@ namespace YakaTicket.Controllers
         {
             string name = Request.QueryString["name"];
             string user = User.Identity.GetUserName();
+            string error = "L'utilisateur n'existe pas ou est déja présent";
             if (!string.IsNullOrEmpty(e.login) && !string.IsNullOrEmpty(name))
             {
                 bool response = Database.Database.database.RequestBoolean("f_set_member", user, e.login, name);
                 if (response)
                     return RedirectToAction("DashBoard", "Assoc", new { name });
                 else
-                    ViewBag.user = "L'utilisateur n'existe pas";
+                    return RedirectToAction("AddMember", "Assoc", new { name, error });
+            }
+            return View("NoAssoc");
+        }
+
+        public ActionResult DeleteMember()
+        {
+            string name = Request.QueryString["name"];
+            ViewBag.user = "";
+            string error = Request.QueryString["error"];
+            if (!string.IsNullOrEmpty(name))
+                ViewBag.user = error;
+            string user = User.Identity.GetUserName();
+            if (!string.IsNullOrEmpty(name))
+            {
+                AssocModel e = new AssocModel { Name = name };
+                try
+                {
+                    object[] row = Database.Database.database.RequestLine("f_get_assoc", 3, name);
+                    if (row != null)
+                    {
+                        e.Summary = (string)row[0];
+                        e.School = (string)row[1];
+                        e.President = (string)row[2];
+                    }
+                    else
+                        return View("NoAssoc");
+                }
+                catch (Exception)
+                { }
+                ViewBag.assoc = e;
+                return View();
+            }
+            return View("DashBoardList");
+        }
+
+        [HttpPost]
+        public ActionResult DeleteMember(AssocAdd e)
+        {
+            string name = Request.QueryString["name"];
+            string user = User.Identity.GetUserName();
+            string error = "L'utilisateur n'existe pas ou ne fait pas partie de l'association";
+            if (!string.IsNullOrEmpty(e.login) && !string.IsNullOrEmpty(name))
+            {
+                bool response = Database.Database.database.RequestBoolean("f_remove_member", user, e.login, name);
+                if (response)
+                    return RedirectToAction("DashBoard", "Assoc", new { name });
+                else
+                    return RedirectToAction("DeleteMember", "Assoc", new { name, error });
             }
             return View("NoAssoc");
         }
