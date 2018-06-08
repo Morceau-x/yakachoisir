@@ -28,10 +28,12 @@
     <div>
         <p>Nombre de place disponible : FIXME</p>
     </div>
-    <button type="button" class="btn btn-default">
-        Inscription
-    </button>
-    @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
+    <div>
+        <button type="button" class="btn btn-default">
+            @Html.ActionLink("Inscription", "Payment", new {name = Html.ValueFor(model => model.Name)})
+        </button>
+    </div>
+    @if (Request.IsAuthenticated && Check.CanEditEvent(User.Identity.GetUserName(), Model.Name))
     {
         <div>
             <button type="button" class="btn btn-default">
