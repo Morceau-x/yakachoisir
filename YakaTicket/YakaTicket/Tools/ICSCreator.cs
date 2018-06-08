@@ -77,5 +77,72 @@ namespace YakaTicket.Tools
             HttpContext.Current.ApplicationInstance.CompleteRequest();
             */
         }
+
+        public string exportAsICS(Models.Event ev)
+        {
+            //create a new stringbuilder instance
+            StringBuilder sb = new StringBuilder();
+
+            //start the calendar item
+            sb.AppendLine("BEGIN:VCALENDAR");
+            sb.AppendLine("VERSION:2.0");
+            sb.AppendLine("PRODID:BilleterieEPITA");
+
+            //add the event
+            sb.AppendLine("BEGIN:VEVENT");
+
+            //DTSTART: Date de début de l'événement
+            sb.AppendLine("DTSTART;TZID=Europe/Paris:" + ev.Begin.ToString("yyyyMMddTHHmm00"));
+            //sb.AppendLine("DTSTART:" + DateStart.ToString("yyyyMMddTHHmm00"));
+            //DTEND: Date de fin de l'événement
+            sb.AppendLine("DTEND;TZID=Europe/Paris:" + ev.End.ToString("yyyyMMddTHHmm00"));
+            //sb.AppendLine("DTEND:" + DateEnd.ToString("yyyyMMddTHHmm00"));
+
+            string mail = "";
+            try
+            {
+                object email = Database.Database.database.RequestObject("f_email", ev.Owner);
+                mail = (string) email;
+            }
+            catch (Exception) { }
+
+            sb.AppendLine("ORGANIZER:CN=" + Organizer + ":MAILTO:" + mail);
+
+            //SUMMARY: Titre de l'événement
+            sb.AppendLine("SUMMARY:" + Summary + ev.Name);
+            //LOCATION: Lieu de l'événement
+            sb.AppendLine("LOCATION:" + Location + "FIXME");
+            //DESCRIPTION: Description de l'événement
+            sb.AppendLine("DESCRIPTION:" + Description + ev.Description);
+
+            //CATEGORIES: Catégorie de l'événement (ex: Conférence, Fête...)
+            //STATUS: Statut de l'événement (TENTATIVE, CONFIRMED, CANCELLED)
+            //TRANSP: Définit si la ressource affectée à l'événement est rendu indisponible (OPAQUE, TRANSPARENT)
+            //SEQUENCE: Nombre de mises à jour, la première mise à jour est à 1
+
+
+            sb.AppendLine("PRIORITY:" + Priority.ToString());
+
+            sb.AppendLine("END:VEVENT");
+
+            //end calendar item
+            sb.AppendLine("END:VCALENDAR");
+
+            //create a string from the stringbuilder
+            string CalendarItem = sb.ToString();
+            return CalendarItem;
+            //send the calendar item to the browser
+            /*
+            Response.ClearHeaders();
+            Response.Clear();
+            Response.Buffer = true;
+            Response.ContentType = "text/calendar";
+            Response.AddHeader("content-length", CalendarItem.Length.ToString());
+            Response.AddHeader("content-disposition", "attachment; filename=\"" + FileName + ".ics\"");
+            Response.Write(CalendarItem);
+            Response.Flush();
+            HttpContext.Current.ApplicationInstance.CompleteRequest();
+            */
+        }
     }
 }

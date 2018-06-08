@@ -33,6 +33,11 @@
             @Html.ActionLink("Inscription", "Payment", new {name = Html.ValueFor(model => model.Name)})
         </button>
     </div>
+    <div>
+        <button type="button" class="btn btn-default">
+            @Html.ActionLink("télécharger au format .ics", "DownloadEvent", new {name = Html.ValueFor(model => model.Name)})
+        </button>
+    </div>
     @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
     {
         <div>

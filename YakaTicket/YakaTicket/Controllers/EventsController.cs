@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -176,6 +177,33 @@ namespace YakaTicket.Controllers
             ViewBag.list = list;
 
             return View();
+        }
+
+        public ActionResult DownloadEvent(string name)
+        {
+            Event ev = new Event {Name = name};
+            try
+            {
+                object[] e = Database.Database.database.RequestLine("f_get_event", 6, name);
+                ev.Description = (string) e[0];
+                ev.Begin = (DateTime) e[2];
+                ev.End = (DateTime) e[3];
+                ev.Assoc = (string) e[4];
+                ev.Owner = (string) e[5];
+            }
+            catch (Exception) { }
+
+            string filename = name + ".ics";
+            string path = Server.MapPath("~/Download/");
+            var ics = new Tools.ICSCreator();
+            StreamWriter sw = new StreamWriter(path + filename);
+            sw.Write(ics.exportAsICS(ev));
+            sw.Close();
+
+            string fullPath = Path.Combine(path, filename);
+            FilePathResult file = File(fullPath, "text");
+            file.FileDownloadName = filename;
+            return file;
         }
     }
 }
