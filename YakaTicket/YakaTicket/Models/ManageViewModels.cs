@@ -28,7 +28,7 @@ namespace YakaTicket.Models
     public class SetPasswordViewModel
     {
         [Required]
-        [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 4)]
         [DataType(DataType.Password)]
         [Display(Name = "Nouveau mot de passe")]
         public string NewPassword { get; set; }
@@ -47,7 +47,7 @@ namespace YakaTicket.Models
         public string OldPassword { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 4)]
         [DataType(DataType.Password)]
         [Display(Name = "Nouveau mot de passe")]
         public string NewPassword { get; set; }
