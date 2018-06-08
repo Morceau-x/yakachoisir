@@ -41,7 +41,7 @@ DROP FUNCTION IF EXISTS f_list_prices(event VARCHAR(256));
 /*********************
 ******** TYPES *******
 *********************/
-CREATE TYPE price_data AS (price_name VARCHAR(1024), price_value REAL, max_number INTEGER, assoc_only BOOLEAN, epita_only BOOLEAN, ionis_only BOOLEAN);
+CREATE TYPE price_data AS (price_name VARCHAR(1024), price_value REAL, number INTEGER, max_number INTEGER, assoc_only BOOLEAN, epita_only BOOLEAN, ionis_only BOOLEAN);
 CREATE TYPE event_data AS (summary VARCHAR(8192), premium BOOLEAN, begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024), creator VARCHAR(256));
 CREATE TYPE event_name_data AS (name VARCHAR(1024), summary VARCHAR(8192), premium BOOLEAN, begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024), creator VARCHAR(256));
 CREATE TYPE participant_data AS (price_name VARCHAR(1024), price_value REAL, is_inside BOOLEAN);
@@ -438,6 +438,8 @@ $$ LANGUAGE plpgsql;
 *********************/
 CREATE OR REPLACE FUNCTION f_list_prices(event VARCHAR(1024))
 RETURNS SETOF price_data AS
-'SELECT p.price_name, p.price_value, p.max_number, p.assoc_only, p.epita_only, p.ionis_only FROM prices p
+'SELECT p.price_name, p.price_value, count(s.id), p.max_number, p.assoc_only, p.epita_only, p.ionis_only 
+FROM participants s
+JOIN prices p ON p.id = s.price
 WHERE p.event = $1;'
 LANGUAGE SQL;
