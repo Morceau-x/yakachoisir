@@ -10,52 +10,66 @@
 <div>
     <h4>Configuration</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>Nom: </dt>
-        <dd>@ViewBag.User.Lastname</dd>
-        <dt>Prénom: </dt>
-        <dd>@ViewBag.User.Firstname</dd>
-        <dt>Adresse: </dt>
-        <dd>@ViewBag.User.Address</dd>
-        
+    <table>
+        <tr>
+            <td>Nom:</td>
+            <td>@ViewBag.User.Lastname</td>
+        </tr>
+        <tr>
+            <td>Prénom: </td>
+            <td>@ViewBag.User.Firstname</td>
+        </tr>
+        <tr>
+            <td>Adresse: </td>
+            <td>@ViewBag.User.Address</td>
+        </tr>
+
         @if (ViewBag.User.Ionis)
         {
-            <dt>[Membre Ionis]</dt>
-            <dd></dd>
+            <tr>
+                <td>[Membre Ionis]</td>
+            </tr>
         }
         @if (ViewBag.User.Epita)
         {
-            <dt>[Membre EPITA]</dt>
-            <dd></dd>
+            <tr>
+                <td>[Membre EPITA]</td>
+            </tr>
         }
 
-        <dt>Mot de passe: </dt>
-        <dd>
-            [
-            @if (Model.HasPassword)
-            {
-                @Html.ActionLink("Changer de mot de passe", "ChangePassword")
-            }
-            else
-            {
-                @Html.ActionLink("Create", "SetPassword")
-            }
-            ]
-        </dd>
-        <dt>EPITA Connect: </dt>
-        <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Configurer", "ManageLogins") ]
-        </dd>
-        @*
+        <tr>
+            <td>Mot de passe: </td>
+            <td>
+                [
+                @if (Model.HasPassword)
+                {
+                    @Html.ActionLink("Changer de mot de passe", "ChangePassword")
+                }
+                else
+                {
+                    @Html.ActionLink("Create", "SetPassword")
+                }
+                ]
+            </td>
+        </tr>
+        <tr>
+            <td>EPITA Connect: </td>
+            <td>
+                @Model.Logins.Count [
+                @Html.ActionLink("Configurer", "ManageLogins") ]
+            </td>
+        </tr>
+      </table>
+
+            @*
             Phone Numbers can used as a second factor of verification in a two-factor authentication system.
 
              See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
                 for details on setting up this ASP.NET application to support two-factor authentication using SMS.
 
              Uncomment the following block after you have set up two-factor authentication
-        *@
-        @*
+            *@
+            @*
                 <dt>Phone Number:</dt>
                 <dd>
                     @(Model.PhoneNumber ?? "None")
@@ -102,28 +116,28 @@
                         }
                     }
             </dd>*@
-    </dl>
+            </dl>
 
 
 
-    <h5>Historique</h5>
-    <table class="table table-bordered table-hover">
-        <tr>
-            <th>Nom</th>
-            <th>Association</th>
-            <th>Date Début</th>
-            <th>Date de fin</th>
-            <th>Billet</th>
-        </tr>
-        @foreach (var e in ViewBag.History)
-            {
-        <tr>
-            <td>@e.Name</td>
-            <td>@e.Assoc</td>
-            <td>@e.Begin</td>
-            <td>@e.End</td>
-            <td>@Html.ActionLink("télécharger", "DownloadPDF", new { ev = e.Name })</td>
-        </tr>
-        }
-    </table>
+            <h5>Historique</h5>
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>Nom</th>
+                    <th>Association</th>
+                    <th>Date Début</th>
+                    <th>Date de fin</th>
+                    <th>Billet</th>
+                </tr>
+                @foreach (var e in ViewBag.History)
+                {
+                    <tr>
+                        <td>@e.Name</td>
+                        <td>@e.Assoc</td>
+                        <td>@e.Begin</td>
+                        <td>@e.End</td>
+                        <td>@Html.ActionLink("télécharger", "DownloadPDF", new { ev = e.Name })</td>
+                    </tr>
+                }
+            </table>
 </div>
