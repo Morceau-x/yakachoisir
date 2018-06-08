@@ -336,3 +336,6 @@ proguard.cfg
 YakaTicket/YakaTicket/App_Data/aspnet-YakaTicket_log.ldf
 YakaTicket/YakaTicket/App_Data/aspnet-YakaTicket.mdf
 YakaTicket/YakaTicket/App_Data/aspnet-YakaTicket_log.ldf
+*.ldf
+YakaTicket/YakaTicket/App_Data/aspnet-YakaTicket.mdf
+YakaTicket/YakaTicket/App_Data/aspnet-YakaTicket_log.ldf
