@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 
 namespace YakaTicket.Controllers
 {
@@ -73,8 +75,31 @@ namespace YakaTicket.Controllers
             catch (Exception)
             { }
 
+
+            string path = Server.MapPath("~/Download/");
+
+
             ViewBag.list = list;
             return View();
+        }
+
+        public ActionResult ExternList()
+        {
+            if (!Request.IsAuthenticated)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+            }
+            if (!(Database.Database.database.RequestBoolean("f_is_moderator", User.Identity.GetUserName()) ||
+                Database.Database.database.RequestBoolean("f_is_administrator", User.Identity.GetUserName())))
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+            }
+            string path = Server.MapPath("~/Download/");
+            string filename = Tools.XLSCreator.externAsXLS(path);
+            string fullPath = Path.Combine(path, filename);
+            FilePathResult file = File(fullPath, "xlsx");
+            file.FileDownloadName = filename;
+            return file;
         }
     }
 }
