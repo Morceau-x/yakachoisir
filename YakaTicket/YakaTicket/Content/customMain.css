@@ -104,10 +104,10 @@ body {
         border-color: var(--epita-color2);
     }
 
-        .navbar-inverse .navbar-toggle:hover,
-        .navbar-inverse .navbar-toggle:focus {
-            background-color: #999999;
-        }
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+    background-color: #999999;
+}
 
 .navbar-nav {
     padding-top: 28px;
@@ -126,4 +126,12 @@ body {
 .column {
     float: left;
     width: 50%;
+}
+
+select {
+    border: 1px solid var(--epita-color2);
+    background-color: aliceblue;
+    border-radius: 3px;
+    display: inline;
+    width: auto;
 }
