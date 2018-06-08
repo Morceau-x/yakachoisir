@@ -34,10 +34,11 @@ namespace YakaTicket.Controllers
 
             protected override void OnBeforeEventRender(BeforeEventRenderArgs e)
             {
-                if(e.Id == "1")
+                if(e.Id == "0")
                 {
-                    e.BackgroundColor = "#990000";
-                    
+                    e.BackgroundColor = "Khaki";
+                    e.BorderColor = "silver";
+
                 }
             }
 
