@@ -3,11 +3,9 @@
     ViewBag.Title = "ModeratorDashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>Dashboard de modération</h2>
 
 <h4>Liste des événements en attente d'aprobation</h4>
-
 <table class="table table-bordered table-hover">
     <tr>
         <th>Nom</th>
@@ -26,3 +24,8 @@
         </tr>
     }
 </table>
+
+<h4>Autres</h4>
+<button type="button" class="btn btn-default">
+    @Html.ActionLink("Liste des Externes", "ExternList")
+</button>
