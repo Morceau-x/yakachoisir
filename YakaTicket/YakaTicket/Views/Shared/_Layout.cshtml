@@ -24,7 +24,6 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Accueil", "Index", "Home")</li>
                     @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
                     {
                         <li>@Html.ActionLink("Créer un événement", "CreateEvent", "Events")</li>
