@@ -22,6 +22,12 @@
     <div>
         <p>Ecole : @ViewBag.assoc.School</p>
     </div>
+    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_is_member", User.Identity.GetUserName(), ViewBag.assoc.Name))
+    {
+        <div>
+            @Html.ActionLink("Liste des membres", "ViewMembers", "Assoc", new { name = @ViewBag.assoc.Name }, null)
+        </div>
+    }
     @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_is_desk", User.Identity.GetUserName(), ViewBag.assoc.Name))
     {
         <div>

@@ -122,7 +122,7 @@ namespace YakaTicket.Controllers
             string name = Request.QueryString["name"];
             ViewBag.user = "";
             string error = Request.QueryString["error"];
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(error))
                 ViewBag.user = error;
             string user = User.Identity.GetUserName();
             if (!string.IsNullOrEmpty(name))
@@ -168,6 +168,34 @@ namespace YakaTicket.Controllers
         public class AssocAdd
         {
             public string login { get; set; }
+        }
+
+        public ActionResult ViewMembers()
+        {
+            string name = Request.QueryString["name"];
+            string user = User.Identity.GetUserName();
+            if (!string.IsNullOrEmpty(name))
+            {
+                try
+                {
+                    List<object[]> members = Database.Database.database.RequestTable("f_get_members", 1, name);
+                    if (members != null)
+                    {
+                        List<string> ret = new List<string>();
+                        foreach (object[] item in members)
+                        {
+                            ret.Add((string)item[0]);
+                        }
+                        ViewBag.list = ret;
+                    }
+                    else
+                        return View("NoAssoc");
+                }
+                catch (Exception)
+                { }
+                return View();
+            }
+            return View("NoAssoc");
         }
     }
 }

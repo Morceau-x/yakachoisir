@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "DashBoardList";
+    ViewBag.Title = "ViewMembers";
 }
 
 @using Microsoft.AspNet.Identity
@@ -10,19 +10,19 @@
     {
         <table class="table table-bordered table-hover">
             <tr>
-                <th>Liste des associations</th>
+                <th>Noms</th>
             </tr>
-            @{ 
+            @{
                 if (ViewBag.list != null)
                 {
                     foreach (string e in ViewBag.list)
                     {
-                <tr>
-                    <td>@Html.ActionLink(e, "DashBoard", "Assoc", new { name = e }, null)</td>
-                </tr>
-                        }
+                        <tr>
+                            <td>e</td>
+                        </tr>
                     }
                 }
+            }
         </table>
     }
 }
