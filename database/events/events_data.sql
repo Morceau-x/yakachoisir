@@ -14,8 +14,6 @@ SELECT * FROM f_create_price('lhermi_m', 'RIP', 'interne', 10, 200, FALSE, FALSE
 SELECT * FROM f_create_price('lhermi_m', 'TC', 'interne', 10, 200, FALSE, FALSE, TRUE);
 SELECT * FROM f_create_price('lhermi_m', 'PARTYYY', 'interne', 10, 200, FALSE, FALSE, TRUE);
 
-UPDATE events SET (moderator_approved, president_approved) = (TRUE, TRUE);
-
 SELECT * FROM f_add_participant('boulay_v', 'RIP', 'interne');
 SELECT * FROM f_add_participant('lee_o', 'RIP', 'interne');
 SELECT * FROM f_add_participant('lhermi_m', 'RIP', 'interne');

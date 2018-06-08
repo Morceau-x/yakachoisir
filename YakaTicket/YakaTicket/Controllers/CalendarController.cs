@@ -55,7 +55,10 @@ namespace YakaTicket.Controllers
                 
                 List<TemplEvent> levents = new List<TemplEvent>();
                 long i = 0;
-                foreach (var e in Database.Database.database.RequestTable("f_list_week_events", 7))
+                List<object[]> table = Database.Database.database.RequestTable("f_list_week_events", 7);
+                if (table == null)
+                    table = new List<object[]>();
+                foreach (var e in table)
                 {
                     levents.Add(new TemplEvent {
                         Id = ((bool) e.GetValue(2) ? 1 : 0),
