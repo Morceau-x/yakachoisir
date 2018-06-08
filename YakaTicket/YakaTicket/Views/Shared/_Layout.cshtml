@@ -34,7 +34,8 @@
                     {
                         <li>@Html.ActionLink("Associations", "DashBoardList", "Assoc")</li>
                     }
-                    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_is_president_assoc", User.Identity.GetUserName()))
+                    <div class="separator"></div>
+                    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_is_moderator", User.Identity.GetUserName()))
                     {
                         <li>@Html.ActionLink("Dashboard", "Index", "Admin")</li>
                     }
