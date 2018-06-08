@@ -178,6 +178,19 @@ namespace YakaTicket.Controllers
             {
                 try
                 {
+                    List<object[]> assocs = Database.Database.database.RequestTable("f_list_assocs", 1);
+                    if (assocs != null)
+                    {
+                        List<string> ret = new List<string>();
+                        foreach (object[] item in assocs)
+                        {
+                            ret.Add((string)item[0]);
+                        }
+                        if (!ret.Contains(name))
+                            return View("NoAssoc");
+                    }
+                    else
+                        return View("NoAssoc");
                     List<object[]> members = Database.Database.database.RequestTable("f_get_members", 1, name);
                     if (members != null)
                     {
@@ -188,8 +201,26 @@ namespace YakaTicket.Controllers
                         }
                         ViewBag.list = ret;
                     }
-                    else
-                        return View("NoAssoc");
+                    List<object[]> desk = Database.Database.database.RequestTable("f_get_desk", 1, name);
+                    if (desk != null)
+                    {
+                        List<string> ret = new List<string>();
+                        foreach (object[] item in desk)
+                        {
+                            ret.Add((string)item[0]);
+                        }
+                        ViewBag.desk = ret;
+                    }
+                    List<object[]> pres = Database.Database.database.RequestTable("f_get_president", 1, name);
+                    if (pres != null)
+                    {
+                        List<string> ret = new List<string>();
+                        foreach (object[] item in pres)
+                        {
+                            ret.Add((string)item[0]);
+                        }
+                        ViewBag.pres = ret;
+                    }
                 }
                 catch (Exception)
                 { }

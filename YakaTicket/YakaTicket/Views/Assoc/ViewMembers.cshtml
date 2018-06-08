@@ -10,12 +10,44 @@
     {
         <table class="table table-bordered table-hover">
             <tr>
-                <th>Noms</th>
+                <th>Membres</th>
             </tr>
             @{
                 if (ViewBag.list != null)
                 {
                     foreach (string e in ViewBag.list)
+                    {
+                        <tr>
+                            <td>@e</td>
+                        </tr>
+                    }
+                }
+            }
+        </table>
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Bureau</th>
+            </tr>
+            @{
+                if (ViewBag.desk != null)
+                {
+                    foreach (string e in ViewBag.desk)
+                    {
+                        <tr>
+                            <td>@e</td>
+                        </tr>
+                    }
+                }
+            }
+        </table>
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Président</th>
+            </tr>
+            @{
+                if (ViewBag.pres != null)
+                {
+                    foreach (string e in ViewBag.pres)
                     {
                         <tr>
                             <td>@e</td>
