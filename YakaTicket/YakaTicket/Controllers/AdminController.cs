@@ -43,8 +43,31 @@ namespace YakaTicket.Controllers
             }
             catch (Exception)
             { }
-
             ViewBag.list = list;
+
+            var other = new List<Models.Event>();
+            try
+            {
+                List<object[]> table = Database.Database.database.RequestTable("f_list_pres_all_events", 7);
+                foreach (var row in table)
+                {
+                    var e = new Models.Event()
+                    {
+                        Name = (string)row[0],
+                        Description = (string)row[1],
+                        Premium = (bool)row[2],
+                        Begin = (DateTime)row[3],
+                        End = (DateTime)row[4],
+                        Assoc = (string)row[5],
+                        Owner = (string)row[6]
+                    };
+
+                    other.Add(e);
+                }
+            }
+            catch (Exception)
+            { }
+            ViewBag.other = other;
             return View();
         }
 

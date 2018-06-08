@@ -163,7 +163,7 @@ DECLARE
 	assoc VARCHAR(1024);
 BEGIN
 	SELECT e.assoc INTO assoc FROM events e WHERE e.name = $2;
-	IF (NOT f_is_president(login)) THEN
+	IF (NOT f_is_president(login, assoc)) THEN
 		RETURN FALSE;
 	END IF;
 	UPDATE events SET president_approved = TRUE WHERE events.name = $2;
@@ -297,6 +297,11 @@ LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION f_list_mod_events()
 RETURNS SETOF event_name_data AS
 'SELECT name, summary, premium, begin_date, end_date, assoc, creator FROM events e WHERE e.president_approved = TRUE AND moderator_approved = FALSE;'
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION f_list_pres_all_events()
+RETURNS SETOF event_name_data AS
+'SELECT name, summary, premium, begin_date, end_date, assoc, creator FROM events e WHERE e.president_approved = FALSE;'
 LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION f_list_pres_events(a VARCHAR(1024))

@@ -21,7 +21,20 @@
             <tr>
                 <td>@e.PriceName</td>
                 <td>@e.PriceValueS</td>
-                <td>Choisir</td>
+                <td>
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+
+                        <input type="hidden" name="cmd" value="_xclick" />
+                        <input type="hidden" name="business" value="yakastarb@gmail.com" />
+
+                        <input type="hidden" name="item_name" value="My painting" />
+                        <input type="hidden" name="amount" value="10.00" />
+                        <input type="submit" value="Paypal" />
+                        <input type="hidden" name="cc" value="EUR"/>
+                        <input type="hidden" name="return" value="http://localhost:10205/Events/PaymentSuccess"/>
+
+                    </form>
+                </td>
             </tr>
         }
 
