@@ -135,3 +135,7 @@ select {
     display: inline;
     width: auto;
 }
+
+.separator {
+    clear: both;
+}
