@@ -51,6 +51,22 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION f_create_user(login VARCHAR(256), password VARCHAR(256), email VARCHAR(256), firstname VARCHAR(256), lastname VARCHAR(256))
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF (login IS NULL OR password IS NULL OR email IS NULL OR firstname IS NULL OR lastname IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	INSERT INTO users VALUES
+	(DEFAULT, DEFAULT, login, email, DEFAULT, password, DEFAULT, DEFAULT, DEFAULT, DEFAULT, firstname, lastname, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
 /*********************
 *** EDIT ACCOUNT ***
 *********************/
