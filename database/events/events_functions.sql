@@ -18,8 +18,6 @@ DROP FUNCTION IF EXISTS f_add_staff(login VARCHAR(256), name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_add_partner(login VARCHAR(256), event VARCHAR(1024), assoc VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_remove_partner(login VARCHAR(256), event VARCHAR(1024), assoc VARCHAR(1024));
 
-DROP FUNCTION IF EXISTS f_create_price(login VARCHAR(256), event VARCHAR(1024), name VARCHAR(1024), price REAL, max_number INTEGER, assoc_only BOOLEAN, epita_only BOOLEAN, ionis_only BOOLEAN);
-
 DROP FUNCTION IF EXISTS f_get_event(name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_list_all_events();
 DROP FUNCTION IF EXISTS f_list_events(assoc VARCHAR(1024));
@@ -29,13 +27,21 @@ DROP FUNCTION IF EXISTS f_list_participants(event VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_list_staff(event VARCHAR(1024));
 
 DROP FUNCTION IF EXISTS f_list_participating(login VARCHAR(256));
+DROP FUNCTION IF EXISTS f_get_participant(login VARCHAR(256), event VARCHAR(1024));
+
+DROP FUNCTION IF EXISTS f_enter(login VARCHAR(256), event VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_leave(login VARCHAR(256), event VARCHAR(1024));
+
+DROP FUNCTION IF EXISTS f_create_price(login VARCHAR(256), event VARCHAR(1024), name VARCHAR(1024), price REAL, max_number INTEGER, assoc_only BOOLEAN, epita_only BOOLEAN, ionis_only BOOLEAN);
+DROP FUNCTION IF EXISTS f_list_prices(event VARCHAR(256));
 
 /*********************
-***** FUNCTIONS ******
+******** TYPES *******
 *********************/
-/*
-*/
-
+CREATE TYPE price_data AS (price_name VARCHAR(1024), price_value REAL, max_number INTEGER, assoc_only BOOLEAN, epita_only BOOLEAN, ionis_only BOOLEAN);
+CREATE TYPE event_data AS (summary VARCHAR(8192), premium BOOLEAN, begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024), creator VARCHAR(256));
+CREATE TYPE event_name_data AS (name VARCHAR(1024), summary VARCHAR(8192), premium BOOLEAN, begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024), creator VARCHAR(256));
+CREATE TYPE participant_data AS (price_name VARCHAR(1024), price_value REAL, is_inside BOOLEAN);
 /*********************
 **** CREATE EVENT ****
 *********************/
@@ -83,14 +89,35 @@ $$ LANGUAGE plpgsql;
 /*********************
 *** ADD PARTICPANT ***
 *********************/
-CREATE OR REPLACE FUNCTION f_add_participant(login VARCHAR(256), name VARCHAR(1024))
+CREATE OR REPLACE FUNCTION f_add_participant(login VARCHAR(256), name VARCHAR(1024), price VARCHAR(1024))
+RETURNS BOOLEAN AS
+$$
+DECLARE
+	id INTEGER;
+BEGIN
+	IF (login IS NULL OR name IS NULL OR price IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	SELECT p.id INTO id FROM prices p WHERE p.event = $2 AND p.price_name = $3;
+	INSERT INTO participants VALUES (DEFAULT, name, login, id, FALSE, TRUE, DEFAULT);
+	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+** ADD PARTICPANT 2 **
+*********************/
+CREATE OR REPLACE FUNCTION f_add_participant(login VARCHAR(256), name VARCHAR(1024), price INTEGER)
 RETURNS BOOLEAN AS
 $$
 BEGIN
-	IF (login IS NULL OR name IS NULL) THEN
+	IF (login IS NULL OR name IS NULL OR price IS NULL) THEN
 		RETURN FALSE;
 	END IF;
-	INSERT INTO participants VALUES (DEFAULT, name, login, FALSE, TRUE, DEFAULT);
+	INSERT INTO participants VALUES (DEFAULT, name, login, price, FALSE, TRUE, DEFAULT);
 	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
@@ -143,7 +170,6 @@ LANGUAGE SQL;
 /*********************
 ***** GET EVENT ******
 *********************/
-CREATE TYPE event_data AS (summary VARCHAR(8192), premium BOOLEAN, begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024), creator VARCHAR(256));
 CREATE OR REPLACE FUNCTION f_get_event(name VARCHAR(1024))
 RETURNS event_data AS
 'SELECT summary, premium, begin_date, end_date, assoc, creator FROM events e WHERE e.name = $1;'
@@ -174,6 +200,21 @@ RETURNS SETOF VARCHAR(1024) AS
 LANGUAGE SQL;
 
 /*********************
+* LIST WEEKS EVENTS **
+*********************/
+CREATE OR REPLACE FUNCTION f_list_week_events()
+RETURNS SETOF event_name_data AS
+$$
+BEGIN
+	RETURN QUERY SELECT name, summary, premium, begin_date, end_date, assoc, creator FROM events e 
+	WHERE e.begin_date <= date_trunc('week',  LOCALTIMESTAMP) + interval '7 day' AND e.begin_date >= date_trunc('week',  LOCALTIMESTAMP) AND e.moderator_approved = TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN QUERY SELECT NULL LIMIT 0;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
 ** LIST PARTICIPANTS *
 *********************/
 CREATE OR REPLACE FUNCTION f_list_participants(event VARCHAR(1024))
@@ -192,12 +233,21 @@ LANGUAGE SQL;
 /*********************
 *** PARTICIPATING ****
 *********************/
-CREATE TYPE event_name_data AS (name VARCHAR(1024), summary VARCHAR(8192), premium BOOLEAN, begin_date TIMESTAMP, end_date TIMESTAMP, assoc VARCHAR(1024), creator VARCHAR(256));
 CREATE OR REPLACE FUNCTION f_list_participating(login VARCHAR(256))
 RETURNS SETOF event_name_data AS
 'SELECT e.name, e.summary, e.premium, e.begin_date, e.end_date, e.assoc, e.creator FROM participants p
 JOIN events e ON e.name = p.event
 WHERE p.login = $1;'
+LANGUAGE SQL;
+
+/*********************
+** GET PARTICIPANT ***
+*********************/
+CREATE OR REPLACE FUNCTION f_get_participant(login VARCHAR(256), event VARCHAR(1024))
+RETURNS participant_data AS
+'SELECT s.price_name, s.price_value, p.is_inside FROM participants p
+JOIN prices s ON s.id = p.price
+WHERE p.login = $1 AND p.event = $2;'
 LANGUAGE SQL;
 
 /*********************
@@ -248,3 +298,35 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
+/*********************
+**** CREATE PRICE ****
+*********************/
+CREATE OR REPLACE FUNCTION f_create_price(login VARCHAR(256), event VARCHAR(1024), name VARCHAR(1024), price REAL, max_number INTEGER, assoc_only BOOLEAN, epita_only BOOLEAN, ionis_only BOOLEAN)
+RETURNS BOOLEAN AS
+$$
+DECLARE
+	assoc VARCHAR(1024);
+BEGIN
+	IF (login IS NULL OR event IS NULL OR name IS NULL OR price IS NULL OR max_number IS NULL OR assoc_only IS NULL OR epita_only IS NULL OR ionis_only IS NULL) THEN
+		RETURN FALSE;
+	END IF;
+	SELECT e.assoc INTO assoc FROM events e WHERE e.name = $2;
+	IF (NOT f_is_creator(login, event) AND NOT f_is_desk(login, assoc)) THEN
+		RETURN FALSE;
+	END IF;
+	INSERT INTO prices VALUES (DEFAULT, $2, $3, $4, $5, $6, $7, $8);
+	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+**** LIST PRICES *****
+*********************/
+CREATE OR REPLACE FUNCTION f_list_prices(event VARCHAR(1024))
+RETURNS SETOF price_data AS
+'SELECT p.price_name, p.price_value, p.max_number, p.assoc_only, p.epita_only, p.ionis_only FROM prices p
+WHERE p.event = $1;'
+LANGUAGE SQL;

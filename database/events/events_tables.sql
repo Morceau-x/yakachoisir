@@ -32,6 +32,7 @@ CREATE TABLE events
 
 CREATE TABLE prices
 (
+	id					SERIAL				NOT NULL,
 	event				VARCHAR(1024)		NOT NULL,
 	price_name			VARCHAR(1024)		NOT NULL,
 	price_value			REAL				NOT NULL,
@@ -41,7 +42,8 @@ CREATE TABLE prices
 	epita_only			BOOLEAN				NOT NULL		DEFAULT FALSE,
 	ionis_only			BOOLEAN				NOT NULL		DEFAULT FALSE,
 
-	PRIMARY KEY (event, price_name),
+	PRIMARY KEY (id),
+	UNIQUE (event, price_name),
 	FOREIGN	KEY	(event)	REFERENCES	events(name)
 );
 
@@ -60,6 +62,8 @@ CREATE TABLE participants
 	id					SERIAL				NOT NULL,
 	event				VARCHAR(1024)		NOT NULL,
 	login				VARCHAR(256)		NOT NULL,
+	price				INTEGER				NOT NULL,
+	
 	staff				BOOLEAN				NOT NULL,
 	validated			BOOLEAN				NOT NULL		DEFAULT FALSE,
 	is_inside			BOOLEAN				NOT NULL		DEFAULT FALSE,
@@ -67,7 +71,8 @@ CREATE TABLE participants
 	PRIMARY KEY (id),
 	UNIQUE	(event, login),
 	FOREIGN	KEY	(event)	REFERENCES	events(name),
-	FOREIGN	KEY	(login)	REFERENCES	users(login)
+	FOREIGN	KEY	(login)	REFERENCES	users(login),
+	FOREIGN	KEY	(price)	REFERENCES	prices(id)
 );
 
 CREATE TABLE event_modification_history
