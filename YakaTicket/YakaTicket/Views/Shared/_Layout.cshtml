@@ -11,7 +11,7 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -30,21 +30,21 @@
                     }
                     <li>@Html.ActionLink("Evenements", "ListEvent", "Events")</li>
 
-                    @using (Html.BeginForm("ListEvent", "Events", FormMethod.Get))
-                    {
-                        <li>
-                            @Html.TextBox("name", ViewBag.CurrentFilter as string, new { @class = "form-control" })
-                            <input class="form-control btn-primary" type="submit" value="Rechercher" style="float: left" />
-                        </li>
-                    }
                     @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
                     {
                         <li>@Html.ActionLink("Associations", "DashBoardList", "Assoc")</li>
                     }
-                    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_is_moderator", User.Identity.GetUserName()))
+                    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_is_president_assoc", User.Identity.GetUserName()))
                     {
                         <li>@Html.ActionLink("Dashboard", "Index", "Admin")</li>
                     }
+                    <li>
+                        @using (Html.BeginForm("ListEvent", "Events", FormMethod.Get))
+                        {
+                            @Html.TextBox("name", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+                            <input class="form-control btn-primary" type="submit" value="Rechercher" />
+                        }
+                    </li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

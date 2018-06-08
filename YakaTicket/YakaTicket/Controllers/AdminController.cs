@@ -53,7 +53,9 @@ namespace YakaTicket.Controllers
             var list = new List<Models.Event>();
             try
             {
-                List<object[]> table = Database.Database.database.RequestTable("f_list_pres_events", 7);
+
+                List<object[]> table = Database.Database.database.RequestTable("f_list_pres_events", 7, 
+                    Database.Database.database.RequestObject("f_get_president_assoc", User.Identity.Name));
                 foreach (var row in table)
                 {
                     var e = new Models.Event()

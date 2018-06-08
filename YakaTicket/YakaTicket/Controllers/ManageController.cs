@@ -330,7 +330,8 @@ namespace YakaTicket.Controllers
                 return View(model);
             }
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-            if (result.Succeeded)
+            var added = Database.Database.database.RequestBoolean("f_change_password", User.Identity.GetUserName(), model.OldPassword, model.NewPassword);
+            if (result.Succeeded && added)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                 if (user != null)

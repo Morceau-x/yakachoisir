@@ -235,7 +235,7 @@ namespace YakaTicket.Controllers
             try
             {
                 // TODO recup list of schools
-                List<object[]> events = Database.Database.database.RequestTable("f_assocs", 1, HttpContext.User.Identity.Name);
+                List<object[]> events = Database.Database.database.RequestTable("f_list_schools", 1);
 
                 foreach (object[] item in events)
                 {
@@ -250,12 +250,13 @@ namespace YakaTicket.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateEvent(AssocModel e)
+        public ActionResult CreateAssoc(AssocModel e)
         {
             bool result = false;
+            string user = User.Identity.GetUserName();
             try
             {
-                result = Database.Database.database.RequestBoolean("f_create_event", e.Name, e.Summary, e.School);
+                result = Database.Database.database.RequestBoolean("f_create_assoc", user, e.Name, e.Summary, e.School);
             }
             catch { }
 

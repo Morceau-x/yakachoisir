@@ -73,6 +73,14 @@ namespace YakaTicket.Models
         public string Pseudo { get; set; }
 
         [Required]
+        [Display(Name = "Nom")]
+        public string Nom { get; set; }
+
+        [Required]
+        [Display(Name = "Prenom")]
+        public string Prenom { get; set; }
+
+        [Required]
         //[StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} caractères.", MinimumLength = 6)]
         //[DataType(DataType.Password)]
         [Display(Name = "Mot de passe")]

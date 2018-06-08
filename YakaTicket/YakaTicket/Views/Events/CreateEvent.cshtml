@@ -14,43 +14,49 @@
             <legend>Créer un évènement</legend>
             <div class="row">
                 <div class="column">
-                    
                     <div>
                         Créateur <i>:</i>
                         @{
                             var name = HttpContext.Current.User.Identity.Name;
                         }
-                        @Html.LabelFor(model => model.Owner, name, new { @readonly = "true" }) 
-                        <input name="Owner" type="text" value=@name style="visibility:hidden"/>
-                        
+                        @Html.LabelFor(model => model.Owner, name, new { @readonly = "true" })
+                        <input name="Owner" type="text" value=@name style="visibility:hidden" />
+
                     </div>
-                    <div>
-                        Association <i>*</i>
+                    Association <i>*</i>
+                    <div style="float: right">
                         @Html.DropDownListFor(model => model.Assoc, new SelectList(ViewBag.list))
                         @Html.ValidationMessageFor(model => model.Assoc)
                     </div>
-                    <div>
-                        Nom <i>*</i>
+                    <br />
+                    Nom <i>*</i>
+                    <div style="float: right">
+
                         @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Name)
                     </div>
-                    <div>
-                        Description <i>*</i>
+                    <br />
+                    Description <i>*</i>
+                    <div style="float: right">
                         @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Description)
                     </div>
-                    <div>
-                        Début de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
+                    <br />
+
+                    Début de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
+                    <div style="float: right">
                         @Html.TextBoxFor(model => model.Begin, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.Begin)
                     </div>
-                    <div>
-                        Fin de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
+                    <br />
+
+                    Fin de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
+                    <div style="float: right">
                         @Html.TextBoxFor(model => model.End, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.End)
                     </div>
                 </div>
-            </div>
+                </div>
             <input type="submit" value="Créer l'évènement" class="form-control btn-primary" />
         </fieldset>
     }
