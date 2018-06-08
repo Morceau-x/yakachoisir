@@ -26,7 +26,7 @@
                 <ul class="nav navbar-nav">
                     @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
                     {
-                        <li>@Html.ActionLink("Créer un événement", "CreateEvent", "Events", new { @class="btn-default"})</li>
+                        <li>@Html.ActionLink("Créer un événement", "CreateEvent", "Events")</li>
                     }
                     <li>@Html.ActionLink("Evenements", "ListEvent", "Events")</li>
 
