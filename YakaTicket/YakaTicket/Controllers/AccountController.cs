@@ -170,7 +170,7 @@ namespace YakaTicket.Controllers
             {
                 try
                 {
-                    bool ret = Database.Database.database.RequestBoolean("f_create_user", model.Pseudo, model.Password, model.Email);
+                    bool ret = Database.Database.database.RequestBoolean("f_create_user", model.Pseudo, model.Password, model.Email, model.Prenom, model.Nom);
 
                     if (ret)
                     {
