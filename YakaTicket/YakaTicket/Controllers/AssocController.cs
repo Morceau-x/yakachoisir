@@ -115,7 +115,7 @@ namespace YakaTicket.Controllers
 
         public class AssocAdd
         {
-            public string login;
+            public string login { get; set; }
         }
     }
 }
