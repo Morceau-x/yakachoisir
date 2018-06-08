@@ -10,8 +10,8 @@ DROP FUNCTION IF EXISTS f_is_creator(login VARCHAR(256), event VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_get_creator(event VARCHAR(1024));
 
 DROP FUNCTION IF EXISTS f_set_premium(login VARCHAR(256), name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_moderator_approve(login VARCHAR(256), name VARCHAR(1024));
-DROP FUNCTION IF EXISTS f_president_approve(login VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_approve(login VARCHAR(256), name VARCHAR(1024));
+DROP FUNCTION IF EXISTS f_can_approve(login VARCHAR(256), name VARCHAR(1024));
 
 DROP FUNCTION IF EXISTS f_add_participant(login VARCHAR(256), name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_add_staff(login VARCHAR(256), name VARCHAR(1024));
@@ -23,6 +23,8 @@ DROP FUNCTION IF EXISTS f_get_event(name VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_list_all_events();
 DROP FUNCTION IF EXISTS f_list_events(assoc VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_list_future_events(); /* approved */
+DROP FUNCTION IF EXISTS f_list_mod_events();
+DROP FUNCTION IF EXISTS f_list_pres_events();
 
 DROP FUNCTION IF EXISTS f_list_participants(event VARCHAR(1024));
 DROP FUNCTION IF EXISTS f_list_staff(event VARCHAR(1024));
@@ -101,6 +103,75 @@ BEGIN
 		RETURN TRUE;
 	END IF;
 	RETURN FALSE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/*********************
+* CAN APPROUVE EVENT *
+*********************/
+CREATE OR REPLACE FUNCTION f_can_approve(login VARCHAR(256), name VARCHAR(1024))
+RETURNS BOOLEAN AS
+$$
+DECLARE
+	assoc VARCHAR(1024);
+	pres_app BOOLEAN;
+	mod_app BOOLEAN;
+BEGIN
+	SELECT e.assoc, e.president_approved, e.moderator_approved INTO assoc, pres_app, mod_app FROM events e WHERE e.name = $2;
+	IF (f_is_president(login, assoc) AND pres_app = FALSE) THEN
+		RETURN TRUE;
+	END IF;
+	IF (f_is_moderator(login) AND mod_app = FALSE) THEN
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+**** SET PREMIUM *****
+*********************/
+CREATE OR REPLACE FUNCTION f_set_premium(login VARCHAR(256), name VARCHAR(1024))
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF (NOT f_is_moderator(login)) THEN
+		RETURN FALSE;
+	END IF;
+	UPDATE events SET premium = TRUE WHERE events.name = $2;
+	RETURN TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
+****** APPROUVE ******
+*********************/
+CREATE OR REPLACE FUNCTION f_approve(login VARCHAR(256), name VARCHAR(1024))
+RETURNS BOOLEAN AS
+$$
+DECLARE
+	assoc VARCHAR(1024);
+BEGIN
+	SELECT e.assoc INTO assoc FROM events e WHERE e.name = $2;
+	IF (NOT f_is_president(login)) THEN
+		RETURN FALSE;
+	END IF;
+	UPDATE events SET president_approved = TRUE WHERE events.name = $2;
+	IF (NOT f_is_moderator(login)) THEN
+		RETURN TRUE;
+	END IF;
+	UPDATE events SET moderator_approved = TRUE WHERE events.name = $2;
+	RETURN TRUE;
 EXCEPTION
 	WHEN OTHERS THEN
 		RETURN FALSE;
@@ -219,6 +290,20 @@ CREATE OR REPLACE FUNCTION f_list_future_events()
 RETURNS SETOF VARCHAR(1024) AS
 'SELECT name FROM events e WHERE e.end_date > LOCALTIMESTAMP AND e.moderator_approved = TRUE;'
 LANGUAGE SQL;
+
+/*********************
+* LIST EV TO APPROVE**
+*********************/
+CREATE OR REPLACE FUNCTION f_list_mod_events()
+RETURNS SETOF event_name_data AS
+'SELECT name, summary, premium, begin_date, end_date, assoc, creator FROM events e WHERE e.president_approved = TRUE AND moderator_approved = FALSE;'
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION f_list_pres_events()
+RETURNS SETOF event_name_data AS
+'SELECT name, summary, premium, begin_date, end_date, assoc, creator FROM events e WHERE e.president_approved = FALSE;'
+LANGUAGE SQL;
+
 
 /*********************
 * LIST WEEKS EVENTS **

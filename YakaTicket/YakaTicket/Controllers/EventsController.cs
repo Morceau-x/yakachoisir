@@ -48,6 +48,13 @@ namespace YakaTicket.Controllers
             return RedirectToAction("ListEvent", "Events");
         }
 
+        [HttpPost]
+        public ActionResult ViewEvent(string name)
+        {
+            Database.Database.database.RequestVoid("f_approve", HttpContext.User.Identity.Name, name);
+            return RedirectToAction("ViewEvent", "Events", new { name });
+        }
+
         public ActionResult ListEvent()
         {
             ViewBag.list = new List<Event>();
@@ -102,6 +109,7 @@ namespace YakaTicket.Controllers
                     if (row != null)
                     {
                         e.Description = (string)row[0];
+                        e.Premium = (bool)row[1];
                         e.Begin = (DateTime)row[2];
                         e.End = (DateTime)row[3];
                         e.Assoc = (string)row[4];

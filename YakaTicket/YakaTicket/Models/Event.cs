@@ -10,11 +10,12 @@ namespace YakaTicket.Models
     {
         //Mandatory
         [Required(ErrorMessage = "Vous devez spécifier un nom pour cet événement")]
-        public string Assoc { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier une association pour cet événement")]
-        public string Owner { get; set; }
-        [Required(ErrorMessage = "Vous devez spécifier un créateur pour cet événement")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "Vous devez spécifier une association pour cet événement")]
+        public string Assoc { get; set; }
+        public bool Premium { get; set; }
+        [Required(ErrorMessage = "Vous devez spécifier un créateur pour cet événement")]
+        public string Owner { get; set; }
         [Required(ErrorMessage = "Vous devez ajouter une description")]
         public string Description { get; set; }
         [Required(ErrorMessage = "Vous devez spécifier une date de début")]

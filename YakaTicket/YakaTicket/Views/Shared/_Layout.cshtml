@@ -29,16 +29,21 @@
                         <li>@Html.ActionLink("Créer un événement", "CreateEvent", "Events")</li>
                     }
                     <li>@Html.ActionLink("Evenements", "ListEvent", "Events")</li>
-                    <li>
+
                     @using (Html.BeginForm("ListEvent", "Events", FormMethod.Get))
                     {
-                        @Html.TextBox("name", ViewBag.CurrentFilter as string, new { @class = "form-control" })
-                        <input class="form-control btn-primary" type="submit" value="Rechercher" style="float: left" /> <!--TODO FIX INLINE STYLE-->
+                        <li>
+                            @Html.TextBox("name", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+                            <input class="form-control btn-primary" type="submit" value="Rechercher" style="float: left" />
+                        </li>
                     }
-                    </li>
-                    @if (Request.IsAuthenticated)
+                    @if (Request.IsAuthenticated && Check.CanCreateEvent(User.Identity.GetUserName()))
                     {
-                    <li>@Html.ActionLink("Dashboard", "DashBoardList", "Assoc")</li>
+                        <li>@Html.ActionLink("Associations", "DashBoardList", "Assoc")</li>
+                    }
+                    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_is_moderator", User.Identity.GetUserName()))
+                    {
+                        <li>@Html.ActionLink("Modérateur", "Index", "Admin")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -57,3 +62,4 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+

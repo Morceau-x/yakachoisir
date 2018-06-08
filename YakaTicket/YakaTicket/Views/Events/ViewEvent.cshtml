@@ -7,9 +7,7 @@
     <legend>Résumé de l'évènement</legend>
     @using Microsoft.AspNet.Identity
     @using YakaTicket.Database
-
     <div></div>
-
     <div>
         <p>Nom : @Html.DisplayFor(model => model.Name) </p>
     </div>
@@ -30,7 +28,7 @@
     </div>
     <div>
         <button type="button" class="btn btn-default">
-            @Html.ActionLink("Inscription", "Payment", new {name = Html.ValueFor(model => model.Name)})
+            @Html.ActionLink("Inscription", "Payment", new { name = Html.ValueFor(model => model.Name) })
         </button>
     </div>
     <div>
@@ -42,9 +40,17 @@
     {
         <div>
             <button type="button" class="btn btn-default">
-                @Html.ActionLink("Edit", "ModifyEvent", "Events", new {name = @Html.ValueFor(model => model.Name)}, null)
+                @Html.ActionLink("Edit", "ModifyEvent", "Events", new { name = @Html.ValueFor(model => model.Name) }, null)
             </button>
         </div>
     }
 
+    @if (Request.IsAuthenticated && Database.database.RequestBoolean("f_can_approve", User.Identity.GetUserName(), Model.Name))
+    {
+        using (Html.BeginForm())
+        {
+            <input name="Owner" type="text" value=@ViewBag.name style="visibility:hidden" />
+            <input type="submit" value="Approuver" class="form-control btn-primary" />
+        }
+    }
 </fieldset>

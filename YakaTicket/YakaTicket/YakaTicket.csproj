@@ -254,6 +254,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\AssocController.cs" />
     <Compile Include="Controllers\EpitaController.cs" />
@@ -364,6 +365,7 @@
     <Content Include="Views\Assoc\NoAssoc.cshtml" />
     <Content Include="Views\Events\Payment.cshtml" />
     <Content Include="Views\Assoc\AddMember.cshtml" />
+    <Content Include="Views\Admin\ModeratorDashboard.cshtml" />
     <Content Include="Views\Assoc\DeleteMember.cshtml" />
   </ItemGroup>
   <ItemGroup>
