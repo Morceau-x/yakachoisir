@@ -111,7 +111,7 @@ namespace YakaTicket.Tools
 
 
             /* LOGO BILLET */
-            PDF.Image logoBilleterie = PDF.Image.GetInstance("~/Content/logo_billeterie5.png");
+            PDF.Image logoBilleterie = PDF.Image.GetInstance("~/Content/logo_bg1.png");
             logoBilleterie.ScalePercent(20.0f);
 
             

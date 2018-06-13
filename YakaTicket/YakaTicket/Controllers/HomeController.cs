@@ -33,7 +33,7 @@ namespace YakaTicket.Controllers
         public ActionResult DownloadPDF(string filename)
         {
             string path = Server.MapPath("~/Download/");
-            string logo = Server.MapPath("~/Content/logo_billeterie5.png");
+            string logo = Server.MapPath("~/Content/logo_bg1.png");
             YakaTicket.Tools.PDFCreator.test(path, filename);
             string fullPath = Path.Combine(path, filename);
 

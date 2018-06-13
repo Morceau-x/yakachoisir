@@ -197,7 +197,7 @@ namespace YakaTicket.Controllers
 
             
             string path = Server.MapPath("~/Download/");
-            string logo = Server.MapPath("~/Content/logo_billeterie5.png");
+            string logo = Server.MapPath("~/Content/logo_bg1.png");
             string filename = Tools.PDFCreator.exportAsPDF(path, eevent, user, logo);
             string fullPath = Path.Combine(path, filename);
 
