@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using YakaTicket.Models;
@@ -97,6 +99,7 @@ namespace YakaTicket.Controllers
             return View();
         }
 
+
         public ActionResult ModifyEvent()
         {
             string name = Request.QueryString["name"];
@@ -172,6 +175,7 @@ namespace YakaTicket.Controllers
                 {
                     list.Add(new EventPrice
                     {
+                        EventName = name,
                         PriceName = (string) p[0],
                         PriceValue = (float) p[1],
                         Number = (int) p[2],
@@ -218,7 +222,33 @@ namespace YakaTicket.Controllers
 
         public ActionResult PaymentSuccess()
         {
-            return View();
+
+            string tx = Request.QueryString["tx"];
+            string st = Request.QueryString["st"];
+            string amt = Request.QueryString["amt"];
+            string cc = Request.QueryString["cc"];
+            string item = Request.QueryString["item_name"];
+            string cm = Request.QueryString["cm"];
+
+            if (!string.IsNullOrEmpty(st) && st.Equals("Completed"))
+            {
+                ViewBag.item = item;
+
+                bool b = Database.Database.database.RequestBoolean("f_add_participant", HttpContext.User.Identity.Name, cm, item);
+                List<object[]> list = Database.Database.database.RequestTable("f_list_participants", 1, cm);
+                List<string> participants = new List<string>();
+                try
+                {
+                    foreach (var o in list)
+                    {
+                        participants.Add((string)o[0]);
+                    }
+                }
+                catch (Exception) { }
+
+                return View();
+            }
+            return PaymentFail();
         }
 
         public ActionResult PaymentFail()

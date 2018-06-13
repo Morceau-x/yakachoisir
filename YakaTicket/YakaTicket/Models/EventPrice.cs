@@ -9,6 +9,7 @@ namespace YakaTicket.Models
 {
     public class EventPrice
     {
+        public string EventName { get; set; }
         public string PriceName { get; set; }
         public float PriceValue { get; set; }
         public int Number { get; set; }
