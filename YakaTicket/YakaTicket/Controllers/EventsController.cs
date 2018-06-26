@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -164,6 +165,7 @@ namespace YakaTicket.Controllers
                 return RedirectToAction("CreateEvent", "Events");
         }
 
+
         public ActionResult Payment(string name)
         {
             List<EventPrice> list = new List<EventPrice>();
@@ -222,7 +224,6 @@ namespace YakaTicket.Controllers
 
         public ActionResult PaymentSuccess()
         {
-
             string tx = Request.QueryString["tx"];
             string st = Request.QueryString["st"];
             string amt = Request.QueryString["amt"];
@@ -246,9 +247,68 @@ namespace YakaTicket.Controllers
                 }
                 catch (Exception) { }
 
+                bool t = sendTicket(cm);
+                ViewBag.mail = t;
+
                 return View();
             }
             return PaymentFail();
+        }
+
+        private bool sendTicket(string ev)
+        {
+            const string username = "noreply.billetterie@gmail.com";
+            const string password = "Qwer!234";
+
+            System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
+            MailAddress fromaddress = new MailAddress(username);
+
+
+            SmtpClient smtpclient = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new System.Net.NetworkCredential(username, password),
+                EnableSsl = true
+            };
+
+            mail.From = fromaddress;
+
+            string email = "";
+
+            try
+            {
+                email = (string)Database.Database.database.RequestObject("f_email", 1, User.Identity.Name);
+            }
+            catch (Exception) { }
+
+            if (String.IsNullOrEmpty(email))
+                return false;
+
+            mail.To.Add(email);
+            mail.Subject = ("Billetterie - Billet pour l'événement " + ev);
+            mail.IsBodyHtml = true;
+            mail.Body = "Merci pour l'achat du billet " + ev +
+                        ". Vous trouverez ci-joint le récapitulatif ainsi que le billet pour entrer à l'événement.\n" +
+                        "Vous pouvez retrouver le même document dans votre historique de commande.";
+
+
+            string path = Server.MapPath("~/Download/");
+            string filename = Tools.PDFCreator.MakeTicket(User.Identity.Name, ev, path, Server.MapPath("~/Content/logo_bg1.png"));
+            var attachment = new System.Net.Mail.Attachment(Path.Combine(path, filename));
+            mail.Attachments.Add(attachment);
+
+            try
+            {
+                smtpclient.Send(mail);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public ActionResult PaymentFail()

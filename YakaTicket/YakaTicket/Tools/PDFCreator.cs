@@ -14,7 +14,7 @@ namespace YakaTicket.Tools
 {
     public class PDFCreator
     {
-        public static string exportAsPDF(string path, Event ev, User user, string logo)
+        private static string exportAsPDF(string path, Event ev, User user, string logo)
         {
             string filename = "billet_" + ev.Name + "_" + user.Firstname + "_" + user.Lastname;
 
@@ -224,6 +224,49 @@ namespace YakaTicket.Tools
             doc.Add(table1);
             doc.Close();
             return filename;
+        }
+
+
+        public static string MakeTicket(string name, string ev, string path, string logo)
+        {
+            User user = null;
+
+            try
+            {
+                object[] u = Database.Database.database.RequestLine("f_get_user", 6, name);
+                user = new User
+                {
+                    Ionis = (bool)u[0],
+                    Epita = (bool)u[1],
+                    Firstname = (string)u[2],
+                    Lastname = (string)u[3],
+                    Address = (string)u[4],
+                    PhoneNumber = (string)u[5],
+                    Id = name
+                };
+            }
+            catch (Exception) { }
+
+
+            Event eevent = null;
+
+            try
+            {
+                object[] e = Database.Database.database.RequestLine("f_get_event", 6, ev);
+                eevent = new Event
+                {
+                    Name = ev,
+                    Description = (string)e[0],
+                    Begin = (DateTime)e[2],
+                    End = (DateTime)e[3],
+                    Assoc = (string)e[4],
+                    Owner = (string)e[5]
+                };
+
+            }
+            catch (Exception) { }
+
+            return exportAsPDF(path, eevent, user, logo);
         }
     }
 }
