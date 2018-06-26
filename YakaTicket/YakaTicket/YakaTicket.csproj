@@ -271,6 +271,7 @@
     <Compile Include="Controllers\EpitaController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\GetEventController.cs" />
+    <Compile Include="Controllers\GetParticipantsController.cs" />
     <Compile Include="Controllers\GetUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
