@@ -40,14 +40,14 @@
 
                     Début de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
                     <div style="float: right">
-                        @Html.TextBoxFor(model => model.Begin, new { @class = "form-control date-picker" })
+                        @Html.TextBoxFor(model => model.Begin, new { @class = "form-control form_datetime" })
                         @Html.ValidationMessageFor(model => model.Begin)
                     </div>
                     <div class="separator"></div>
 
                     Fin de l'évènement <i>*</i> : <i>jj/mm/aaaa hh:mm:ss</i>
                     <div style="float: right">
-                        @Html.TextBoxFor(model => model.End, new { @class = "form-control date-picker" })
+                        @Html.TextBoxFor(model => model.End, new { @class = "form-control form_datetime" })
                         @Html.ValidationMessageFor(model => model.End)
                     </div>
                     <div class="separator"></div>
@@ -66,17 +66,13 @@ else
 {
     <h3> Il faut être connecté pour faire ça. </h3>
 }
-<!-- jQuery UI CSS Reference -->
-<link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="stylesheet" />
-<!-- Required jQuery and jQuery UI Javascript references -->
+<link href="@Url.Content("~/Content/bootstrap-datetimepicker.min.css")" rel="stylesheet" />
 <script src="@Url.Content("~/Scripts/jquery-1.12.4.min.js")"></script>
-<script src="@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")"></script>
-<!-- Examples of creating a Datepicker -->
+<script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Scripts/bootstrap-datetimepicker.min.js")"></script>
+
 <script type="text/javascript">
-    $.noConflict();
-    jQuery(document).ready(function ($) {
-        $(function () {
-            $('.date-picker').datepicker();
-        });
+    $(".form_datetime").datetimepicker({
+        format: "dd/mm/yyyy hh:ii:ss"
     });
-</script>
+</script>   
