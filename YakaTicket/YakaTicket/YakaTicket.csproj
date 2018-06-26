@@ -274,6 +274,7 @@
     <Compile Include="Controllers\GetParticipantsController.cs" />
     <Compile Include="Controllers\GetUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RemoveUserController.cs" />
     <Compile Include="Database\Check.cs" />
