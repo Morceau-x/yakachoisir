@@ -40,6 +40,11 @@
     {
         <div>
             <button type="button" class="btn btn-default">
+                @Html.ActionLink("Ajouter un prix", "AddPrice", new { name = Html.ValueFor(model => model.Name) })
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-default">
                 @Html.ActionLink("Edit", "ModifyEvent", "Events", new { name = @Html.ValueFor(model => model.Name) }, null)
             </button>
         </div>

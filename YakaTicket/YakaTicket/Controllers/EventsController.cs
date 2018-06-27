@@ -68,6 +68,7 @@ namespace YakaTicket.Controllers
             return RedirectToAction("ViewEvent", "Events", new { name });
         }
 
+
         public ActionResult ListEvent()
         {
             ViewBag.list = new List<Event>();
@@ -201,6 +202,36 @@ namespace YakaTicket.Controllers
             }
             else
                 return RedirectToAction("CreateEvent", "Events");
+        }
+        
+        public ActionResult AddPrice(string name)
+        {
+            List<EventPrice> list = new List<EventPrice>();
+            try
+            {
+                List<object[]> tmp = Database.Database.database.RequestTable("f_list_prices", 7, name);
+                foreach (var p in tmp)
+                {
+                    list.Add(new EventPrice
+                    {
+                        EventName = name,
+                        PriceName = (string)p[0],
+                        PriceValue = (float)p[1],
+                        Number = (int)p[2],
+                        MaxNumber = (int)p[3],
+                        Assoc = (bool)p[4],
+                        Epita = (bool)p[5],
+                        Ionis = (bool)p[6]
+                    });
+                }
+            }
+            catch (Exception) { }
+
+            ViewBag.list = list;
+
+
+
+            return View();
         }
 
 
