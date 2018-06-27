@@ -19,6 +19,7 @@ namespace YakaTicket.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private static Dictionary<string, RegisterViewModel> _userDictionary = new Dictionary<string, RegisterViewModel>();
+        private static Dictionary<string, ForgotPasswordViewModel> _userPasswordToken = new Dictionary<string, ForgotPasswordViewModel>();
 
         public AccountController()
         {
@@ -294,19 +295,25 @@ namespace YakaTicket.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByEmailAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
                 }
 
-                // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+
+                SendMail(user.Id, model.Email, "Billetterie - Mot de passe perdu",
+                    "Veuillez cliquer <a href=\"" +
+                    callbackUrl + "\">ici</a> pour changer de mot de passe");
+
+                _userPasswordToken[user.Id] = model;
+
+
+                return View("ForgotPasswordConfirmation");
             }
 
             // If we got this far, something failed, redisplay form
@@ -324,7 +331,7 @@ namespace YakaTicket.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public ActionResult ResetPassword(string code, string userId)
         {
             return code == null ? View("Error") : View();
         }
@@ -340,7 +347,7 @@ namespace YakaTicket.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
@@ -349,7 +356,16 @@ namespace YakaTicket.Controllers
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                bool res = Database.Database.database.RequestBoolean("f_change_password", user.UserName,
+                    model.Password);
+                if (res)
+                {
+                    return RedirectToAction("ResetPasswordConfirmation", "Account");
+                }
+                else
+                {
+                    return View("Error");
+                }
             }
             AddErrors(result);
             return View();

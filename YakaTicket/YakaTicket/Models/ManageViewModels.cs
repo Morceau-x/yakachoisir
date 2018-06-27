@@ -53,7 +53,7 @@ namespace YakaTicket.Models
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirmation nouveau password")]
+        [Display(Name = "Confirmation nouveau mot de passe")]
         [Compare("NewPassword", ErrorMessage = "Le nouveau mot de passe et la confirmation sont différents.")]
         public string ConfirmPassword { get; set; }
     }
