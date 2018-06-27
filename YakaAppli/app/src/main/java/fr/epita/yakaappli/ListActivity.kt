@@ -18,8 +18,8 @@ class ListActivity : AppCompatActivity() {
     var data : ArrayList<User> = ArrayList()
     var participants : ArrayList<String> = ArrayList()
     var event : String = "none"
-    //val baseURL = "https://localhost:44345/api/"
-    val baseURL = "https://10.0.2.2:44345/api/"
+    //var baseURL = "https://10.0.2.2:44345/api/"
+    var baseURL = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +27,7 @@ class ListActivity : AppCompatActivity() {
 
         val originIntent = intent
         event = originIntent.getStringExtra("Event")
-
-        //test
-        event = "PARTYYY"
+        baseURL = originIntent.getStringExtra("Url")
 
         getParticipant()
 

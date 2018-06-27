@@ -26,6 +26,7 @@ import android.graphics.Typeface
 class EventsActivity : AppCompatActivity() {
 
     var events : ArrayList<String> = ArrayList()
+    var baseUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +34,7 @@ class EventsActivity : AppCompatActivity() {
 
         val originIntent = intent
         val le = originIntent.getSerializableExtra("List") as ArrayList<String>
+        baseUrl = originIntent.getStringExtra("Url")
         events = le
 
 
@@ -51,6 +53,7 @@ class EventsActivity : AppCompatActivity() {
                 override fun onClick(v : View) {
                     val explicitIntent = Intent(this@EventsActivity, CheckActivity::class.java)
                     explicitIntent.putExtra("Event", e)
+                    explicitIntent.putExtra("Url", baseUrl)
                     startActivity(explicitIntent)
                 }
             })

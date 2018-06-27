@@ -24,14 +24,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     var mdp = ""
     var res = ""
     var le = ArrayList<String>()
-    val baseURL = "https://localhost:44345/api/"
+    //var baseURL = "https://10.0.2.2:44345/api/"
+    var baseURL = "https://localhost:44345/api/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        test()
-
+        //test()
         btn_connect.setOnClickListener(this@MainActivity)
     }
 
@@ -39,14 +38,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (clickedView != null) {
             when (clickedView.id) {
                 R.id.btn_connect -> {
+                    if (url.text.toString() != "")
+                        baseURL = url.text.toString()
                     login = text_login.text.toString()
                     mdp = text_password.text.toString()
                     getEvents()
-                    /*if (res == "")
-                        return*/
+                    if (res == "")
+                        return
                     val explicitIntent = Intent(this@MainActivity, EventsActivity::class.java)
                     explicitIntent.putExtra("List", le)
                     explicitIntent.putExtra("Login", res)
+                    explicitIntent.putExtra("Url", baseURL)
                     startActivity(explicitIntent)
                 }
                 else -> {

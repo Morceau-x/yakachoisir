@@ -22,7 +22,7 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
     var id = ""
     var event = ""
     var login = ""
-    val baseURL = "https://localhost:44345/api/"
+    var baseURL = ""
     var user : User = User("", "", "", "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +36,7 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
         btn_update.setOnClickListener(this@CheckActivity)
         val originIntent = intent
         event  = originIntent.getStringExtra("Event")
+        baseURL = originIntent.getStringExtra("Url")
         event_name.setText(event)
     }
 
@@ -76,6 +77,7 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
                         R.id.btn_list -> {
                             val explicitIntent = Intent(this@CheckActivity, ListActivity::class.java)
                             explicitIntent.putExtra("Event", event)
+                            explicitIntent.putExtra("Url", baseURL)
                             startActivity(explicitIntent)
                         }
                         else -> {
