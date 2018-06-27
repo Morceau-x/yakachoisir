@@ -57,7 +57,7 @@ namespace YakaTicket.Models
         [Display(Name = "Mot de passe")]
         public string Password { get; set; }
 
-        [Display(Name = "Rester connecter?")]
+        [Display(Name = "Rester connecté?")]
         public bool RememberMe { get; set; }
     }
 
