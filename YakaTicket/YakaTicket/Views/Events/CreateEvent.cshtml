@@ -46,7 +46,7 @@
                     <div class="separator"></div>
                     Sommaire <i>*</i>
                     <div style="float: right">
-                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @maxlength = 8192 })
+                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control text-c", @maxlength = 8192 })
                         @Html.ValidationMessageFor(model => model.Description)
                     </div>
                     <div class="separator"></div>
@@ -58,7 +58,7 @@
                             bkLib.onDomLoaded(function () { new nicEditor().panelInstance('mytextarea') });
                             //]]>
                         </script>
-                        <textarea id="mytextarea" name="full_desc">Description</textarea>
+                        <textarea id="mytextarea" name="full_desc" style="width: 100%;">Description</textarea>
                     </div>
                 </div>
             </div>
