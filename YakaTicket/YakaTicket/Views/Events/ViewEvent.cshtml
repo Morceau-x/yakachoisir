@@ -24,6 +24,9 @@
         <p>Fin de l'évènement : @Html.DisplayFor(model => model.End)</p>
     </div>
     <div>
+        @Html.Raw(ViewBag.data)
+    </div>
+    <div>
         <button type="button" class="btn btn-default">
             @Html.ActionLink("Inscription", "Payment", new { name = Html.ValueFor(model => model.Name) })
         </button>

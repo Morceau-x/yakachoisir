@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace YakaTicket.Models
 {
@@ -24,6 +25,8 @@ namespace YakaTicket.Models
         [DisplayFormat(DataFormatString = "{0:d}")]
         [Required(ErrorMessage = "Vous devez spécifier une date de fin")]
         public DateTime End { get; set; }
+        [AllowHtml]
+        public string full_desc { get; set; }
 
         public Event ()
         {

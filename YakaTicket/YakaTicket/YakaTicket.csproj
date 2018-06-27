@@ -460,6 +460,9 @@
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\tinymce\jquery.tinymce.min.js" />
+    <Content Include="Scripts\tinymce\license.txt" />
+    <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Tools\Extra\DayPilot.Web.Mvc.dll" />
     <Content Include="Tools\Extra\itextsharp.dll" />
     <Content Include="Tools\Extra\itextsharp.pdfa.dll" />

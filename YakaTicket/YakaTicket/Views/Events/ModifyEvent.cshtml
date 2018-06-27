@@ -7,36 +7,46 @@
 {
     using (Html.BeginForm())
     {
-        <fieldset>
-            <legend>Modifier un évènement</legend>
-            <div>
-                @{
-                    var name = HttpContext.Current.User.Identity.Name;
-                }
-                <input name="user" type="text" value=@name style="visibility:hidden" />
-                </div>
-            <div>
-                Nom :
-                @Html.LabelFor(model => model.Name, Model.Name, new { @readonly = true })
-                @Html.ValidationMessageFor(model => model.Name)
-            </div>
-            <div>
-                Description :
-                @Html.TextBoxFor(model => model.Description, Model.Description, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Description)
-            </div>
-            <div>
-                Début de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
-                @Html.TextBoxFor(model => model.Begin, Model.Begin.ToString("dd/MM/yyyy HH:mm:ss"), new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Begin)
-            </div>
-            <div>
-                Fin de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
-                @Html.TextBoxFor(model => model.End, Model.End.ToString("dd/MM/yyyy HH:mm:ss"), new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.End)
-            </div>
-            <input type="submit" value="Modifier l'évènement" class="form-control" />
-        </fieldset>
+<fieldset>
+    <legend>Modifier un évènement</legend>
+    <div>
+        @{
+            var name = HttpContext.Current.User.Identity.Name;
+        }
+        <input name="user" type="text" value=@name style="visibility:hidden" />
+    </div>
+    <div>
+        Nom :
+        @Html.LabelFor(model => model.Name, Model.Name, new {@readonly = true })
+        <input name="name" type="text" value=@ViewBag.name style="visibility:hidden" />
+    </div>
+    <div>
+        Sommaire :
+        @Html.TextBoxFor(model => model.Description, Model.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Description)
+    </div>
+    <div>
+        Début de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
+        @Html.TextBoxFor(model => model.Begin, Model.Begin.ToString("dd/MM/yyyy HH:mm:ss"), new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Begin)
+    </div>
+    <div>
+        Fin de l'évènement : <i>jj/mm/aaaa hh:mm:ss</i>
+        @Html.TextBoxFor(model => model.End, Model.End.ToString("dd/MM/yyyy HH:mm:ss"), new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.End)
+    </div>
+    <div>
+        Description
+        <script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
+        <script type="text/javascript">
+            //<![CDATA[
+            bkLib.onDomLoaded(function () { new nicEditor().panelInstance('mytextarea') });
+                                            //]]>
+        </script>
+        <textarea id="mytextarea" name="full_desc" class="form-control">@ViewBag.data</textarea>
+    </div>
+    <input type="submit" value="Modifier l'évènement" class="form-control" />
+</fieldset>
     }
 }
 else

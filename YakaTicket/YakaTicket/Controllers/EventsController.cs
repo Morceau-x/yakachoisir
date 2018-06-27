@@ -44,7 +44,18 @@ namespace YakaTicket.Controllers
                 catch (Exception)
                 { }
 
+                string data = "";
+                try
+                {
+                    string path = Path.Combine(HttpContext.Server.MapPath("~"), "Server Data");
+                    data = System.IO.File.ReadAllText(Path.Combine(path, name + ".html"));
+                }
+                catch (Exception)
+                {
+                }
+
                 ViewBag.name = name;
+                ViewBag.data = data;
                 return View(e);
             }
             return RedirectToAction("ListEvent", "Events");
@@ -121,19 +132,40 @@ namespace YakaTicket.Controllers
                 }
                 catch (Exception)
                 { }
+
+                string data = "";
+                try
+                {
+                    string path = Path.Combine(HttpContext.Server.MapPath("~"), "Server Data");
+                    data = System.IO.File.ReadAllText(Path.Combine(path, name + ".html"));
+                }
+                catch (Exception)
+                {
+                }
+
+                ViewBag.data = data;
+                ViewBag.name = e.Name;
                 return View(e);
             }
             return RedirectToAction("ListEvent", "Events");
         }
 
-        [HttpPost]
-        public ActionResult ModifyEvent(string user, string name, string description, DateTime begin, DateTime end)
+        [HttpPost, ValidateInput(false)]
+        public ActionResult ModifyEvent(string user, string name, string description, DateTime begin, DateTime end, string full_desc)
         {
             if (!DalEvent.ModifyEvent(user, name, description, begin, end))
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("ModifyEvent", "Events", new { name });
             else
             {
-                return RedirectToAction("ModifyEvent", "Events", new {name});
+                string path = Path.Combine(HttpContext.Server.MapPath("~"), "Server Data");
+                try
+                {
+                    System.IO.Directory.CreateDirectory(path);
+                    System.IO.File.WriteAllText(Path.Combine(path, name + ".html"), full_desc);
+                } catch (Exception) {
+
+                }
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -157,11 +189,14 @@ namespace YakaTicket.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public ActionResult CreateEvent(Event e)
         {
             if (DalEvent.CreateEvent(e))
             {
+                string path = Path.Combine(HttpContext.Server.MapPath("~"), "Server Data");
+                System.IO.Directory.CreateDirectory(path);
+                System.IO.File.WriteAllText(Path.Combine(path, e.Name + ".html"), e.full_desc);
                 return RedirectToAction("Index", "Home");
             }
             else

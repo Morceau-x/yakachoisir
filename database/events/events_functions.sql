@@ -423,6 +423,21 @@ WHERE p.login = $1 AND p.event = $2;'
 LANGUAGE SQL;
 
 /*********************
+******* LIST ********
+*********************/
+CREATE OR REPLACE FUNCTION f_list_current_events()
+RETURNS SETOF VARCHAR(1024) AS
+$$
+BEGIN
+	RETURN QUERY SELECT e.name FROM events e
+	WHERE e.begin_date <= LOCALTIMESTAMP AND e.end_date >= LOCALTIMESTAMP AND e.moderator_approved = TRUE;
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN QUERY SELECT NULL LIMIT 0;
+END;
+$$ LANGUAGE plpgsql;
+
+/*********************
 ******* ENTER ********
 *********************/
 CREATE OR REPLACE FUNCTION f_enter(login VARCHAR(256), event VARCHAR(1024))
@@ -433,7 +448,7 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT e.name FROM events e WHERE name = $2 AND (begin_date > LOCALTIMESTAMP OR end_date < LOCALTIMESTAMP))) THEN
-			RETURN FALSE;
+		RETURN FALSE;
 	END IF;
 	IF (EXISTS(SELECT p.login FROM participants p WHERE p.login = $1 AND p.event = $2 AND is_inside = TRUE)) THEN
 		RETURN FALSE;
