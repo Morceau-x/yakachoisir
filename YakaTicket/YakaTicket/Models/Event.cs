@@ -18,8 +18,10 @@ namespace YakaTicket.Models
         public string Owner { get; set; }
         [Required(ErrorMessage = "Vous devez ajouter une description")]
         public string Description { get; set; }
+        [DisplayFormat(DataFormatString = "{0:d}")]
         [Required(ErrorMessage = "Vous devez spécifier une date de début")]
         public DateTime Begin { get; set; }
+        [DisplayFormat(DataFormatString = "{0:d}")]
         [Required(ErrorMessage = "Vous devez spécifier une date de fin")]
         public DateTime End { get; set; }
 
