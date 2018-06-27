@@ -388,6 +388,7 @@
     <Content Include="Views\Assoc\CreateAssoc.cshtml" />
     <Content Include="Views\Events\PaymentSuccess.cshtml" />
     <Content Include="Views\Events\PaymentFail.cshtml" />
+    <Content Include="Views\Account\Thanks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

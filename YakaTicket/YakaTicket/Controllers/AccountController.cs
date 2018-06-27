@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -14,6 +18,7 @@ namespace YakaTicket.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private static Dictionary<string, RegisterViewModel> _userDictionary = new Dictionary<string, RegisterViewModel>();
 
         public AccountController()
         {
@@ -159,6 +164,48 @@ namespace YakaTicket.Controllers
             return View();
         }
 
+
+        private bool SendMail(string id, string email, string sub, string body)
+        {
+            if (String.IsNullOrEmpty(email))
+                return false;
+
+            const string username = "noreply.billetterie@gmail.com";
+            const string password = "Qwer!234";
+
+            System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
+            MailAddress fromaddress = new MailAddress(username);
+
+
+            SmtpClient smtpclient = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new System.Net.NetworkCredential(username, password),
+                EnableSsl = true
+            };
+
+            mail.From = fromaddress;
+            mail.To.Add(email);
+            mail.Subject = sub;
+            mail.IsBodyHtml = true;
+            mail.Body = body;
+
+            try
+            {
+                smtpclient.Send(mail);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
+
         //
         // POST: /Account/Register
         [HttpPost]
@@ -170,26 +217,25 @@ namespace YakaTicket.Controllers
             {
                 try
                 {
-                    bool ret = Database.Database.database.RequestBoolean("f_create_user", model.Pseudo, model.Password, model.Email, model.Prenom, model.Nom);
-
-                    if (ret)
+                    var user = new ApplicationUser { UserName = model.Pseudo, Email = model.Email };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
                     {
-                        var user = new ApplicationUser { UserName = model.Pseudo, Email = model.Email };
-                        var result = await UserManager.CreateAsync(user, model.Password);
-                        if (result.Succeeded)
-                        {
-                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        
+                        string code = UserManager.GenerateEmailConfirmationToken(user.Id);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
 
-                            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                            // Send an email with this link
-                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                        SendMail(user.Id, model.Email, "Billetterie - Confirmation mail",
+                            "Veuillez confirmer votre adresse mail en cliquant <a href=\"" +
+                            callbackUrl + "\">ici</a>");
 
-                            return RedirectToAction("Index", "Home");
-                        }
-                        AddErrors(result);
+                        _userDictionary[user.Id] = model;
+
+
+                        return View("Thanks");
                     }
+                    AddErrors(result);
                 }
                 catch
                 { }
@@ -198,6 +244,14 @@ namespace YakaTicket.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+
+
+
+        public ActionResult Thanks()
+        {
+            return View();
+        }
+
 
         //
         // GET: /Account/ConfirmEmail
@@ -208,8 +262,19 @@ namespace YakaTicket.Controllers
             {
                 return View("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            var result = UserManager.ConfirmEmail(userId, code);
+
+            if (result.Succeeded && _userDictionary.ContainsKey(userId))
+            {
+                var model = _userDictionary[userId];
+                bool ret = Database.Database.database.RequestBoolean("f_create_user", model.Pseudo, model.Password, model.Email, model.Prenom, model.Nom);
+                if (!ret)
+                    return View("Error");
+
+                _userDictionary.Remove(userId);
+                return View("ConfirmEmail");
+            }
+            return View("Error");
         }
 
         //
