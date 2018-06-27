@@ -14,7 +14,6 @@ namespace YakaTicket.Controllers
 {
     public class EventsController : Controller
     {
-
         public RedirectToRouteResult Index()
         {
             string name = Request.QueryString["name"];
@@ -133,7 +132,9 @@ namespace YakaTicket.Controllers
             if (!DalEvent.ModifyEvent(user, name, description, begin, end))
                 return RedirectToAction("Index", "Home");
             else
-                return RedirectToAction("ModifyEvent", "Events", new { name });
+            {
+                return RedirectToAction("ModifyEvent", "Events", new {name});
+            }
         }
 
         public ActionResult CreateEvent()
@@ -148,7 +149,7 @@ namespace YakaTicket.Controllers
                 {
                     ret.Add((string)item[0]);
                 }
-
+                
             }
             catch { }
 
@@ -159,8 +160,10 @@ namespace YakaTicket.Controllers
         [HttpPost]
         public ActionResult CreateEvent(Event e)
         {
-            if (DalEvent.CreateEvent(e)) 
+            if (DalEvent.CreateEvent(e))
+            {
                 return RedirectToAction("Index", "Home");
+            }
             else
                 return RedirectToAction("CreateEvent", "Events");
         }
@@ -193,6 +196,70 @@ namespace YakaTicket.Controllers
             ViewBag.list = list;
 
             return View();
+        }
+
+        // GET/Events/AcceptEvent
+        [HttpGet]
+        public ActionResult AcceptEvent()
+        {
+            if (!Database.Database.database.RequestBoolean("f_has_assoc", User.Identity.Name) &&
+                !Database.Database.database.RequestBoolean("f_is_moderator", User.Identity.Name) &&
+                !Database.Database.database.RequestBoolean("f_is_administrator", User.Identity.Name))
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+            }
+
+            List<string> ev = new List<string>();
+            List<object[]> list = Database.Database.database.RequestTable("f_list_current_events", 1);
+            try
+            {
+                foreach (var it in list)
+                {
+                    ev.Add((string)it[0]);
+                }
+            }
+            catch (Exception) { }
+            ViewBag.list = ev;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AcceptEvent(Token t)
+        {
+            string Assoc = "";
+            object[] row = Database.Database.database.RequestLine("f_get_event", 6, t.Event);
+            try
+            {
+                Assoc = (string) row[4];
+            }
+            catch (Exception) { }
+            
+            if (!Database.Database.database.RequestBoolean("f_is_member", User.Identity.Name, Assoc) &&
+                !Database.Database.database.RequestBoolean("f_is_moderator", User.Identity.Name) &&
+                !Database.Database.database.RequestBoolean("f_is_administrator", User.Identity.Name))
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+            }
+            
+            bool result = Database.Database.database.RequestBoolean("f_enter", t.Login, t.Event);
+            if (result)
+            {
+                HttpContext.Response.Write("Entrée " + t.Event + " : " + t.Login);
+            }
+            else
+            {
+                result = Database.Database.database.RequestBoolean("f_leave", t.Login, t.Event);
+                if (result)
+                {
+                    HttpContext.Response.Write("Sortie " + t.Event + " : " + t.Login);
+                }
+                else
+                {
+                    HttpContext.Response.Write(t.Login + " n'est pas inscrit.");
+                }
+
+            }
+            return RedirectToAction("AcceptEvent", "Events");
         }
 
         public ActionResult DownloadEvent(string name)

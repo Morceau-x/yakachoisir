@@ -1,0 +1,38 @@
+﻿@model YakaTicket.Models.Token
+
+@{
+    ViewBag.Title = "AcceptEvent";
+}
+
+<h2>Entrée/Sortie</h2>
+
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+        <h3>* <i>Champs obligatoires</i></h3>
+        <fieldset>
+            <div class="row">
+                <div class="column">
+                    Evénement <i>*</i>
+                    <div style="float: right">
+                        @Html.DropDownListFor(model => model.Event, new SelectList(ViewBag.list))
+                        @Html.ValidationMessageFor(model => model.Event)
+                    </div>
+                    <div class="separator"></div>
+                    login <i>*</i>
+                    <div style="float: right">
+                        @Html.TextBoxFor(model => model.Login, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Login)
+                    </div>
+                </div>
+            </div>
+            <input type="submit" value="Valider" class="form-control btn-primary" />
+        </fieldset>
+    }
+}
+else
+{
+    <h3> Vous n'avez pas les droits ou il faut être connecté pour faire ça. </h3>
+}
+

@@ -53,6 +53,13 @@ namespace YakaTicket.Controllers
             }
         }
 
+        private bool CanAccept(string login)
+        {
+            return Database.Database.database.RequestBoolean("f_has_assoc", login) ||
+                   Database.Database.database.RequestBoolean("f_is_moderator", login) ||
+                   Database.Database.database.RequestBoolean("f_is_administrator", login);
+        }
+
         //
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
@@ -88,6 +95,9 @@ namespace YakaTicket.Controllers
             }
             catch (Exception) { }
 
+
+
+            ViewBag.CanAccept = CanAccept(User.Identity.Name);
 
             ViewBag.History = new List<Event>();
             try
