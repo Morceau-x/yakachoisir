@@ -9,11 +9,13 @@ namespace YakaTicket.Controllers
 {
     public class EnterUserController : ApiController
     {
-        public void Post(string id, string e)
+        public IHttpActionResult Get(string id, string e)
         {
-            //Get user
-            string login = "test";
-            bool response = Database.Database.database.RequestBoolean("f_enter", login, e);
+            bool response = Database.Database.database.RequestBoolean("f_enter", id, e);
+            if (response)
+                return Ok();
+            else
+                return NotFound();
         }
     }
 }
