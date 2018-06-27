@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.widget.Toast
 import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,7 +18,8 @@ class ListActivity : AppCompatActivity() {
     var data : ArrayList<User> = ArrayList()
     var participants : ArrayList<String> = ArrayList()
     var event : String = "none"
-    val baseURL = "http://localhost"
+    //val baseURL = "https://localhost:44345/api/"
+    val baseURL = "https://192.168.0.19/api/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +27,7 @@ class ListActivity : AppCompatActivity() {
 
         val originIntent = intent
         event = originIntent.getStringExtra("Event")
+        event = "PARTYYY"
 
         getParticipant()
 
@@ -44,19 +47,41 @@ class ListActivity : AppCompatActivity() {
 
         val participantCallback = object : Callback<List<String>> {
             override fun onFailure(call: Call<List<String>>?, t: Throwable?) {
-                Log.d("MainActivity", "WebService characters call failed")
+                Toast.makeText(this@ListActivity, "Event not found", Toast.LENGTH_LONG).show()
+                Log.d("MainActivity", "WebService list call failed")
             }
 
             override fun onResponse(call: Call<List<String>>?, response: Response<List<String>>?) {
-                if (response == null || response.code() != 200)
+                if (response == null || response.code() != 200) {
+                    Toast.makeText(this@ListActivity, "Event not found", Toast.LENGTH_LONG).show()
                     return
+                }
                 val responseData = response.body() ?: return
 
                 participants.addAll(responseData)
-                Log.d("ListActivity", "WebService characters success : ")
+            }
+        }
+
+        val userCallback = object : Callback<User> {
+            override fun onFailure(call: Call<User>?, t: Throwable?) {
+                Toast.makeText(this@ListActivity, "User not found", Toast.LENGTH_LONG).show()
+                Log.d("MainActivity", "WebService user call failed")
+            }
+
+            override fun onResponse(call: Call<User>?, response: Response<User>?) {
+                if (response == null || response.code() != 200) {
+                    Toast.makeText(this@ListActivity, "User not found", Toast.LENGTH_LONG).show()
+                    return
+                }
+                val responseData = response.body() ?: return
+
+                data.add(responseData)
             }
         }
 
         service.getEvent(event).enqueue(participantCallback)
+        for (login in participants) {
+            service.getUser(login).enqueue(userCallback)
+        }
     }
 }
