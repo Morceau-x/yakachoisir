@@ -17,9 +17,9 @@ interface WSInterface {
     @GET("GetLogin/{login}/{mdp}")
     fun getLogin(@Path("login") login : String, @Path("mdp") mdp : String) : Call<String>
 
-    @GET("RemoveUser/{id}/{e]")
+    @GET("RemoveUser/{id}/{e}")
     fun removeUser(@Path("id") id : String, @Path("e") e : String) : Call<Void>
 
-    @GET("EnterUser/{id}/{e]")
+    @GET("EnterUser/{id}/{e}")
     fun enterUser(@Path("id") id : String, @Path("e") e : String) : Call<Void>
 }

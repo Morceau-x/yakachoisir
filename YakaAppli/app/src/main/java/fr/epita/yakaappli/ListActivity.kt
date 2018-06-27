@@ -27,6 +27,8 @@ class ListActivity : AppCompatActivity() {
 
         val originIntent = intent
         event = originIntent.getStringExtra("Event")
+
+        //test
         event = "PARTYYY"
 
         getParticipant()

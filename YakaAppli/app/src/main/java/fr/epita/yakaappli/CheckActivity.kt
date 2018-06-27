@@ -33,6 +33,7 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
         btn_list.setOnClickListener(this@CheckActivity)
         btn_validate.setOnClickListener(this@CheckActivity)
         btn_switch.setOnClickListener(this@CheckActivity)
+        btn_update.setOnClickListener(this@CheckActivity)
         val originIntent = intent
         event  = originIntent.getStringExtra("Event")
         event_name.setText(event)
@@ -44,7 +45,22 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
                 if (clickedView != null) {
                     when (clickedView.id) {
                         R.id.btn_validate -> {
-                            //Toast.makeText(this, "test", Toast.LENGTH_LONG).show()
+                            if (login == "") {
+                                Toast.makeText(this, "Login invalide", Toast.LENGTH_LONG).show()
+                                return
+                            }
+                            if (enter)
+                                enterUser()
+                            else
+                                removeUser()
+                        }
+                        R.id.btn_update -> {
+                            id = ticket.text.toString()
+                            val splited = id.split("(^_^)")
+                            login = splited[0]
+                            getUser()
+                            login_name.text = login
+                            name_name.text = user.firstname + " " + user.lastname
                         }
                         R.id.btn_scan -> {
                             scanIntegrator.setOrientationLocked(false)
@@ -78,7 +94,7 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
             } else {
                 ticket.setText(scanningResult.getContents())
                 id = scanningResult.contents
-                val splited = id.split("(^_^)".toRegex())
+                val splited = id.split("(^_^)")
                 login = splited[0]
                 getUser()
                 login_name.text = login
@@ -111,5 +127,47 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
         service.getUser(login).enqueue(userCallback)
+    }
+
+    fun enterUser() {
+        val jsonConverter = GsonConverterFactory.create(GsonBuilder().create())
+        val retrofit = Retrofit.Builder().baseUrl(baseURL).addConverterFactory(jsonConverter).build()
+        val service = retrofit.create(WSInterface::class.java)
+
+        val enterCallback = object : Callback<Void> {
+            override fun onFailure(call: Call<Void>?, t: Throwable?) {
+                Toast.makeText(this@CheckActivity, "Personne déja présente", Toast.LENGTH_LONG).show()
+                Log.d("MainActivity", "WebService user call failed")
+            }
+
+            override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
+                if (response == null || response.code() != 200) {
+                    Toast.makeText(this@CheckActivity, "Personne déja présente", Toast.LENGTH_LONG).show()
+                    return
+                }
+            }
+        }
+        service.enterUser(login, event).enqueue(enterCallback)
+    }
+
+    fun removeUser() {
+        val jsonConverter = GsonConverterFactory.create(GsonBuilder().create())
+        val retrofit = Retrofit.Builder().baseUrl(baseURL).addConverterFactory(jsonConverter).build()
+        val service = retrofit.create(WSInterface::class.java)
+
+        val removeCallback = object : Callback<Void> {
+            override fun onFailure(call: Call<Void>?, t: Throwable?) {
+                Toast.makeText(this@CheckActivity, "Personne non présente", Toast.LENGTH_LONG).show()
+                Log.d("MainActivity", "WebService user call failed")
+            }
+
+            override fun onResponse(call: Call<Void>?, response: Response<Void>?) {
+                if (response == null || response.code() != 200) {
+                    Toast.makeText(this@CheckActivity, "Personne non présente", Toast.LENGTH_LONG).show()
+                    return
+                }
+            }
+        }
+        service.removeUser(login, event).enqueue(removeCallback)
     }
 }

@@ -18,4 +18,5 @@
     <string name="login_name">no</string>
     <string name="loading">loading</string>
     <string name="name">Nom:</string>
+    <string name="btn_update">Mise à jour</string>
 </resources>
