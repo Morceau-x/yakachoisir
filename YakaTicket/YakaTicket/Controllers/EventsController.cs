@@ -8,6 +8,8 @@ using System.Net.Mail;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using YakaTicket.Database;
 using YakaTicket.Models;
 
 namespace YakaTicket.Controllers
@@ -206,6 +208,10 @@ namespace YakaTicket.Controllers
         
         public ActionResult AddPrice(string name)
         {
+            if (!Check.CanEditEvent(User.Identity.Name, name))
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+            }
             List<EventPrice> list = new List<EventPrice>();
             try
             {
@@ -228,10 +234,25 @@ namespace YakaTicket.Controllers
             catch (Exception) { }
 
             ViewBag.list = list;
-
+            ViewBag.EventName = name;
 
 
             return View();
+        }
+
+        
+
+        [HttpPost]
+        public ActionResult AddPrice(CreatePriceModel m)
+        {
+            try
+            {
+                //f_create_price(login VARCHAR(256), event VARCHAR(1024), name VARCHAR(1024), price REAL, max_number INTEGER, assoc_only BOOLEAN, epita_only BOOLEAN, ionis_only BOOLEAN)
+                bool res = Database.Database.database.RequestBoolean("f_create_price", m.Login, m.Event, m.Name,
+                    m.Price, m.MaxNumber, m.AssocOnly, m.EpitaOnly, m.IonisOnly);
+            }
+            catch (Exception) { }
+            return RedirectToAction("ListEvent");
         }
 
 

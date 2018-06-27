@@ -1,7 +1,111 @@
-﻿
+﻿@model YakaTicket.Models.CreatePriceModel
 @{
     ViewBag.Title = "AddPrice";
 }
+<h2>Ajouter un prix</h2>
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
 
-<h2>AddPrice</h2>
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Billet</th>
+            <th>Places</th>
+            <th>Prix</th>
+            <th>Association seulement</th>
+            <th>EPITA seulement</th>
+            <th>IONIS seulement</th>
+        </tr>
+        @foreach (YakaTicket.Models.EventPrice e in ViewBag.list)
+        {
+            <tr>
+                <td>@e.PriceName</td>
+                <td>@e.MaxNumber</td>
+                <td>@e.PriceValue</td>
+                <td>@e.Assoc</td>
+                <td>@e.Epita</td>
+                <td>@e.Ionis</td>
+            </tr>
+        }
+    </table>
 
+
+
+    using (Html.BeginForm())
+    {
+        <h3>* <i>Champs obligatoires</i></h3>
+        <fieldset>
+            <div class="row">
+                <div class="column">
+
+                    <div>
+                        Créateur <i>:</i>
+                        @{
+                            var name = HttpContext.Current.User.Identity.Name;
+                        }
+                        @Html.TextBoxFor(model => model.Login, name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Login)
+                        <input name="Owner" type="text" value=@name style="visibility:hidden" />
+                    </div>
+
+                    <div>
+                        Evénement <i>:</i>
+                        @{
+                            var ev = Request.QueryString["name"];
+                        }
+                        @Html.TextBoxFor(model => model.Event, ev, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Event)
+                        <input name="Owner" type="text" value=@ev style="visibility:hidden" />
+                    </div>
+
+
+                    <div>
+                        Nom <i>*</i>
+                        <div style="float: right">
+                            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </div>
+                    </div>
+                    Prix <i>*</i>
+                    <div style="float: right">
+                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Price)
+                    </div>
+                    <div class="separator"></div>
+                    Nombre de places <i>*</i>
+                    <div style="float: right">
+                        @Html.TextBoxFor(model => model.MaxNumber, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.MaxNumber)
+                    </div>
+                    <div class="separator"></div>
+                    Association seulement <i>*</i>
+                    <div style="float: right">
+                        @Html.CheckBoxFor(model => model.AssocOnly, new { @class = "form-control form_datetime" })
+                        @Html.ValidationMessageFor(model => model.AssocOnly)
+                    </div>
+                    <div class="separator"></div>
+                    IONIS seulement <i>*</i>
+                    <div style="float: right">
+                        @Html.CheckBoxFor(model => model.IonisOnly, new { @class = "form-control form_datetime" })
+                        @Html.ValidationMessageFor(model => model.AssocOnly)
+                    </div>
+                    <div class="separator"></div>
+                    EPITA seulement <i>*</i>
+                    <div style="float: right">
+                        @Html.CheckBoxFor(model => model.EpitaOnly, new { @class = "form-control form_datetime" })
+                        @Html.ValidationMessageFor(model => model.AssocOnly)
+                    </div>
+                    <div class="separator"></div>
+
+                </div>
+            </div>
+            <input type="submit" value="Ajouter" class="form-control btn-primary" />
+        </fieldset>
+    }
+
+
+}
+else
+{
+    <h3> Il faut être connecté pour faire ça. </h3>
+}

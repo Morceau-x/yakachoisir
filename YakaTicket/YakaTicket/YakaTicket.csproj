@@ -285,6 +285,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AssocModel.cs" />
     <Compile Include="Models\BddContext.cs" />
+    <Compile Include="Models\CreatePriceModel.cs" />
     <Compile Include="Models\DalEvent.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventPrice.cs" />
@@ -459,9 +460,6 @@
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\tinymce\jquery.tinymce.min.js" />
-    <Content Include="Scripts\tinymce\license.txt" />
-    <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Tools\Extra\DayPilot.Web.Mvc.dll" />
     <Content Include="Tools\Extra\itextsharp.dll" />
     <Content Include="Tools\Extra\itextsharp.pdfa.dll" />
