@@ -7,12 +7,24 @@ import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.ActionBar
+import android.util.Log
 import android.view.View
+import android.widget.Toast
+import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    var le = EventList(ArrayList())
+    var login = ""
+    var mdp = ""
+    var res = ""
+    var le = ArrayList<String>()
+    val baseURL = "https://localhost:44345/api/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +39,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (clickedView != null) {
             when (clickedView.id) {
                 R.id.btn_connect -> {
+                    login = text_login.text.toString()
+                    mdp = text_password.text.toString()
+                    getEvents()
+                    /*if (res == "")
+                        return*/
                     val explicitIntent = Intent(this@MainActivity, EventsActivity::class.java)
                     explicitIntent.putExtra("List", le)
+                    explicitIntent.putExtra("Login", res)
                     startActivity(explicitIntent)
                 }
                 else -> {
@@ -37,16 +55,51 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    fun getEvents() {
+        val jsonConverter = GsonConverterFactory.create(GsonBuilder().create())
+        val retrofit = Retrofit.Builder().baseUrl(baseURL).addConverterFactory(jsonConverter).build()
+        val service = retrofit.create(WSInterface::class.java)
+
+        val loginCallback = object : Callback<String> {
+            override fun onFailure(call: Call<String>?, t: Throwable?) {
+                Toast.makeText(this@MainActivity, "Identifiants invalides", Toast.LENGTH_LONG).show()
+                Log.d("MainActivity", "WebService login call failed")
+            }
+
+            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                if (response == null || response.code() != 200) {
+                    Toast.makeText(this@MainActivity, "Identifiants invalides", Toast.LENGTH_LONG).show()
+                    return
+                }
+                res = response.body() ?: return
+            }
+        }
+
+        val eventCallback = object : Callback<List<String>> {
+            override fun onFailure(call: Call<List<String>>?, t: Throwable?) {
+                Toast.makeText(this@MainActivity, "Identifiants invalides", Toast.LENGTH_LONG).show()
+                Log.d("MainActivity", "WebService login call failed")
+            }
+
+            override fun onResponse(call: Call<List<String>>?, response: Response<List<String>>?) {
+                if (response == null || response.code() != 200) {
+                    Toast.makeText(this@MainActivity, "Identifiants invalides", Toast.LENGTH_LONG).show()
+                    return
+                }
+                val responseData = response.body() ?: return
+                le.addAll(responseData)
+            }
+        }
+        service.getLogin(login, mdp).enqueue(loginCallback)
+        if (res == "")
+            return
+        service.getEvents(login).enqueue(eventCallback)
+    }
+
     fun test() {
-        le.add_event(Event("Test1",2))
-        le.add_event(Event("Test42",1))
-        le.add_event(Event("Test51",3))
-        le.add_event(Event("Test20",2))
-        le.add_event(Event("Test21",1))
-        le.add_event(Event("Test22",3))
-        le.add_event(Event("Test23",2))
-        le.add_event(Event("Test24",1))
-        le.add_event(Event("Test25",3))
+        le.add("Test1")
+        le.add("Test42")
+        le.add("Test51")
     }
 
 }

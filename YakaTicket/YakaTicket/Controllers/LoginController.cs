@@ -10,10 +10,14 @@ namespace YakaTicket.Controllers
     public class LoginController : ApiController
     {
         [Route("api/GetLogin/{login}/{mdp}")]
-        public string Get(string login, string mdp)
+        public IHttpActionResult Get(string login, string mdp)
         {
             // Authentication
-            return login;
+            Boolean response = Database.Database.database.RequestBoolean("f_regular_connect", login, mdp);
+            if (response)
+                return Ok(login);
+            else
+                return NotFound();
         }
     }
 }

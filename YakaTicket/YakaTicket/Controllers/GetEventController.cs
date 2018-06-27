@@ -14,6 +14,8 @@ namespace YakaTicket.Controllers
         {
             List<string> events = new List<string>();
             List<object[]> u = Database.Database.database.RequestTable("f_list_current_moderable_events", 1, id);
+            if (u == null)
+                return null;
             foreach (object[] ev in u)
             {
                 events.Add((string)ev[0]);

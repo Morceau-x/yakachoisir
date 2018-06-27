@@ -25,22 +25,22 @@ import android.graphics.Typeface
 
 class EventsActivity : AppCompatActivity() {
 
-    var events : ArrayList<Event> = ArrayList()
+    var events : ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_events)
 
         val originIntent = intent
-        val le = originIntent.getSerializableExtra("List") as EventList
-        events = le.event_list
+        val le = originIntent.getSerializableExtra("List") as ArrayList<String>
+        events = le
 
 
         for (e in events) {
             val linearLayout : LinearLayout = findViewById(R.id.rootContainer)
 
             var btnShow = Button(this)
-            btnShow.setText(e.name)
+            btnShow.setText(e)
             btnShow.setTextColor(resources.getColor(R.color.colorBlank))
             btnShow.setBackgroundResource(R.drawable.button_event)
             var params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

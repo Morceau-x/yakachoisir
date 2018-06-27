@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using YakaTicket.Models;
+using System.Text.RegularExpressions;
 
 namespace YakaTicket.Controllers
 {
@@ -27,13 +28,6 @@ namespace YakaTicket.Controllers
                     Mail = (string)mail[0]
             };
             return tmp;
-        }
-
-        public User Get(string id, string e)
-        {
-            User u = new User();
-            //Recup user
-            return u;
         }
     }
 }
