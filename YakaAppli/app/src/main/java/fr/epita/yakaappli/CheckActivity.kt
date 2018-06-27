@@ -59,8 +59,8 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
                             val splited = id.split("(^_^)")
                             login = splited[0]
                             getUser()
-                            login_name.text = login
-                            name_name.text = user.firstname + " " + user.lastname
+                            login_name.setText(login)
+                            name_name.setText(user.firstname + " " + user.lastname)
                         }
                         R.id.btn_scan -> {
                             scanIntegrator.setOrientationLocked(false)
@@ -114,13 +114,13 @@ class CheckActivity : AppCompatActivity(), View.OnClickListener {
 
         val userCallback = object : Callback<User> {
             override fun onFailure(call: Call<User>?, t: Throwable?) {
-                Toast.makeText(this@CheckActivity, "User not found", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@CheckActivity, "Utilisateur non trouvé", Toast.LENGTH_LONG).show()
                 Log.d("MainActivity", "WebService user call failed")
             }
 
             override fun onResponse(call: Call<User>?, response: Response<User>?) {
                 if (response == null || response.code() != 200) {
-                    Toast.makeText(this@CheckActivity, "User not found", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@CheckActivity, "Utilisateur non trouvé", Toast.LENGTH_LONG).show()
                     return
                 }
                 user = response.body() ?: return

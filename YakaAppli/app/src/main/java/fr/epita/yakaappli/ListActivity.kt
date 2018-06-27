@@ -19,7 +19,7 @@ class ListActivity : AppCompatActivity() {
     var participants : ArrayList<String> = ArrayList()
     var event : String = "none"
     //val baseURL = "https://localhost:44345/api/"
-    val baseURL = "https://192.168.0.19/api/"
+    val baseURL = "https://10.0.2.2:44345/api/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +51,7 @@ class ListActivity : AppCompatActivity() {
             override fun onFailure(call: Call<List<String>>?, t: Throwable?) {
                 Toast.makeText(this@ListActivity, "Event not found", Toast.LENGTH_LONG).show()
                 Log.d("MainActivity", "WebService list call failed")
+                Log.d("test", retrofit.baseUrl().toString())
             }
 
             override fun onResponse(call: Call<List<String>>?, response: Response<List<String>>?) {

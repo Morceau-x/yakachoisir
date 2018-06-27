@@ -97,9 +97,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun test() {
-        le.add("Test1")
-        le.add("Test42")
-        le.add("Test51")
+        le.add("soirée Nova")
+        le.add("BBQ")
+        le.add("Fin de partiel")
     }
 
 }
