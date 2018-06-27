@@ -333,6 +333,26 @@ RETURNS SETOF VARCHAR(1024) AS
 LANGUAGE SQL;
 
 /*********************
+* LIST FUTURE EVENTS *
+*********************/
+CREATE OR REPLACE FUNCTION f_list_current_moderable_events(login VARCHAR(256))
+RETURNS SETOF VARCHAR(1024) AS
+$$
+BEGIN
+	IF (login IS NULL) THEN
+		RETURN QUERY SELECT NULL LIMIT 0;
+	END IF;
+	RETURN QUERY SELECT e.name FROM events e
+	WHERE e.begin_date <= LOCALTIMESTAMP AND e.end_date >= LOCALTIMESTAMP AND e.moderator_approved = TRUE
+	AND f_is_member($1, e.assoc);
+EXCEPTION
+	WHEN OTHERS THEN
+		RETURN QUERY SELECT NULL LIMIT 0;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/*********************
 * LIST EV TO APPROVE**
 *********************/
 CREATE OR REPLACE FUNCTION f_list_mod_events()
