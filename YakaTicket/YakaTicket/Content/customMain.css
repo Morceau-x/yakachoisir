@@ -139,3 +139,15 @@ select {
 .separator {
     clear: both;
 }
+
+.text-c {
+    min-width: 200px;
+}
+.nicEdit-main {
+    border: 1px solid var(--epita-color2);
+    background-color: aliceblue;
+}
+.nicEdit-panel {
+    border: 1px solid var(--epita-color2);
+    background-color: aliceblue;
+}
